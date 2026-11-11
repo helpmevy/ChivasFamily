@@ -1,0 +1,20 @@
+{
+  "version": "2026-11-11.1",
+  "voice": {
+    "engine": "Kokoro",
+    "voice": "af_heart",
+    "lang_code": "a",
+    "speed_normal": 1.0,
+    "speed_slow": 0.7,
+    "format": "mp3, 24000 Hz, mono, 40 kbps"
+  },
+  "units": [
+    {
+      "id": 1,
+      "title": "Animals, Family & Friends",
+      "data": "data/u1.json",
+      "audio": "audio/u1.json",
+      "rev": 1
+    }
+  ]
+}

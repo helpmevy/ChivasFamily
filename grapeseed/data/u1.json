@@ -1,0 +1,1032 @@
+{
+  "id": 1,
+  "title": "Animals, Family & Friends",
+  "phonogram": {
+    "focus": [
+      "d",
+      "f",
+      "k",
+      "m",
+      "z"
+    ],
+    "review": []
+  },
+  "words": [
+    {
+      "en": "alligator",
+      "vi": "cá sấu",
+      "emoji": "🐊",
+      "ipa": "/ˈælɪɡeɪtər/",
+      "cat": "animal"
+    },
+    {
+      "en": "animals",
+      "vi": "động vật",
+      "emoji": "🐾",
+      "ipa": "/ˈænɪməlz/",
+      "cat": "animal"
+    },
+    {
+      "en": "baby",
+      "vi": "em bé",
+      "emoji": "👶",
+      "ipa": "/ˈbeɪbi/",
+      "cat": "family"
+    },
+    {
+      "en": "ball",
+      "vi": "quả bóng",
+      "emoji": "⚽",
+      "ipa": "/bɔːl/",
+      "cat": "thing"
+    },
+    {
+      "en": "bear",
+      "vi": "con gấu",
+      "emoji": "🐻",
+      "ipa": "/ber/",
+      "cat": "animal"
+    },
+    {
+      "en": "bird",
+      "vi": "con chim",
+      "emoji": "🐦",
+      "ipa": "/bɜːrd/",
+      "cat": "animal"
+    },
+    {
+      "en": "boys",
+      "vi": "các cậu bé",
+      "emoji": "👦",
+      "ipa": "/bɔɪz/",
+      "cat": "family"
+    },
+    {
+      "en": "brother",
+      "vi": "anh/em trai",
+      "emoji": "👦",
+      "ipa": "/ˈbrʌðər/",
+      "cat": "family"
+    },
+    {
+      "en": "chair",
+      "vi": "cái ghế",
+      "emoji": "🪑",
+      "ipa": "/tʃer/",
+      "cat": "thing"
+    },
+    {
+      "en": "climb",
+      "vi": "leo",
+      "emoji": "🧗",
+      "ipa": "/klaɪm/",
+      "cat": "action"
+    },
+    {
+      "en": "come",
+      "vi": "đến",
+      "emoji": "",
+      "ipa": "/kʌm/",
+      "cat": "action"
+    },
+    {
+      "en": "go",
+      "vi": "đi",
+      "emoji": "",
+      "ipa": "/ɡoʊ/",
+      "cat": "action"
+    },
+    {
+      "en": "crawl",
+      "vi": "bò",
+      "emoji": "",
+      "ipa": "/krɔːl/",
+      "cat": "action"
+    },
+    {
+      "en": "dance",
+      "vi": "nhảy múa",
+      "emoji": "💃",
+      "ipa": "/dæns/",
+      "cat": "action"
+    },
+    {
+      "en": "elephant",
+      "vi": "con voi",
+      "emoji": "🐘",
+      "ipa": "/ˈelɪfənt/",
+      "cat": "animal"
+    },
+    {
+      "en": "family",
+      "vi": "gia đình",
+      "emoji": "👨‍👩‍👧‍👦",
+      "ipa": "/ˈfæməli/",
+      "cat": "family"
+    },
+    {
+      "en": "fast",
+      "vi": "nhanh",
+      "emoji": "⚡",
+      "ipa": "/fæst/",
+      "cat": "feeling"
+    },
+    {
+      "en": "slow",
+      "vi": "chậm",
+      "emoji": "🐌",
+      "ipa": "/sloʊ/",
+      "cat": "feeling"
+    },
+    {
+      "en": "father",
+      "vi": "bố",
+      "emoji": "👨",
+      "ipa": "/ˈfɑːðər/",
+      "cat": "family"
+    },
+    {
+      "en": "floor",
+      "vi": "sàn nhà",
+      "emoji": "",
+      "ipa": "/flɔːr/",
+      "cat": "place"
+    },
+    {
+      "en": "fly",
+      "vi": "bay",
+      "emoji": "🕊️",
+      "ipa": "/flaɪ/",
+      "cat": "action"
+    },
+    {
+      "en": "friend",
+      "vi": "bạn",
+      "emoji": "🤝",
+      "ipa": "/frend/",
+      "cat": "family"
+    },
+    {
+      "en": "giraffe",
+      "vi": "hươu cao cổ",
+      "emoji": "🦒",
+      "ipa": "/dʒəˈræf/",
+      "cat": "animal"
+    },
+    {
+      "en": "girls",
+      "vi": "các cô bé",
+      "emoji": "👧",
+      "ipa": "/ɡɜːrlz/",
+      "cat": "family"
+    },
+    {
+      "en": "gorilla",
+      "vi": "khỉ đột",
+      "emoji": "🦍",
+      "ipa": "/ɡəˈrɪlə/",
+      "cat": "animal"
+    },
+    {
+      "en": "grass",
+      "vi": "cỏ",
+      "emoji": "🌿",
+      "ipa": "/ɡræs/",
+      "cat": "place"
+    },
+    {
+      "en": "hands",
+      "vi": "bàn tay",
+      "emoji": "🙌",
+      "ipa": "/hændz/",
+      "cat": "body"
+    },
+    {
+      "en": "hop",
+      "vi": "nhảy lò cò",
+      "emoji": "🐰",
+      "ipa": "/hɑːp/",
+      "cat": "action"
+    },
+    {
+      "en": "house",
+      "vi": "ngôi nhà",
+      "emoji": "🏠",
+      "ipa": "/haʊs/",
+      "cat": "place"
+    },
+    {
+      "en": "jump",
+      "vi": "nhảy",
+      "emoji": "🦘",
+      "ipa": "/dʒʌmp/",
+      "cat": "action"
+    },
+    {
+      "en": "kangaroo",
+      "vi": "chuột túi",
+      "emoji": "🦘",
+      "ipa": "/ˌkæŋɡəˈruː/",
+      "cat": "animal"
+    },
+    {
+      "en": "lion",
+      "vi": "sư tử",
+      "emoji": "🦁",
+      "ipa": "/ˈlaɪən/",
+      "cat": "animal"
+    },
+    {
+      "en": "monkey",
+      "vi": "con khỉ",
+      "emoji": "🐒",
+      "ipa": "/ˈmʌŋki/",
+      "cat": "animal"
+    },
+    {
+      "en": "mother",
+      "vi": "mẹ",
+      "emoji": "👩",
+      "ipa": "/ˈmʌðər/",
+      "cat": "family"
+    },
+    {
+      "en": "over",
+      "vi": "phía trên / qua",
+      "emoji": "",
+      "ipa": "/ˈoʊvər/",
+      "cat": "place"
+    },
+    {
+      "en": "under",
+      "vi": "bên dưới",
+      "emoji": "",
+      "ipa": "/ˈʌndər/",
+      "cat": "place"
+    },
+    {
+      "en": "panda",
+      "vi": "gấu trúc",
+      "emoji": "🐼",
+      "ipa": "/ˈpændə/",
+      "cat": "animal"
+    },
+    {
+      "en": "play",
+      "vi": "chơi",
+      "emoji": "🎮",
+      "ipa": "/pleɪ/",
+      "cat": "action"
+    },
+    {
+      "en": "rabbit",
+      "vi": "con thỏ",
+      "emoji": "🐰",
+      "ipa": "/ˈræbɪt/",
+      "cat": "animal"
+    },
+    {
+      "en": "rock",
+      "vi": "tảng đá",
+      "emoji": "🪨",
+      "ipa": "/rɑːk/",
+      "cat": "thing"
+    },
+    {
+      "en": "run",
+      "vi": "chạy",
+      "emoji": "🏃",
+      "ipa": "/rʌn/",
+      "cat": "action"
+    },
+    {
+      "en": "sing",
+      "vi": "hát",
+      "emoji": "🎤",
+      "ipa": "/sɪŋ/",
+      "cat": "action"
+    },
+    {
+      "en": "sister",
+      "vi": "chị/em gái",
+      "emoji": "👧",
+      "ipa": "/ˈsɪstər/",
+      "cat": "family"
+    },
+    {
+      "en": "sit",
+      "vi": "ngồi",
+      "emoji": "🪑",
+      "ipa": "/sɪt/",
+      "cat": "action"
+    },
+    {
+      "en": "sleep",
+      "vi": "ngủ",
+      "emoji": "😴",
+      "ipa": "/sliːp/",
+      "cat": "action"
+    },
+    {
+      "en": "snake",
+      "vi": "con rắn",
+      "emoji": "🐍",
+      "ipa": "/sneɪk/",
+      "cat": "animal"
+    },
+    {
+      "en": "stand",
+      "vi": "đứng",
+      "emoji": "",
+      "ipa": "/stænd/",
+      "cat": "action"
+    },
+    {
+      "en": "steps",
+      "vi": "bậc thang",
+      "emoji": "🪜",
+      "ipa": "/steps/",
+      "cat": "thing"
+    },
+    {
+      "en": "stop",
+      "vi": "dừng lại",
+      "emoji": "🛑",
+      "ipa": "/stɑːp/",
+      "cat": "action"
+    },
+    {
+      "en": "tall",
+      "vi": "cao",
+      "emoji": "",
+      "ipa": "/tɔːl/",
+      "cat": "feeling"
+    },
+    {
+      "en": "short",
+      "vi": "thấp / ngắn",
+      "emoji": "",
+      "ipa": "/ʃɔːrt/",
+      "cat": "feeling"
+    },
+    {
+      "en": "teacher",
+      "vi": "cô giáo / thầy giáo",
+      "emoji": "👩‍🏫",
+      "ipa": "/ˈtiːtʃər/",
+      "cat": "family"
+    },
+    {
+      "en": "through",
+      "vi": "xuyên qua",
+      "emoji": "",
+      "ipa": "/θruː/",
+      "cat": "place"
+    },
+    {
+      "en": "tiger",
+      "vi": "con hổ",
+      "emoji": "🐯",
+      "ipa": "/ˈtaɪɡər/",
+      "cat": "animal"
+    },
+    {
+      "en": "tree",
+      "vi": "cây",
+      "emoji": "🌳",
+      "ipa": "/triː/",
+      "cat": "place"
+    },
+    {
+      "en": "turtle",
+      "vi": "con rùa",
+      "emoji": "🐢",
+      "ipa": "/ˈtɜːrtl/",
+      "cat": "animal"
+    },
+    {
+      "en": "up",
+      "vi": "lên",
+      "emoji": "⬆️",
+      "ipa": "/ʌp/",
+      "cat": "place"
+    },
+    {
+      "en": "down",
+      "vi": "xuống",
+      "emoji": "⬇️",
+      "ipa": "/daʊn/",
+      "cat": "place"
+    },
+    {
+      "en": "walk",
+      "vi": "đi bộ",
+      "emoji": "🚶",
+      "ipa": "/wɔːk/",
+      "cat": "action"
+    },
+    {
+      "en": "yes",
+      "vi": "có / vâng",
+      "emoji": "✅",
+      "ipa": "/jes/",
+      "cat": "feeling"
+    },
+    {
+      "en": "no",
+      "vi": "không",
+      "emoji": "❌",
+      "ipa": "/noʊ/",
+      "cat": "feeling"
+    },
+    {
+      "en": "zebra",
+      "vi": "ngựa vằn",
+      "emoji": "🦓",
+      "ipa": "/ˈziːbrə/",
+      "cat": "animal"
+    },
+    {
+      "en": "zoo",
+      "vi": "sở thú",
+      "emoji": "🦁",
+      "ipa": "/zuː/",
+      "cat": "place"
+    },
+    {
+      "en": "one",
+      "vi": "một",
+      "emoji": "1️⃣",
+      "ipa": "/wʌn/",
+      "cat": "thing"
+    },
+    {
+      "en": "two",
+      "vi": "hai",
+      "emoji": "2️⃣",
+      "ipa": "/tuː/",
+      "cat": "thing"
+    },
+    {
+      "en": "three",
+      "vi": "ba",
+      "emoji": "3️⃣",
+      "ipa": "/θriː/",
+      "cat": "thing"
+    },
+    {
+      "en": "four",
+      "vi": "bốn",
+      "emoji": "4️⃣",
+      "ipa": "/fɔːr/",
+      "cat": "thing"
+    },
+    {
+      "en": "five",
+      "vi": "năm",
+      "emoji": "5️⃣",
+      "ipa": "/faɪv/",
+      "cat": "thing"
+    },
+    {
+      "en": "six",
+      "vi": "sáu",
+      "emoji": "6️⃣",
+      "ipa": "/sɪks/",
+      "cat": "thing"
+    },
+    {
+      "en": "seven",
+      "vi": "bảy",
+      "emoji": "7️⃣",
+      "ipa": "/ˈsevən/",
+      "cat": "thing"
+    },
+    {
+      "en": "eight",
+      "vi": "tám",
+      "emoji": "8️⃣",
+      "ipa": "/eɪt/",
+      "cat": "thing"
+    },
+    {
+      "en": "nine",
+      "vi": "chín",
+      "emoji": "9️⃣",
+      "ipa": "/naɪn/",
+      "cat": "thing"
+    },
+    {
+      "en": "ten",
+      "vi": "mười",
+      "emoji": "🔟",
+      "ipa": "/ten/",
+      "cat": "thing"
+    },
+    {
+      "en": "big",
+      "vi": "to / lớn",
+      "emoji": "",
+      "ipa": "/bɪɡ/",
+      "cat": "feeling"
+    },
+    {
+      "en": "small",
+      "vi": "nhỏ",
+      "emoji": "",
+      "ipa": "/smɔːl/",
+      "cat": "feeling"
+    },
+    {
+      "en": "little",
+      "vi": "nhỏ bé",
+      "emoji": "",
+      "ipa": "/ˈlɪtl/",
+      "cat": "feeling"
+    },
+    {
+      "en": "circle",
+      "vi": "hình tròn",
+      "emoji": "⭕",
+      "ipa": "/ˈsɜːrkl/",
+      "cat": "thing"
+    },
+    {
+      "en": "line",
+      "vi": "đường thẳng",
+      "emoji": "➖",
+      "ipa": "/laɪn/",
+      "cat": "thing"
+    },
+    {
+      "en": "grandfather",
+      "vi": "ông",
+      "emoji": "👴",
+      "ipa": "/ˈɡrænfɑːðər/",
+      "cat": "family"
+    },
+    {
+      "en": "grandmother",
+      "vi": "bà",
+      "emoji": "👵",
+      "ipa": "/ˈɡrænmʌðər/",
+      "cat": "family"
+    },
+    {
+      "en": "hippopotamus",
+      "vi": "hà mã",
+      "emoji": "🦛",
+      "ipa": "/ˌhɪpəˈpɑːtəməs/",
+      "cat": "animal"
+    },
+    {
+      "en": "hippo",
+      "vi": "hà mã",
+      "emoji": "🦛",
+      "ipa": "/ˈhɪpoʊ/",
+      "cat": "animal"
+    }
+  ],
+  "passages": [
+    {
+      "title": "What Do You See?",
+      "type": "story",
+      "src": "PDF tr.96",
+      "text": "I see a panda.\nThe panda sees a bear.\nThe bear is jumping over a rock.\n\nI see a bear.\nThe bear sees a gorilla.\nThe gorilla is swinging in a tree.\n\nI see a gorilla.\nThe gorilla sees a bird.\nThe bird is flying in the sky.\n\nI see a bird.\nThe bird sees a tiger.\nThe tiger is running in the grass.\n\nI see a tiger.\nThe tiger sees a snake.\nThe snake is sliding down a tree.\n\nI see a snake.\nThe snake sees a girl.\nThe girl is sitting on a rock.\n\nLittle girl, little girl, what do you see?\nI see a girl looking back at me!\n\nThe End",
+      "qs": [
+        {
+          "q": "What does the panda see?",
+          "options": [
+            "a bear",
+            "a bird",
+            "a snake",
+            "a girl"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Where is the gorilla swinging?",
+          "options": [
+            "in a tree",
+            "on a rock",
+            "in the grass",
+            "in the sky"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What is the tiger doing?",
+          "options": [
+            "running in the grass",
+            "flying",
+            "sleeping",
+            "climbing"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Who does the snake see?",
+          "options": [
+            "a girl",
+            "a panda",
+            "a tiger",
+            "a bear"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What is the girl doing?",
+          "options": [
+            "sitting on a rock",
+            "jumping",
+            "flying",
+            "running"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "title": "Animals Play",
+      "type": "story",
+      "src": "PDF tr.98",
+      "text": "The bird flies in the sky.\nThe bird sits in the tree.\n\nThe monkey climbs in the tree.\nThe monkey plays with a ball.\n\nThe rabbit hops to the rock.\nThe rabbit plays with a friend.\n\nThe kangaroo jumps over the rock.\nThe kangaroo sits on a rock.\n\nThe hippopotamus sleeps under the tree.\nThe hippopotamus steps over the turtle.\n\nThe turtle sleeps on a rock.\nThe turtle crawls under the rock.\n\nThe alligator crawls on a rock.\nThe alligator sits with the snake.\n\nThe giraffe runs in the grass.\nThe giraffe steps over the tree.\n\nI like animals!\n\nThe End",
+      "qs": [
+        {
+          "q": "What does the monkey play with?",
+          "options": [
+            "a ball",
+            "a rock",
+            "a friend",
+            "a tree"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Where does the hippopotamus sleep?",
+          "options": [
+            "under the tree",
+            "on a rock",
+            "in the grass",
+            "in the sky"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What does the kangaroo do?",
+          "options": [
+            "jumps over the rock",
+            "flies",
+            "crawls",
+            "sings"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Who does the alligator sit with?",
+          "options": [
+            "the snake",
+            "the bird",
+            "the rabbit",
+            "the giraffe"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What does the giraffe do in the grass?",
+          "options": [
+            "runs",
+            "sleeps",
+            "flies",
+            "hops"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "title": "Family and Friends",
+      "type": "story",
+      "src": "PDF tr.100",
+      "text": "This is my family.\n\nThis is my father.\nThis is my mother.\nMy father is big.\nMy mother is small.\n\nThese are my sisters.\nThis is the baby.\nThis is my brother.\nAnd this is me!\n\nThis is my friend.\nHis name is Arty.\nArty has a toy—a big, red ball.\n\nThese are my friends.\nWe play and we run.\nThese are my friends.\nWe jump and we swing.\n\nI love my family!\nI love my friends!\n\nThe End",
+      "qs": [
+        {
+          "q": "Is the father big or small?",
+          "options": [
+            "big",
+            "small",
+            "tall",
+            "short"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What toy does Arty have?",
+          "options": [
+            "a big, red ball",
+            "a car",
+            "a book",
+            "a doll"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What do the friends do?",
+          "options": [
+            "play and run",
+            "sleep",
+            "eat",
+            "read"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Who is in the family?",
+          "options": [
+            "father, mother, sisters, baby, brother",
+            "only friends",
+            "only animals",
+            "only teachers"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "title": "Family at the Zoo",
+      "type": "story",
+      "src": "PDF tr.102",
+      "text": "I like to go to the zoo.\nMy family likes to go to the zoo.\n\nWe see the animals play.\nWe see the birds sing.\n\nI see a bear sleeping on the grass.\nMy family sees a bear playing with a ball.\n\nMy father sees a gorilla sitting on a rock.\nMy mother sees a baby gorilla.\n\nMy sister sees a panda under a tree.\nThe girls like the pandas.\n\nMy brother sees a tiger in the grass.\nThe boys like tigers.\n\nI see a father lion.\nI see a mother lion.\nDo you see the baby lion?\n\nSee the family of hippos!\nThe hippos walk in a circle.\n\nMy family has fun at the zoo.\nThe animals have fun at the zoo.\n\nWe say “Goodbye” to the zoo!\n\nThe End",
+      "qs": [
+        {
+          "q": "Where does the family go?",
+          "options": [
+            "to the zoo",
+            "to school",
+            "to the park",
+            "to the house"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What does the sister see?",
+          "options": [
+            "a panda under a tree",
+            "a tiger",
+            "a bird",
+            "a snake"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What do the boys like?",
+          "options": [
+            "tigers",
+            "pandas",
+            "birds",
+            "hippos"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "How do the hippos walk?",
+          "options": [
+            "in a circle",
+            "fast",
+            "slowly",
+            "under the tree"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What do they say at the end?",
+          "options": [
+            "Goodbye",
+            "Hello",
+            "Thank you",
+            "Yes"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "title": "Mouse in the Barn",
+      "type": "story",
+      "src": "PDF tr.104",
+      "text": "In the box.\nOut of the box.\nThrough the hole.\n\nDown the tree.\nAround the rock.\nThrough the trees.\n\nAround the snake.\nThrough the grass.\nUp the steps.\nTo the door.\nAt the door.\n\nUnder the door.\nOver the toys.\n\nUp the chair.\nOn the table.\n\nMeeeeeooow!\n\nOff the table.\nOff the chair.\nOn the floor.\nOver the toys.\nUnder the door.\n\nDown the steps.\nThrough the grass.\nAround the snake.\n\nThrough the trees.\nAround the rock.\nUp the tree.\n\nThrough the hole.\nIn the box!\n\nThe End",
+      "qs": [
+        {
+          "q": "Where does the mouse go first?",
+          "options": [
+            "In the box",
+            "On the table",
+            "Up the tree",
+            "Under the door"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What sound do we hear?",
+          "options": [
+            "Meeeeeooow!",
+            "Hello",
+            "Goodbye",
+            "Jump"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Where does the mouse go at the end?",
+          "options": [
+            "In the box!",
+            "On the floor",
+            "Up the chair",
+            "Around the snake"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "title": "Jonny Bear “This Is Me!”",
+      "type": "storydict",
+      "src": "PDF tr.106",
+      "text": "Hello! I am Jonny Bear!\n\nThis is my family.\n\nThis is my father.\nMy father is big.\n\nThis is my mother.\n\nThis is my big brother.\nThis is my little sister, Jenny.\n\nThis is the baby, Teddy Bear.\n\nThis is my big sister.\n\nThis is my grandfather,\nand this is my grandmother.\nThey like to play with me.\n\nAnd this is me!\n\nI love my family!",
+      "qs": [
+        {
+          "q": "What is the bear’s name?",
+          "options": [
+            "Jonny Bear",
+            "Teddy Bear",
+            "Arty",
+            "Jenny"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Is the father big?",
+          "options": [
+            "Yes",
+            "No",
+            "Small",
+            "Little"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Who is Jenny?",
+          "options": [
+            "little sister",
+            "big brother",
+            "baby",
+            "grandmother"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What do grandfather and grandmother like?",
+          "options": [
+            "to play with him",
+            "to sleep",
+            "to run",
+            "to fly"
+          ],
+          "answer": 0
+        }
+      ]
+    }
+  ],
+  "dialogs": [
+    {
+      "q": "Do you see a panda?",
+      "a": "Yes, I do."
+    },
+    {
+      "q": "Is the father big?",
+      "a": "Yes, he is."
+    },
+    {
+      "q": "Do you like animals?",
+      "a": "Yes, I do."
+    },
+    {
+      "q": "Can you jump?",
+      "a": "Yes, I can."
+    },
+    {
+      "q": "Is the mother small?",
+      "a": "Yes, she is."
+    },
+    {
+      "q": "Do you want to play?",
+      "a": "Yes, I do."
+    },
+    {
+      "q": "Can the bird fly?",
+      "a": "Yes, it can."
+    },
+    {
+      "q": "Is the baby little?",
+      "a": "Yes, it is."
+    }
+  ],
+  "riddles": [
+    {
+      "clue": "It is big and gray. It has a long nose. It lives in the zoo.",
+      "answer": "elephant"
+    },
+    {
+      "clue": "It is black and white. It eats bamboo. It is cute.",
+      "answer": "panda"
+    },
+    {
+      "clue": "It hops. It has long ears. It likes carrots.",
+      "answer": "rabbit"
+    },
+    {
+      "clue": "It is the king of animals. It has a mane. It roars.",
+      "answer": "lion"
+    },
+    {
+      "clue": "It swings in trees. It likes bananas. It is funny.",
+      "answer": "monkey"
+    },
+    {
+      "clue": "It is long and green. It slides. It has no legs.",
+      "answer": "snake"
+    },
+    {
+      "clue": "You can see many animals here. Lions, tigers and bears live here.",
+      "answer": "zoo"
+    },
+    {
+      "clue": "He is big. He is the father in the family.",
+      "answer": "father"
+    }
+  ],
+  "cloze": [
+    {
+      "s": "I see a ___.",
+      "a": "panda"
+    },
+    {
+      "s": "The bear is jumping over a ___.",
+      "a": "rock"
+    },
+    {
+      "s": "The bird is flying in the ___.",
+      "a": "sky"
+    },
+    {
+      "s": "My father is ___.",
+      "a": "big"
+    },
+    {
+      "s": "My mother is ___.",
+      "a": "small"
+    },
+    {
+      "s": "The monkey plays with a ___.",
+      "a": "ball"
+    },
+    {
+      "s": "I like to go to the ___.",
+      "a": "zoo"
+    },
+    {
+      "s": "The hippos walk in a ___.",
+      "a": "circle"
+    }
+  ],
+  "order": [
+    "I see a panda.",
+    "The panda sees a bear.",
+    "The bear is jumping over a rock.",
+    "This is my father.",
+    "This is my mother.",
+    "I love my family!"
+  ],
+  "write": [
+    {
+      "q": "What do you see?",
+      "model": "I see a panda."
+    },
+    {
+      "q": "Is your father big?",
+      "model": "Yes, he is."
+    },
+    {
+      "q": "Do you like the zoo?",
+      "model": "Yes, I do."
+    },
+    {
+      "q": "Can a bird fly?",
+      "model": "Yes, it can."
+    },
+    {
+      "q": "What is this?",
+      "model": "This is my family."
+    }
+  ]
+}

@@ -1,296 +1,1042 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="robots" content="noindex, nofollow">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#2F6BFF">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Grapeseed</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F2F7FF;--card:#fff;--ink:#1E2A44;--sub:#5B6784;--blue:#2F6BFF;--blue-t:#fff;--blue-bg:#E3ECFF;--sun:#FFC93C;--ok:#1E9E62;--ok-bg:#D8F5E6;--bad:#D6335A;--bad-bg:#FFE0E8;--line:#D5E0F5;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121A2C;--card:#1B2640;--ink:#EEF3FF;--sub:#A5B1CF;--blue:#6C93FF;--blue-t:#0E1730;--blue-bg:#22335C;--ok:#5EDB9F;--ok-bg:#16402E;--bad:#FF7C9A;--bad-bg:#4A1F2C;--line:#2C3B5F;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#121A2C;--card:#1B2640;--ink:#EEF3FF;--sub:#A5B1CF;--blue:#6C93FF;--blue-t:#0E1730;--blue-bg:#22335C;--ok:#5EDB9F;--ok-bg:#16402E;--bad:#FF7C9A;--bad-bg:#4A1F2C;--line:#2C3B5F;color-scheme:dark}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Baloo 2",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:18px;line-height:1.35}
-main{max-width:520px;margin:0 auto;padding:16px 16px 40px}
-h1{font-size:28px;font-weight:800;margin:6px 0 10px}
-h2{font-size:22px;font-weight:800;margin:18px 0 4px}
-p{margin:0 0 8px;color:var(--sub)}
-button{font:inherit;cursor:pointer;border:0;border-radius:16px;padding:12px 14px;color:var(--ink);background:var(--card);box-shadow:inset 0 0 0 2px var(--line);min-height:50px;text-align:left}
-button:active{transform:scale(.98)}
-button:disabled{opacity:.45;cursor:default}
-button:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-.primary{background:var(--blue);color:var(--blue-t);font-weight:700;box-shadow:none;text-align:center;width:100%}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.tab{text-align:center;font-weight:700;padding:10px 4px}
-.tab.on{background:var(--ink);color:var(--bg);box-shadow:none}
-.ulist{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px;padding:12px;background:var(--card);border-radius:18px;box-shadow:inset 0 0 0 2px var(--line)}
-.ulist button{text-align:center;padding:8px 0;min-height:48px;font-weight:700}
-.ulist button.has{box-shadow:inset 0 0 0 2px var(--blue)}
-.ulist button.sel{background:var(--blue);color:var(--blue-t);box-shadow:none}
-.ulist button.empty{opacity:.45}
-.tests{display:grid;gap:10px;margin-top:10px}
-.test{display:flex;align-items:center;gap:14px;padding:14px 16px}
-.test .i{font-size:32px}
-.test b{font-size:20px;display:block}
-.test small{color:var(--sub);font-size:15px;display:block;line-height:1.25}
-.top{display:flex;justify-content:space-between;align-items:center;color:var(--sub)}
-.top button{min-height:40px;padding:6px 14px}
-.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0 12px}
-.bar i{display:block;height:100%;background:var(--sun);transition:width .3s}
-.tt{font-size:15px;font-weight:700;color:var(--blue);margin:0 0 6px}
-.word{font-size:54px;font-weight:800;text-align:center;margin:4px 0 0;word-break:break-word}
-.ipa{text-align:center;color:var(--sub);font-size:21px;margin-bottom:4px}
-.qtxt{font-size:22px;font-weight:700;margin:6px 0 12px}
-.aud{display:flex;gap:8px;justify-content:center;margin:8px 0 14px}
-.aud button{border-radius:999px;padding:8px 18px;min-height:44px;text-align:center}
-.pass{background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:inset 0 0 0 2px var(--line);margin-bottom:6px;font-size:19px;white-space:pre-line;max-height:34vh;overflow:auto}
-.vc{margin-top:22px;padding:14px;background:var(--card);border-radius:16px;box-shadow:inset 0 0 0 2px var(--line)}
-.vc b{font-size:19px}
-.vc p{font-size:15px;margin:2px 0 8px}
-.vc select{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);margin-bottom:8px}
-.pass b{display:block;margin-bottom:2px}
-.opts{display:grid;gap:10px}
-.opts button{font-size:20px;font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.opts small{display:block;color:var(--sub);font-size:15px}
-.opts button.pick{background:var(--blue-bg);box-shadow:inset 0 0 0 3px var(--blue)}
-.opts button.ok{background:var(--ok-bg);box-shadow:inset 0 0 0 3px var(--ok)}
-.opts button.no{background:var(--bad-bg);box-shadow:inset 0 0 0 3px var(--bad)}
-.mk{font-size:28px;font-weight:800}
-input[type=text]{width:100%;font:inherit;font-size:28px;text-align:center;padding:14px;border-radius:16px;border:2px solid var(--line);background:var(--card);color:var(--ink);margin:6px 0 4px}
-.blank{font-size:26px;text-align:center;margin:12px 0;font-weight:700}
-.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:60px;padding:8px;border-radius:14px;margin:8px 0;background:var(--card);box-shadow:inset 0 0 0 2px var(--line)}
-.chips button{min-height:44px;padding:6px 14px;text-align:center;font-weight:700}
-.chips.ans{background:var(--blue-bg)}
-.fb{display:flex;align-items:center;gap:12px;border-radius:16px;padding:10px 16px;margin:12px 0;font-weight:700}
-.fb .mk{font-size:34px}
-.fb.ok{background:var(--ok-bg);color:var(--ok)}
-.fb.no{background:var(--bad-bg);color:var(--bad)}
-.live{color:var(--sub);font-size:15px}
-.score{font-size:64px;font-weight:800;text-align:center;margin:4px 0 0}
-.sc2{text-align:center;color:var(--sub);margin-bottom:14px}
-.rv{display:grid;gap:6px;margin:10px 0 16px}
-.rv div{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:6px 12px;box-shadow:inset 0 0 0 2px var(--line)}
-.rv .y{color:var(--ok)}.rv .n{color:var(--bad)}
-.rv span.m{font-size:24px;font-weight:800;width:28px}
-.stack{display:grid;gap:10px;margin-top:10px}
-.empty-msg{background:var(--card);border-radius:16px;padding:16px;margin-top:10px;box-shadow:inset 0 0 0 2px var(--line);color:var(--sub)}
+:root {
+  --bg: #F2F7FF;
+  --card: #FFFFFF;
+  --primary: #2F6BFF;
+  --primary-dark: #1E4FCC;
+  --text: #16284A;
+  --muted: #5A6B8C;
+  --ok: #1B8F5A;
+  --ok-bg: #E1F5EA;
+  --bad: #C2410C;
+  --bad-bg: #FDEBDD;
+  --border: #D6E0F5;
+  --shadow: 0 4px 14px rgba(47,107,255,.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0F172A;
+    --card: #1E293B;
+    --primary: #60A5FA;
+    --primary-dark: #3B82F6;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --ok: #34D399;
+    --ok-bg: #064E3B;
+    --bad: #F97316;
+    --bad-bg: #7C2D12;
+    --border: #334155;
+    --shadow: 0 4px 14px rgba(0,0,0,.4);
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+button:focus-visible, a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+.app { max-width: 520px; margin: 0 auto; min-height: 100%; padding-bottom: 40px; }
+.header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg); padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.header h1 { font-size: 1.15rem; font-weight: 800; flex: 1; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 18px; border-radius: 14px; font-weight: 700; font-size: 1rem;
+  transition: transform .15s, background .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-ghost { background: var(--card); color: var(--text); border: 1.5px solid var(--border); }
+.btn-lg { padding: 16px 22px; font-size: 1.1rem; width: 100%; }
+.btn-listen {
+  background: linear-gradient(135deg, #2F6BFF, #7C3AED);
+  color: #fff; width: 100%; padding: 16px; border-radius: 16px; font-size: 1.15rem;
+}
+.card {
+  background: var(--card); border-radius: 18px; padding: 18px;
+  box-shadow: var(--shadow); border: 1px solid var(--border);
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.muted { color: var(--muted); font-size: .9rem; }
+.hidden { display: none !important; }
+.screen { padding: 16px; }
+.unit-list { display: flex; flex-direction: column; gap: 10px; }
+.unit-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px; border-radius: 16px; background: var(--card);
+  border: 1.5px solid var(--border); text-align: left; width: 100%;
+  box-shadow: var(--shadow);
+}
+.unit-btn .num {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+}
+.word-card {
+  text-align: center; padding: 24px 16px;
+}
+.word-card .emoji { font-size: 64px; line-height: 1; margin-bottom: 8px; }
+.word-card .en { font-size: 1.8rem; font-weight: 800; }
+.word-card .ipa { color: var(--muted); font-size: 1rem; margin: 4px 0; }
+.word-card .vi { font-size: 1.15rem; margin-top: 6px; }
+.passage-line {
+  padding: 12px 14px; border-radius: 12px; margin-bottom: 6px;
+  background: var(--bg); border: 1px solid transparent; cursor: pointer;
+}
+.passage-line:hover, .passage-line.active { border-color: var(--primary); background: #E8F0FF; }
+@media (prefers-color-scheme: dark) {
+  .passage-line:hover, .passage-line.active { background: #1E3A5F; }
+}
+.progress-bar {
+  height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 8px 0 16px;
+}
+.progress-bar > div { height: 100%; background: var(--primary); transition: width .3s; }
+.opt {
+  display: block; width: 100%; text-align: left;
+  padding: 14px 16px; border-radius: 14px; margin-bottom: 10px;
+  background: var(--card); border: 2px solid var(--border); font-weight: 600;
+}
+.opt.correct { border-color: var(--ok); background: var(--ok-bg); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.opt-img {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 14px 8px; border-radius: 14px; border: 2px solid var(--border);
+  background: var(--card); text-align: center;
+}
+.opt-img .emoji { font-size: 42px; }
+.opt-img .en { font-weight: 700; font-size: .95rem; }
+.opt-img .ipa { font-size: .75rem; color: var(--muted); }
+.opt-img.correct { border-color: var(--ok); background: var(--ok-bg); }
+.opt-img.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.feedback { margin: 12px 0; font-weight: 700; min-height: 28px; }
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+.nav-tabs {
+  display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-tabs button {
+  flex-shrink: 0; padding: 10px 14px; border-radius: 999px;
+  background: var(--card); border: 1.5px solid var(--border); font-weight: 700; font-size: .9rem;
+}
+.nav-tabs button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.status-voice {
+  font-size: .8rem; padding: 6px 12px; border-radius: 8px;
+  background: var(--ok-bg); color: var(--ok); margin-bottom: 12px;
+}
+.status-voice.warn { background: var(--bad-bg); color: var(--bad); }
+.status-voice.loading { background: #FEF3C7; color: #B45309; }
+.section-title { font-size: 1.05rem; font-weight: 800; margin: 16px 0 10px; }
+.check-list { font-size: .85rem; }
+.check-list li { margin-bottom: 4px; }
+.chip {
+  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  background: var(--border); font-size: .8rem; margin: 2px;
+}
 </style>
 </head>
 <body>
-<main id="app"></main>
+<div class="app" id="app">
+  <div id="view"></div>
+</div>
+
 <script>
-var APP_VERSION="v0.12";
-var AUDIO={};
-var N_VOCAB=20,N_LISTEN=20,N_SPELL=8,N_CLOZE=6,N_ORDER=6;
-/* ===== DỮ LIỆU UNIT: thêm unit mới chỉ cần thêm một khối vào đây =====
- words: [tiếng Anh, nghĩa tiếng Việt, emoji, phiên âm]
- passages: bài đọc, mỗi câu hỏi: [câu hỏi, [4 đáp án], vị trí đáp án đúng bắt đầu từ 0]
- cloze: [câu có ___, từ cần điền]   order: các câu để sắp xếp */
-var UNITS={
-1:{title:"Family, Friends & Animals",audio:"audio/u1.json",
-words:[
-["family","gia đình","👪","/ˈfæməli/"],["father","bố","👨","/ˈfɑːðər/"],["mother","mẹ","👩","/ˈmʌðər/"],["brother","anh/em trai","👦","/ˈbrʌðər/"],["sister","chị/em gái","👧","/ˈsɪstər/"],["baby","em bé","👶","/ˈbeɪbi/"],["grandmother","bà","👵","/ˈɡrænmʌðər/"],["grandfather","ông","👴","/ˈɡrænfɑːðər/"],["friend","bạn","🤝","/frend/"],["teacher","giáo viên","🧑‍🏫","/ˈtiːtʃər/"],["boys","các bạn nam","👦","/bɔɪz/"],["girls","các bạn nữ","👧","/ɡɜːrlz/"],
-["animals","các con vật","🐾","/ˈænɪməlz/"],["alligator","cá sấu","🐊","/ˈælɪɡeɪtər/"],["bear","con gấu","🐻","/ber/"],["bird","con chim","🐦","/bɜːrd/"],["elephant","con voi","🐘","/ˈelɪfənt/"],["giraffe","hươu cao cổ","🦒","/dʒəˈræf/"],["gorilla","khỉ đột","🦍","/ɡəˈrɪlə/"],["hippo","hà mã","🦛","/ˈhɪpoʊ/"],["kangaroo","chuột túi","🦘","/ˌkæŋɡəˈruː/"],["lion","sư tử","🦁","/ˈlaɪən/"],["monkey","con khỉ","🐒","/ˈmʌŋki/"],["panda","gấu trúc","🐼","/ˈpændə/"],["rabbit","con thỏ","🐰","/ˈræbɪt/"],["snake","con rắn","🐍","/sneɪk/"],["tiger","con hổ","🐯","/ˈtaɪɡər/"],["turtle","con rùa","🐢","/ˈtɜːrtl/"],["zebra","ngựa vằn","🦓","/ˈziːbrə/"],["zoo","sở thú","🏞️","/zuː/"],
-["crawl","bò","🐛","/krɔːl/"],["climb","leo","🧗","/klaɪm/"],["dance","nhảy múa","💃","/dæns/"],["fly","bay","🕊️","/flaɪ/"],["hop","nhảy lò cò","🐇","/hɑːp/"],["jump","nhảy","🤸","/dʒʌmp/"],["play","chơi","🎮","/pleɪ/"],["run","chạy","🏃","/rʌn/"],["sing","hát","🎤","/sɪŋ/"],["sit","ngồi","🪑","/sɪt/"],["sleep","ngủ","😴","/sliːp/"],["stand","đứng","🧍","/stænd/"],["walk","đi bộ","🚶","/wɔːk/"],["come","đến","👋","/kʌm/"],["go","đi","➡️","/ɡoʊ/"],["stop","dừng lại","✋","/stɑːp/"],
-["ball","quả bóng","⚽","/bɔːl/"],["chair","cái ghế","🪑","/tʃer/"],["floor","sàn nhà","▫️","/flɔːr/"],["grass","cỏ","🌱","/ɡræs/"],["hands","đôi tay","🙌","/hændz/"],["house","ngôi nhà","🏠","/haʊs/"],["rock","hòn đá","🪨","/rɑːk/"],["tree","cái cây","🌳","/triː/"],["steps","bậc thang","🪜","/steps/"],["over","bên trên","","/ˈoʊvər/"],["under","bên dưới","","/ˈʌndər/"],["up","lên","","/ʌp/"],["down","xuống","","/daʊn/"],["big","to","","/bɪɡ/"],["small","nhỏ","","/smɔːl/"],["tall","cao","","/tɔːl/"],["short","thấp/ngắn","","/ʃɔːrt/"],["fast","nhanh","","/fæst/"],["slow","chậm","","/sloʊ/"]
-],
-passages:[
-{title:"Animals Play",text:"The bird flies in the sky.\nThe bird sits in the tree.\n\nThe monkey climbs in the tree.\nThe monkey plays with a ball.\n\nThe rabbit hops to the rock.\nThe rabbit plays with a friend.\n\nThe kangaroo jumps over the rock.\nThe kangaroo sits on the rock.\n\nThe hippopotamus sleeps under the tree.\nThe hippopotamus steps over the turtle.\n\nThe turtle sleeps on a rock.\nThe turtle crawls under the rock.\n\nThe alligator crawls on a rock.\nThe alligator sits with the snake.\n\nThe giraffe runs in the grass.\nThe giraffe steps over the tree.\n\nI like animals.\n(I like them all.)",
-qs:[["Where does the bird sit?",["In the tree","On the rock","Under the tree","In the grass"],0],["What does the monkey play with?",["A ball","A friend","A rock","A snake"],0],["Where does the hippopotamus sleep?",["Under the tree","On a rock","In the grass","In the sky"],0],["Who sits with the snake?",["The alligator","The turtle","The giraffe","The rabbit"],0],["Where does the giraffe run?",["In the grass","In the tree","On the rock","In the sky"],0]]},
-{title:"What Do You See?",text:"What do you see?\nI see a panda.\nThe panda sees a bear.\nThe bear is jumping over a rock.\n\nI see a bear.\nThe bear sees a gorilla.\nThe gorilla is swinging in a tree.\n\nI see a gorilla.\nThe gorilla sees a bird.\nThe bird is flying in the sky.\n\nI see a bird.\nThe bird sees a tiger.\nThe tiger is running in the grass.\n\nI see a tiger.\nThe tiger sees a snake.\nThe snake is sliding down a tree.\n\nI see a snake.\nThe snake sees a girl.\nThe girl is sitting on a rock.\n\nLittle girl, little girl, what do you see?\nI see a girl looking back at me.",
-qs:[["What does the panda see?",["A bear","A tiger","A bird","A snake"],0],["What is the gorilla doing?",["Swinging in a tree","Jumping over a rock","Running in the grass","Flying in the sky"],0],["Who is running in the grass?",["The tiger","The bear","The snake","The bird"],0],["Where is the girl sitting?",["On a rock","In a tree","In the grass","Under the tree"],0]]},
-{title:"Family and Friends",text:"This is my family.\nThis is my father.\nThis is my mother.\nMy father is big.\nMy mother is small.\n\nThese are my sisters.\nAnd this is the baby.\nThis is my brother, and this is me.\n\nThis is my friend.\nHis name is Ollie.\nOllie has a toy, a big red ball.\n\nThese are my friends.\nWe play and we run.\nThese are my friends.\nWe jump and we swing.",
-qs:[["Who is big?",["My father","My mother","My brother","The baby"],0],["What is the name of the friend?",["Ollie","Jonny","Jenny","Teddy"],0],["What does Ollie have?",["A big red ball","A big blue ball","A little teddy bear","A red tree"],0],["What do the friends do?",["They play and run","They sleep and sit","They sing and dance","They climb and fly"],0]]},
-{title:"Family at the Zoo",text:"I like to go to the zoo.\nMy family likes to go to the zoo.\nWe see the animals play.\nWe see the birds sing.\n\nI see a bear sleeping on the grass.\nMy family sees a bear playing with a ball.\n\nMy mother sees a baby gorilla.\nMy sister sees a panda under a tree.\nThe girls like the pandas.\n\nMy brother sees a tiger in the grass.\nThe boys like tigers.",
-qs:[["What does the family like to do?",["Go to the zoo","Sleep on the grass","Play with a ball","Run in the house"],0],["Who sees a baby gorilla?",["My mother","My sister","My brother","My father"],0],["Where is the panda?",["Under a tree","In the grass","On a rock","In the sky"],0],["Who likes tigers?",["The boys","The girls","The baby","My mother"],0]]},
-{title:"Jonny Bear - This Is Me",text:"Hello.\nI am Jonny Bear.\n\nThis is my family.\n\nThis is my father.\nMy father is big.\n\nThis is my mother.\n\nThis is my big brother.\n\nThis is my little sister, Jenny.\n\nThis is the baby teddy bear.\n\nThis is my big sister.\n\nThis is my grandfather.\nAnd this is my grandmother.\n\nThey like to play with me.\n\nAnd this is me.\nI love my family.",
-qs:[["What is the name of the bear?",["Jonny","Ollie","Ted","Jenny"],0],["Who is Jenny?",["His little sister","His big sister","His mother","His grandmother"],0],["Who does Jonny love?",["His family","His friends","The animals","His toy"],0]]}
-],
-cloze:[["This is my mother. My ___ is small.","mother"],["This is my ___. He is big.","father"],["I see a big gray animal. It is an ___.","elephant"],["The monkey can ___ the tree.","climb"],["Look! The rabbit can ___.","hop"],["Stand up! ___ down!","sit"],["I see a black and white animal. It is a ___.","zebra"],["The bear plays with a ___.","ball"]],
-order:["This is my family.","My father is big.","I see a tiger.","We see the animals play.","The monkey can climb.","My mother is small.","We go to the zoo."]
-},
-2:{"title": "Clothes, Body Parts & Daily Actions", "audio": "audio/u2.json", "words": [["shirt", "áo sơ mi", "👕", "/ʃɜːrt/"], ["pants", "quần dài", "👖", "/pænts/"], ["shorts", "quần short", "🩳", "/ʃɔːrts/"], ["skirt", "chân váy", "", "/skɜːrt/"], ["dress", "váy liền", "👗", "/dres/"], ["sweater", "áo len", "🧶", "/ˈswetər/"], ["sweatshirt", "áo nỉ", "", "/ˈswetʃɜːrt/"], ["pajamas", "đồ ngủ", "", "/pəˈdʒɑːməz/"], ["socks", "tất", "🧦", "/sɑːks/"], ["shoes", "giày", "👟", "/ʃuːz/"], ["boots", "ủng", "🥾", "/buːts/"], ["hat", "mũ", "🎩", "/hæt/"], ["cap", "mũ lưỡi trai", "🧢", "/kæp/"], ["glasses", "kính", "👓", "/ˈɡlæsɪz/"], ["umbrella", "cái ô", "☂️", "/ʌmˈbrelə/"], ["button", "cúc áo", "🔘", "/ˈbʌtn/"], ["zipper", "khóa kéo", "", "/ˈzɪpər/"], ["pocket", "túi áo", "", "/ˈpɑːkɪt/"], ["underwear", "đồ lót", "", "/ˈʌndərwer/"], ["head", "cái đầu", "", "/hed/"], ["hair", "tóc", "", "/her/"], ["face", "khuôn mặt", "🙂", "/feɪs/"], ["eyes", "đôi mắt", "👀", "/aɪz/"], ["ears", "đôi tai", "👂", "/ɪrz/"], ["nose", "cái mũi", "👃", "/noʊz/"], ["cheeks", "đôi má", "", "/tʃiːks/"], ["chin", "cái cằm", "", "/tʃɪn/"], ["mouth", "cái miệng", "👄", "/maʊθ/"], ["lips", "đôi môi", "", "/lɪps/"], ["tooth", "một cái răng", "🦷", "/tuːθ/"], ["teeth", "những cái răng", "🦷", "/tiːθ/"], ["shoulders", "đôi vai", "", "/ˈʃoʊldərz/"], ["arms", "hai cánh tay", "💪", "/ɑːrmz/"], ["hands", "đôi tay", "🙌", "/hændz/"], ["fingers", "các ngón tay", "☝️", "/ˈfɪŋɡərz/"], ["stomach", "cái bụng", "", "/ˈstʌmək/"], ["legs", "đôi chân (cẳng chân)", "🦵", "/leɡz/"], ["foot", "một bàn chân", "🦶", "/fʊt/"], ["feet", "hai bàn chân", "🦶", "/fiːt/"], ["toes", "các ngón chân", "", "/toʊz/"], ["wash", "rửa", "🧼", "/wɑːʃ/"], ["brush", "chải, đánh (răng)", "🪥", "/brʌʃ/"], ["comb", "chải tóc, cái lược", "", "/koʊm/"], ["eat", "ăn", "🍽️", "/iːt/"], ["swim", "bơi", "🏊", "/swɪm/"], ["march", "đi đều", "", "/mɑːrtʃ/"], ["skip", "nhảy chân sáo", "", "/skɪp/"], ["stomp", "dậm chân", "", "/stɑːmp/"], ["pat", "vỗ nhẹ", "", "/pæt/"], ["point", "chỉ", "👉", "/pɔɪnt/"], ["rub", "xoa", "", "/rʌb/"], ["touch", "chạm", "", "/tʌtʃ/"], ["wiggle", "ngọ nguậy", "", "/ˈwɪɡl/"], ["open", "mở", "", "/ˈoʊpən/"], ["close", "đóng", "", "/kloʊz/"], ["in", "bên trong", "", "/ɪn/"], ["out", "bên ngoài", "", "/aʊt/"], ["bed", "cái giường", "🛏️", "/bed/"], ["toothbrush", "bàn chải đánh răng", "🪥", "/ˈtuːθbrʌʃ/"], ["toothpaste", "kem đánh răng", "", "/ˈtuːθpeɪst/"], ["doll", "búp bê", "🪆", "/dɑːl/"], ["toys", "đồ chơi", "🧸", "/tɔɪz/"], ["food", "thức ăn", "🍲", "/fuːd/"], ["fish", "con cá", "🐟", "/fɪʃ/"], ["sky", "bầu trời", "🌤️", "/skaɪ/"], ["worm", "con giun", "🪱", "/wɜːrm/"], ["long", "dài", "", "/lɔːŋ/"], ["short", "ngắn, thấp", "", "/ʃɔːrt/"]], "passages": [{"title": "Too Big, Too Small", "text": "Little monkey goes for a walk.\n\nHello, Mr. Bear.\nYou have a nice shirt, but I cannot wear it.\nYour stomach is too big.\n\nHello, Mrs. Hippopotamus.\nYou have a nice sweater, but I cannot wear it.\nYour shoulders are too big.\n\nHello, Mr. Elephant.\nYou have a nice cap, but I cannot wear it.\nYour head is too big.\n\nHello, Miss Turtle.\nYou have a nice hat, but I cannot wear it.\nYour head is too small.\n\nHello, Mr. Lion.\nYou have nice shoes, but I cannot wear them.\nYour feet are too long.\n\nHello, Miss Gorilla.\nYou have nice socks, but I cannot wear them.\nYour toes are too long.\n\nHello, Mr. Zebra.\nYou have a nice sweatshirt, but I cannot wear it.\nYour arms are too long.\n\nHello, Miss Giraffe.\nYou have nice pajamas, but I cannot wear them.\nYour legs are too long.\n\nHello, Mr. Duck.\nYou have nice pants, but I cannot wear them.\nYour legs are too short.\n\nI like my shirt, said Little Monkey.\nI like my shorts.\nMy mother made them just for me.", "qs": [["Why can Little Monkey not wear Mr. Bear’s shirt?", ["His stomach is too big", "His legs are too long", "His head is too small", "His feet are too long"], 0], ["What does Mr. Elephant have?", ["A cap", "A hat", "Pajamas", "Socks"], 0], ["Who has nice pajamas?", ["Miss Giraffe", "Mr. Zebra", "Mr. Lion", "Miss Turtle"], 0], ["Whose head is too small?", ["Miss Turtle", "Mr. Elephant", "Mr. Bear", "Mr. Lion"], 0], ["Who made Little Monkey’s shorts?", ["His mother", "His father", "Mr. Duck", "Mr. Bear"], 0]]}, {"title": "What Can You Do?", "text": "Hello, zebra.\nWhat can you do?\nCan you play with a ball?\n(No.)\n\nHello, giraffe.\nWhat can you do?\nCan you fly with the birds?\n(No.)\n\nHello, turtle.\nWhat can you do?\nCan you climb with the monkeys?\n(No.)\n\nHello, hippo.\nWhat can you do?\nCan you jump with the kangaroos?\n(No.)\n\nHello, lion.\nWhat can you do?\nCan you sit and play with me?\n(Yes.)\n\nHello, panda.\nWhat can you do?\nCan you dance and sing with me?\n(Yes.)\n\nLittle boy, little girl,\nWhat can you do?", "qs": [["Who can sit and play with me?", ["The lion", "The zebra", "The giraffe", "The turtle"], 0], ["Who can dance and sing with me?", ["The panda", "The hippo", "The zebra", "The turtle"], 0], ["Which animal is asked to fly with the birds?", ["The giraffe", "The turtle", "The zebra", "The hippo"], 0]]}, {"title": "A Mother Who Lives in a Boot", "text": "I know a mother who lives in a boot\nWith buttons all over her floor.\nShe uses an umbrella to keep her dry\nAnd a zipper that zips for a door.\n\nShe keeps her food in seven blue shoes.\nShe eats with a spoon from a cap.\nShe keeps her water in black and white shorts.\nShe drinks from a very tall hat.\n\nShe wears a sweater made with a string.\nShe wears a black thing on her nose.\nHer chair is a sweatshirt that looks like a swing.\nShe wears socks with ten little toes.\n\nShe has a girl who wears a long dress\nAnd over her dress is a skirt.\nShe has a boy.\nHe likes short pants\nAnd pockets all over his shirt.\n\nShe goes for a walk in her long pajamas.\nShe has a green comb on her head.\nHer hair is long and so is her chin.\nHer nose and her cheeks are red.\n\nI know a mother who lives in a boot.", "qs": [["Where does the mother live?", ["In a boot", "In a hat", "In a sock", "In a shoe"], 0], ["What does she use to keep dry?", ["An umbrella", "A hat", "A sweater", "A zipper"], 0], ["What is her door?", ["A zipper", "A button", "An umbrella", "A shoe"], 0], ["Where does she keep her food?", ["In seven blue shoes", "In a green cap", "In black socks", "In a red hat"], 0], ["What color is the comb on her head?", ["Green", "Red", "Blue", "Black"], 0]]}, {"title": "Jonny Bear Goes to the Zoo", "text": "My name is Jonny Bear.\nThis is my family.\nAnd this is our baby bear.\nI love my family and they love me.\n\nJonny: Let’s go to the zoo!\nI want to see our animal friends today.\nOur friends will be happy and we will have fun too.\n\nFather, can we go to the zoo, please?\nFather: Yes, you can go.\nJonny: Thank you, Father.\n\nJonny and his brother go to the zoo.\nBrother Bear stands in line with the boys and girls.\n\nGood morning, Brother Bear. How are you today?\nBrother Bear: I am fine, thank you.\n\nHello, animals!\nDo you want to come out and play?\nOh yes, they do!\n\nHello, little monkey.\nPlease come down and play with us.\nCome here. Let’s sing and dance.\n\nWhere are the zebras?\nOh, there you are!\nRun, zebras, run fast!\nThen come and play with us.\n\nWake up, lion and tiger!\nDo you want to play?\nNo, they do not want to play.\nThey want to sleep.\n\nLook! The small panda likes to sit in his chair.\nHello, small panda. You are so cute!\n\nThe rabbit can jump over you.\nDo not let the birds…\nOuch! They will fly up and fly away.\n\nDo not let an alligator…\nOuch! He will crawl through the grass and he will not come back.\n\nDo not let a snake…\nOuch! He will crawl away under the rock.\n\nHello, big elephant.\nCan you wave your trunk?\n\nHello, animals!\nDo you want to come with us?\n\nWhat can we do?\nOh, I know!\nI will be your teacher.\nLet’s all stand in a line.\n\nNow let’s walk through the zoo.\nTake one step… now two… three… four…\n\nDo you know how to fly like a bird?\nNow hop like a rabbit.\nClimb like a monkey.\nNow turn around and clap your hands.\nJump like a kangaroo… and stop!\n\nJonny: Let’s dance and sing!\nYes, let’s all stand in a circle.\n\nI’m happy to be at the zoo.\nI’m happy to be here with you.\nWe sing and we dance.\nWe like to do the things that we do at the zoo.\nI’m happy to have friends like you.\nI’m happy to have friends like you.\n\nIt’s time to go home.\nGoodbye, friends!", "qs": [["Who goes to the zoo with Jonny?", ["His brother", "His sister", "His mother", "His grandfather"], 0], ["What does Jonny say to his father?", ["Thank you, Father", "Good night, Father", "I am sorry", "Goodbye"], 0], ["What do the lion and the tiger want to do?", ["Sleep", "Dance", "Run", "Sing"], 0], ["Where does the small panda sit?", ["In his chair", "On a rock", "Under a tree", "In the grass"], 0], ["What can the rabbit do?", ["Jump over you", "Fly up", "Climb a tree", "Sing"], 0], ["Who will be the teacher?", ["Jonny", "Brother Bear", "The panda", "The lion"], 0], ["What does Jonny say at the end?", ["Goodbye, friends!", "Good morning", "Thank you", "Wake up"], 0]]}], "cloze": [["Hats and caps go on my ___.", "head"], ["Shoes and socks go on my ___.", "feet"], ["Pants go on my ___.", "legs"], ["I have two ___ and two ears.", "eyes"], ["I ___ my teeth with a toothbrush.", "brush"], ["I ___ my hands with water.", "wash"], ["Thank you. You are ___.", "welcome"], ["It is rainy. I use an ___.", "umbrella"]], "order": ["I am wearing a shirt.", "Your shoulders are too big.", "Hats and caps go on my head.", "What can you do?", "I like my shorts.", "Thank you, Father.", "Can you dance and sing with me?"]},
-3:{"title": "School & Colors", "audio": "audio/u3.json", "words": [["school", "trường học", "🏫", "/skuːl/"], ["classroom", "lớp học", "", "/ˈklæsruːm/"], ["bathroom", "phòng vệ sinh", "🚻", "/ˈbæθruːm/"], ["office", "văn phòng", "🏢", "/ˈɔːfɪs/"], ["playground", "sân chơi", "", "/ˈpleɪɡraʊnd/"], ["sandbox", "hố cát", "", "/ˈsændbɑːks/"], ["slide", "cầu trượt", "", "/slaɪd/"], ["swing", "xích đu", "", "/swɪŋ/"], ["jungle gym", "khung leo trèo", "", "/ˈdʒʌŋɡl dʒɪm/"], ["merry-go-round", "vòng quay ngựa gỗ", "🎠", "/ˈmeri ɡoʊ raʊnd/"], ["book", "quyển sách", "📖", "/bʊk/"], ["bag", "cái cặp", "🎒", "/bæɡ/"], ["pencil", "bút chì", "✏️", "/ˈpensl/"], ["crayon", "bút sáp màu", "🖍️", "/ˈkreɪɑːn/"], ["marker", "bút lông", "", "/ˈmɑːrkər/"], ["eraser", "cục tẩy", "", "/ɪˈreɪsər/"], ["paper", "giấy", "📄", "/ˈpeɪpər/"], ["scissors", "cái kéo", "✂️", "/ˈsɪzərz/"], ["blocks", "khối xếp hình", "🧱", "/blɑːks/"], ["play dough", "đất nặn", "", "/ˈpleɪ doʊ/"], ["card", "tấm thẻ, thiệp", "🃏", "/kɑːrd/"], ["table", "cái bàn", "", "/ˈteɪbl/"], ["chair", "cái ghế", "🪑", "/tʃer/"], ["door", "cửa ra vào", "🚪", "/dɔːr/"], ["window", "cửa sổ", "🪟", "/ˈwɪndoʊ/"], ["wall", "bức tường", "", "/wɔːl/"], ["hook", "cái móc", "", "/hʊk/"], ["light", "bóng đèn", "💡", "/laɪt/"], ["red", "màu đỏ", "🔴", "/red/"], ["blue", "màu xanh dương", "🔵", "/bluː/"], ["green", "màu xanh lá", "🟢", "/ɡriːn/"], ["yellow", "màu vàng", "🟡", "/ˈjeloʊ/"], ["pink", "màu hồng", "", "/pɪŋk/"], ["purple", "màu tím", "🟣", "/ˈpɜːrpl/"], ["orange", "màu cam", "🟠", "/ˈɔːrɪndʒ/"], ["brown", "màu nâu", "🟤", "/braʊn/"], ["black", "màu đen", "⚫", "/blæk/"], ["white", "màu trắng", "⚪", "/waɪt/"], ["ant", "con kiến", "🐜", "/ænt/"], ["snack", "bữa ăn nhẹ", "🍪", "/snæk/"], ["lunch", "bữa trưa", "🍱", "/lʌntʃ/"], ["drink", "đồ uống, uống", "🥤", "/drɪŋk/"], ["water", "nước", "💧", "/ˈwɔːtər/"], ["song", "bài hát", "🎵", "/sɔːŋ/"], ["storybook", "sách truyện", "📚", "/ˈstɔːribʊk/"], ["ground", "mặt đất", "", "/ɡraʊnd/"], ["trash", "rác", "🗑️", "/træʃ/"], ["paint", "sơn, vẽ", "🎨", "/peɪnt/"]], "passages": [{"title": "Marvin Goes to School", "text": "The boys and girls are at school.\nThere is a knock on the door of the classroom.\nWho is there?\n\nThe teacher opens the door.\n“Good morning, Marvin,” she says.\n“Please come in.”\n\nThe boys and girls laugh and clap their hands.\nIt is fun to have a monkey at school.\n\nMarvin Monkey eats lunch with the boys and girls.\nThen they go outside to the playground.\n\nThe boys and girls slide with Marvin on the slide.\nThey swing on the swings.\nThey climb on the jungle gym.\nThey ride on the merry-go-round.\nThey play in the sand in the sandbox.\nThey run and play and have fun.\n\nThe boys and girls yell, but Marvin Monkey is quiet.\nHe cannot yell.\n\nMarvin is thirsty.\nHe gets a drink of water.\n\nThen it is time to go inside the classroom.\nThe boys and girls sit down in the chairs.\nMarvin sits down… but on the table!\n\nThe boys and girls sing a song.\nMarvin Monkey cannot sing.\nThe boys and girls play a game, but Marvin does not know what to do.\n\nBut a monkey can mark with a crayon.\nMarvin puts marks on a paper.\nHis marks are funny.\n\nNow it is time to go home.\n“Bye-bye,” the boys and girls say.\nThey wave goodbye to Marvin.\n\nIt was fun to have a monkey at school.", "qs": [["Who knocks on the door?", ["Marvin Monkey", "The teacher", "A bear", "A tiger"], 0], ["What do the boys and girls do when Marvin comes in?", ["Laugh and clap", "Run away", "Sleep", "Sing a song"], 0], ["Where does Marvin sit?", ["On the table", "On a chair", "On the floor", "On the slide"], 0], ["What can Marvin do with a crayon?", ["Mark on paper", "Sing a song", "Play a game", "Yell"], 0], ["What does Marvin drink?", ["Water", "Milk", "Juice", "Tea"], 0], ["Why is Marvin quiet?", ["He cannot yell", "He is sleeping", "He is hungry", "He is sad"], 0]]}, {"title": "I Like These Things", "text": "Hello, I’m Marvin Monkey\nand this is what I like at school.\n\nI like the jungle gym and the merry-go-round.\nI like to swing and I like to slide.\nI like playing with sand in the sandbox.\nI like playing outside on the playground.\n\nI like everything in the classroom.\nI like painting with red and black paint.\nI like playing with chairs and books and blocks and toys.\nI like playing games on the floor.\n\nI like lunchtime and playtime and story time.\nAnd oh, did I say snack time?\nWhen I’m hungry, I like to eat.\nWhen I’m thirsty, I like to drink.\n\nI like reading storybooks under the table.\nI like the page with the picture.\nI like Play-Doh and tape and scissors.\nI like making more and more trash.\n\nI like marking on cards and walls and windows.\nI like crayons and pencils and markers.\nI like erasers, too.", "qs": [["Where does Marvin like to play with sand?", ["In the sandbox", "On the slide", "In the classroom", "Under the table"], 0], ["What colors of paint does Marvin like?", ["Red and black", "Blue and green", "Yellow and pink", "Brown and white"], 0], ["Where does Marvin like reading storybooks?", ["Under the table", "On the slide", "In the sandbox", "On the swing"], 0], ["What does Marvin like to do when he is thirsty?", ["Drink", "Eat", "Sleep", "Sing"], 0]]}, {"title": "Our Day at School", "text": "We only have erasers\nand we want to make a book.\nWe need some other things.\nWill you help us go and look?\n\nWe need paper and crayons and markers.\n\nWe looked in the trash.\nWe looked out the door.\nWe cannot find our crayons,\nso we’ll go and look some more.\n\nWe looked under the chairs.\nWe looked in the bags.\nWe even looked in yours!\nWe cannot find our markers,\nso we’ll go and look some more.\n\nWe looked around the school.\nWe walked, we skipped and we ran.\nWe did not find our crayons,\nbut we found this in the sand.\n\nWe looked on the bus.\nWe looked all over the floor.\nWe did not find our markers,\nbut we found this by the back door.\n\nWe looked in the grass.\nWe looked in everything.\nWe did not find our paper,\nbut we found this under the swing.\n\nWe looked and we looked\nfor the things to make our book.\nWe found some paper, a crayon, and a marker.\nDo you want to see our book?", "qs": [["What do the children want to make?", ["A book", "A cake", "A game", "A song"], 0], ["Where did they look first?", ["In the trash", "On the bus", "In the grass", "Under the swing"], 0], ["What do the children need?", ["Paper, crayons and markers", "Books and toys", "Shoes and socks", "Chairs and tables"], 0], ["What did they find at the end?", ["Paper, a crayon and a marker", "A ball and a doll", "Shoes and a hat", "Food and water"], 0]]}, {"title": "My Toy Box", "text": "My toy box is red and black and blue.\nIt holds balls and games and other things, too.", "qs": [["What color is the toy box?", ["Red, black and blue", "Green and yellow", "Pink and purple", "White and brown"], 0]]}, {"title": "Jonny Bear Helps His Mother", "text": "Early one morning the sky is blue.\nThe little bears are playing.\n\nJonny is looking around for his brother and sister.\n“There you are, Sister,” he says.\n“I can see your hand and fingers.\nAnd there you are, Brother.\nI can see your cap and your feet.\nNow it’s your turn to look for me.”\n\n“But where are you, Jonny?” says Brother.\n“Keep looking,” says Sister.\n\nMother Bear opens the door.\n“Come here, little bears,” she says.\n“I want you to help me.\nGo and get your clothes.\nWe are going to wash them.\nThen you will have clean clothes to wear.”\n\n“Yes, Mother,” they said.\nThey all run in and close the door.\n\nThe three little bears take their clothes to Mother Bear.\n“Take the things out of your pockets,” Mother says.\n“Yes, we did.”\n\n“Now put on your shoes,” says Mother Bear.\n“Go out and put these clothes on the line.\nThen we will make something very nice to eat.”\n\nThe three little bears march out.\n“We can do this fast,” says Brother.\nThey sing a song and put the skirts and shirts and pants on the line.\n\nJonny is too short.\nHe cannot touch the line.\n“Sister, I cannot put this sweater up there.\nCan you help me?”\n“Yes, I will help you,” says Sister.\nShe puts his little sweater up.\n\nMother Bear is happy with her little bears.\n“Thank you for helping me,” she says.\n“You’re welcome, Mother.\nCan we put faces on the cookies?”\n“Yes, you can.”\n\nThe three little bears have some fun.\nThey make big eyes and small eyes.\nThey make short ears and long ears.\nSister puts red cheeks and lips on her face.\n\nNow it’s time to go to bed.\nJonny is sleepy.\nHe rubs his eyes and brushes his teeth.\nBrother washes his face with water.\nSister uses a comb to comb her hair.\n\n“In the morning,” says Mother Bear,\n“we will go swimming.\nWe will take food and many fish.\nMr. Sam and Miss Suzy will go with us.\nIt will be a good day.”", "qs": [["Who is Jonny looking for?", ["His brother and sister", "His mother", "His father", "His friend Marvin"], 0], ["What does Mother Bear want to wash?", ["Their clothes", "Their toys", "Their shoes only", "The cookies"], 0], ["Why can Jonny not put his sweater on the line?", ["He is too short", "He is too tall", "He is sleepy", "He is hungry"], 0], ["What do they put on the cookies?", ["Faces", "Hats", "Shoes", "Pockets"], 0], ["What will they do in the morning?", ["Go swimming", "Go to school", "Go to the zoo", "Wash clothes"], 0]]}], "cloze": [["The sky is ___.", "blue"], ["The grass is ___.", "green"], ["I have a ___ on my back. It has my books.", "bag"], ["The teacher opens the ___.", "door"], ["Marvin sits on the ___.", "table"], ["I ___ water when I am thirsty.", "drink"], ["We play in the ___ at the playground.", "sandbox"], ["Hello, how are you? I am ___, thank you.", "fine"]], "order": ["The sky is blue.", "I like the jungle gym.", "I have a book.", "We looked under the chairs.", "Hello, how are you?", "I am fine, thank you.", "Marvin goes to school."]},
-4:{"title": "Farm Animals, Bugs & School", "audio": "audio/u4.json", "words": [["bee", "con ong", "🐝", "/biː/"], ["beehive", "tổ ong", "", "/ˈbiːhaɪv/"], ["crow", "con quạ", "🐦‍⬛", "/kroʊ/"], ["frog", "con ếch", "🐸", "/frɔːɡ/"], ["pigeon", "chim bồ câu", "🕊️", "/ˈpɪdʒɪn/"], ["fly", "con ruồi", "🪰", "/flaɪ/"], ["beetle", "bọ cánh cứng", "🪲", "/ˈbiːtl/"], ["goat", "con dê", "🐐", "/ɡoʊt/"], ["horse", "con ngựa", "🐴", "/hɔːrs/"], ["cow", "con bò", "🐄", "/kaʊ/"], ["pig", "con heo", "🐖", "/pɪɡ/"], ["sheep", "con cừu", "🐑", "/ʃiːp/"], ["mouse", "con chuột", "🐭", "/maʊs/"], ["mice", "những con chuột", "🐭", "/maɪs/"], ["cat", "con mèo", "🐱", "/kæt/"], ["dog", "con chó", "🐶", "/dɔːɡ/"], ["duck", "con vịt", "🦆", "/dʌk/"], ["chicken", "con gà", "🐔", "/ˈtʃɪkɪn/"], ["donkey", "con lừa", "", "/ˈdɑːŋki/"], ["rabbit", "con thỏ", "🐰", "/ˈræbɪt/"], ["spider", "con nhện", "🕷️", "/ˈspaɪdər/"], ["ant", "con kiến", "🐜", "/ænt/"], ["cricket", "con dế", "🦗", "/ˈkrɪkɪt/"], ["ladybug", "bọ rùa", "🐞", "/ˈleɪdibʌɡ/"], ["dragonfly", "chuồn chuồn", "", "/ˈdræɡənflaɪ/"], ["caterpillar", "sâu bướm", "🐛", "/ˈkætərpɪlər/"], ["grasshopper", "châu chấu", "🦗", "/ˈɡræshɑːpər/"], ["ostrich", "đà điểu", "", "/ˈɔːstrɪtʃ/"], ["web", "mạng nhện", "🕸️", "/web/"], ["farm", "trang trại", "🚜", "/fɑːrm/"], ["barn", "chuồng trại", "", "/bɑːrn/"], ["carrot", "củ cà rốt", "🥕", "/ˈkærət/"], ["egg", "quả trứng", "🥚", "/eɡ/"], ["milk", "sữa", "🥛", "/mɪlk/"], ["corn", "bắp ngô", "🌽", "/kɔːrn/"], ["green", "màu xanh lá", "🟢", "/ɡriːn/"], ["four", "số bốn", "4️⃣", "/fɔːr/"], ["numbers", "các con số", "🔢", "/ˈnʌmbərz/"], ["jacket", "áo khoác", "🧥", "/ˈdʒækɪt/"], ["lunch box", "hộp cơm", "🍱", "/ˈlʌntʃ bɑːks/"], ["hold", "cầm, giữ", "🤲", "/hoʊld/"], ["pages", "các trang sách", "📄", "/ˈpeɪdʒɪz/"], ["quiet", "yên lặng", "🤫", "/ˈkwaɪət/"], ["bathroom", "phòng vệ sinh", "🚻", "/ˈbæθruːm/"], ["may", "xin phép được", "🙋", "/meɪ/"], ["can", "có thể", "💪", "/kæn/"], ["cannot", "không thể", "🚫", "/ˈkænɑːt/"], ["sky", "bầu trời", "🌤️", "/skaɪ/"]], "passages": [{"title": "The Spider’s Web", "text": "Hello, little ant.\nCome dance with me on my web.\nNo. My father says ants must never touch your web.\nSo the ant went to work with his little ant friends.\n\nHello, big cricket.\nCome dance with me on my web.\nNo. My father says crickets must never touch your web.\nSo the cricket went to jump with his big cricket friends.\n\nHello, ladybug.\nCome dance with me on my web.\nNo. My father says ladybugs must never touch your web.\nSo the ladybug went to play with her ladybug friends.\n\nHello, dragonfly.\nCome dance with me on my web.\nNo. My father says dragonflies must never touch your web.\nSo the dragonfly went to fly with his dragonfly friends.\n\nHello, caterpillar.\nCome dance with me on my web.\nNo. My father says caterpillars must never touch your web.\nSo the caterpillar went to eat with his caterpillar friends.\n\nHello, grasshopper.\nCome dance with me on my web.\nNo. My father says grasshoppers must never touch your web.\nBut you love to jump… and on my web you can jump high!\n\nThe little grasshopper looked and looked.\nHe did like to jump, and it would be so much fun to jump on the spider’s web.\nSo he jumped.\nJump, grasshopper, jump!\n\nMy web will not let you go!\n“Help!” called the grasshopper.\n“Father! Mother! Help me!”\n\nThey cannot help you, said the spider.\nYou’ve been a bad little bug.\nAll little bugs know they cannot touch my web.\n\nI will help you, said a very nice friend.\nBut good bugs must listen to their father and mother.\n\nYou can work with an ant.\nYou can jump with a cricket.\nYou can play with a ladybug.\nYou can fly with a dragonfly.\nYou can eat with a caterpillar.\nBut you must never, never dance with a spider.", "qs": [["What does the spider ask the bugs to do?", ["Dance on her web", "Eat her food", "Sleep in her house", "Sing a song"], 0], ["Why does the little ant say no?", ["His father says ants must never touch the web", "He is sleeping", "He is hungry", "He is sad"], 0], ["Which bug jumps on the web?", ["The grasshopper", "The ant", "The ladybug", "The caterpillar"], 0], ["What does the ladybug go to do?", ["Play with her ladybug friends", "Fly with dragonflies", "Eat with caterpillars", "Work with ants"], 0], ["What does the grasshopper call when he is stuck?", ["Help!", "Hello!", "Goodbye!", "Look!"], 0], ["What must good bugs do?", ["Listen to their father and mother", "Dance with a spider", "Jump on the web", "Fly away"], 0]]}, {"title": "Farmer Brown Is Sad", "text": "The farm is quiet.\nThe animals are in the barn.\nFarmer Brown is sad, said the frog.\nWhat can we do to make him happy?\n\nI know, said the hen.\nLet’s make him a nice dinner.\nI will give him an egg for his dinner, said the hen.\n\nI will give him some milk for his dinner, said the cow.\nI will give him my nice big carrot, said the rabbit.\nWe will pick corn for dinner, said the horse and the donkey.\nI will get a fish for his dinner, said the cat.", "qs": [["Who is sad?", ["Farmer Brown", "The frog", "The hen", "The cow"], 0], ["What will the hen give?", ["An egg", "Milk", "A carrot", "Corn"], 0], ["Who will give some milk?", ["The cow", "The cat", "The rabbit", "The horse"], 0], ["What will the rabbit give?", ["A big carrot", "An egg", "Corn", "A fish"], 0], ["Who will pick corn?", ["The horse and the donkey", "The cat", "The hen", "The frog"], 0], ["What will the cat get?", ["A fish", "An egg", "Milk", "Corn"], 0]]}, {"title": "Yes, I Can!", "text": "What can you see?\nCan you see a crow?\nNo, I can’t. No, I cannot.\n\nLook again.\nNow can you see a black crow?\nYes, I can. Yes, I can.", "qs": [["What question does the chant ask first?", ["What can you see?", "What are you?", "What do you want?", "Who are you?"], 0], ["What is the answer to “Can you see a crow?” at first?", ["No, I cannot", "Yes, I can", "I do not know", "It is a frog"], 0], ["What color is the crow when you look again?", ["Black", "Green", "Red", "White"], 0]]}, {"title": "Jonny Bear Goes to School", "text": "The little bears are very happy today.\nThey are going to school.\n“Goodbye! Have a good day!”\n\nThey walk through the trees to their little bear school.\n\nIn the classroom the teacher turns on the light.\nAll the little bears come inside.\nThey put their jackets on hooks.\nThen they sit down at a long table.\n\n“Please be quiet,” says the teacher.\n“I will read you a story from this big storybook.\nJonny, will you hold the book?”\n“Yes, I will.”\n“And Sister, will you turn the pages?”\n“Oh yes, teacher.”\n\nThe little bears do more things at school.\nThey sing the ABC song.\nThey play with blocks.\nThey count and shout as they march in a circle.\nThey play a game with cards.\nTwo other bears make little things with red and yellow Play-Doh.\n\n“We are going to make some things to put up on the wall,” says the teacher.\n“I will give you some paper.\nYou can use crayons, markers, or pencils.”\n\nJonny Bear raises his hand.\n“Please, teacher,” he says, “may I go to the bathroom?”\nThree other bears raise their hands.\n“May we get a drink of water?”\n“Yes, you may.”\n\nIt’s lunchtime.\nThe little bears get out their lunch boxes.\nSome bears eat only a little snack.\nSome bears eat a big lunch.\nAll the little bears help pick up trash.\nThey all clean the table.\n\nJonny Bear looks out the window.\nHe wants to play outside.\n\nThe father bears made a nice new playground for the little bears.\nThey put the jungle gym black.\nThey put sand in a sandbox.\nThey put a swing in a tree.\nThey made a slide out of a big rock.\n\n“You may go outside to play now,” says the teacher.\n“Yay!”\n\nThey love to swing and slide.\n\n“Will you push me on the merry-go-round?\nI want to spin around many, many times!”\n\nNow it’s time to go home.\nDid all the little bears have fun?\nYes, it was a good day!", "qs": [["Where do the little bears put their jackets?", ["On hooks", "On the table", "In the bathroom", "On the floor"], 0], ["Who will hold the book?", ["Jonny", "Sister", "The teacher", "Mother"], 0], ["What does Jonny ask the teacher?", ["May I go to the bathroom?", "May I play outside?", "May I eat lunch?", "May I sing?"], 0], ["What can the bears use to make things for the wall?", ["Crayons, markers or pencils", "Blocks and cards", "Sand and rocks", "Jackets and hooks"], 0], ["What do the father bears put in the sandbox?", ["Sand", "Water", "Blocks", "Paper"], 0], ["What is the slide made out of?", ["A big rock", "A tree", "A table", "Sand"], 0], ["What does the teacher say to the bears who want a drink of water?", ["Yes, you may", "No, you may not", "Please be quiet", "Goodbye"], 0]]}], "cloze": [["An ostrich is a bird that ___ fly.", "cannot"], ["Can you see a frog? No, I ___.", "cannot"], ["___ I go to the bathroom?", "may"], ["Please be ___.", "quiet"], ["The grasshopper jumped on the spider’s ___.", "web"], ["Bees live in a ___.", "beehive"], ["The little bears put their jackets on ___.", "hooks"], ["A cow gives us ___.", "milk"]], "order": ["What can you see?", "Can you see a crow?", "Yes, I can.", "No, I cannot.", "Please be quiet.", "May I go to the bathroom?", "An ostrich cannot fly.", "Will you hold the book?", "Oh yes, teacher."]},
-5:{"title": "Fruits, Vegetables & New Friends", "audio": "audio/u5.json", "words": [["apple", "quả táo", "🍎", "/ˈæpl/"], ["banana", "quả chuối", "🍌", "/bəˈnænə/"], ["cherries", "những quả anh đào", "🍒", "/ˈtʃeriz/"], ["grape", "một quả nho", "🍇", "/ɡreɪp/"], ["grapes", "chùm nho", "🍇", "/ɡreɪps/"], ["kiwi", "quả kiwi", "🥝", "/ˈkiːwi/"], ["lemon", "quả chanh vàng", "🍋", "/ˈlemən/"], ["pear", "quả lê", "🍐", "/per/"], ["pineapple", "quả dứa", "🍍", "/ˈpaɪnæpl/"], ["strawberry", "quả dâu tây", "🍓", "/ˈstrɔːberi/"], ["watermelon", "quả dưa hấu", "🍉", "/ˈwɔːtərmelən/"], ["peach", "quả đào", "🍑", "/piːtʃ/"], ["beans", "các loại đậu", "🫘", "/biːnz/"], ["broccoli", "súp lơ xanh", "🥦", "/ˈbrɑːkəli/"], ["cabbage", "bắp cải", "🥬", "/ˈkæbɪdʒ/"], ["corn", "bắp ngô", "🌽", "/kɔːrn/"], ["cucumber", "quả dưa chuột", "🥒", "/ˈkjuːkʌmbər/"], ["potato", "củ khoai tây", "🥔", "/pəˈteɪtoʊ/"], ["pumpkin", "quả bí ngô", "🎃", "/ˈpʌmpkɪn/"], ["tomato", "quả cà chua", "🍅", "/təˈmeɪtoʊ/"], ["carrot", "củ cà rốt", "🥕", "/ˈkærət/"], ["vegetables", "rau củ", "🥗", "/ˈvedʒtəblz/"], ["mice", "những con chuột", "🐭", "/maɪs/"], ["cow", "con bò", "🐄", "/kaʊ/"], ["sheep", "con cừu", "🐑", "/ʃiːp/"], ["pig", "con heo", "🐖", "/pɪɡ/"], ["goat", "con dê", "🐐", "/ɡoʊt/"], ["donkey", "con lừa", "", "/ˈdɑːŋki/"], ["horse", "con ngựa", "🐴", "/hɔːrs/"], ["pony", "ngựa con", "", "/ˈpoʊni/"], ["cat", "con mèo", "🐱", "/kæt/"], ["dog", "con chó", "🐶", "/dɔːɡ/"], ["duck", "con vịt", "🦆", "/dʌk/"], ["chicken", "con gà", "🐔", "/ˈtʃɪkɪn/"], ["chick", "gà con", "🐥", "/tʃɪk/"], ["ostrich", "đà điểu", "", "/ˈɔːstrɪtʃ/"], ["bee", "con ong", "🐝", "/biː/"], ["beehive", "tổ ong", "", "/ˈbiːhaɪv/"], ["caterpillar", "sâu bướm", "🐛", "/ˈkætərpɪlər/"], ["crow", "con quạ", "🐦‍⬛", "/kroʊ/"], ["owl", "con cú", "🦉", "/aʊl/"], ["spider", "con nhện", "🕷️", "/ˈspaɪdər/"], ["farm", "trang trại", "🚜", "/fɑːrm/"], ["farmer", "người nông dân", "🧑‍🌾", "/ˈfɑːrmər/"], ["barn", "chuồng trại", "", "/bɑːrn/"], ["seeds", "hạt giống", "🌱", "/siːdz/"], ["ground", "mặt đất", "", "/ɡraʊnd/"], ["round", "tròn", "⚪", "/raʊnd/"], ["grow", "lớn lên, trồng", "🌿", "/ɡroʊ/"], ["flower", "bông hoa", "🌸", "/ˈflaʊər/"], ["pie", "bánh nướng", "🥧", "/paɪ/"], ["piano", "đàn piano", "🎹", "/piˈænoʊ/"], ["big", "to", "", "/bɪɡ/"], ["small", "nhỏ", "", "/smɔːl/"], ["tall", "cao", "", "/tɔːl/"], ["short", "thấp, lùn", "", "/ʃɔːrt/"]], "passages": [{"title": "Party in the Barn", "text": "Pumpkin plays an old piano.\nKiwi, peach, broccoli and watermelon sing.\nThey sing all night long.\n\nTall green cucumber and short red tomato dance.\nBig yellow banana and small green grape dance too.\nBanana moves slowly.\nGrape must move fast.", "qs": [["Who plays an old piano?", ["Pumpkin", "Kiwi", "Banana", "Tomato"], 0], ["What do kiwi, peach, broccoli and watermelon do?", ["They sing", "They sleep", "They run", "They eat"], 0], ["How long do they sing?", ["All night long", "One hour", "All morning", "Five minutes"], 0], ["What color is the tall cucumber?", ["Green", "Red", "Yellow", "Blue"], 0], ["Who moves slowly?", ["Banana", "Grape", "Tomato", "Cucumber"], 0], ["Who must move fast?", ["Grape", "Banana", "Pumpkin", "Watermelon"], 0]]}, {"title": "Yes, I Am!", "text": "What are you?\nAre you a grape?\nNo, I’m not. I am not.\n\nAre you a banana?\nYes, I am. I am a banana!\n\nWhat are you?\nAre you a bean?\nNo, I’m not. I am not.\n\nAre you a cucumber?\nYes, I am. I am a cucumber!\n\nWhat are you?\nAre you a pear?\nNo, I’m not. I am not.\n\nAre you a pineapple?\nYes, I am. I am a pineapple!\n\nWhat are you?\nAre you a cherry?\nNo, I’m not. I am not.\n\nAre you a strawberry?\nYes, I am. I am a strawberry!\n\nWhat are you?\nAre you a kiwi?\nNo, I’m not. I am not.\n\nAre you a potato?\nYes, I am. I am a potato!", "qs": [["What question does the chant ask again and again?", ["What are you?", "What do you want?", "What can you see?", "Where are you?"], 0], ["What does the banana say?", ["Yes, I am. I am a banana!", "No, I’m not.", "I am a grape!", "I am a pear!"], 0], ["Which one is a cucumber?", ["The one that says yes after “Are you a cucumber?”", "The bean", "The pear", "The kiwi"], 0], ["What does the potato say?", ["Yes, I am. I am a potato!", "No, I’m not. I am not.", "I am a kiwi!", "I am a cherry!"], 0]]}, {"title": "Jonny Bear Makes New Friends", "text": "Jonny Bear goes out to play.\n“Jonny, don’t play in the rain,” Mother Bear says to him.\n“And come home when it’s time for dinner.”\n“Yes, Mother. I’m going to look everywhere,” says Jonny.\n\nHe walks farther and farther from home.\n\nJonny sees many bugs.\n“Good morning, Miss Caterpillar,” he says.\n“Good morning, Jonny.”\n\nThen Jonny sees bees and a beehive.\nJonny puts his hand into the hive.\nThe bees buzz around Jonny’s head.\nThey are not happy.\n“Get away! Get away!”\n\nJonny looks up into the trees.\nHe sees a crow and an owl.\nHe sees a spider sitting on her web.\n\nThen Jonny comes to a farm.\nA farmer is standing near a barn.\n“Hello, little bear. Welcome to my farm.\nWhat do you have on your farm?” Jonny says to the farmer.\n“I have many animals on my farm. Please look around.”\n\nJonny sees some mice eating seeds.\nHe sees a cow and sheep.\nHe sees a pig near the barn.\nJonny has never seen so many animals before.\n\nJonny pulls some carrots out of the ground.\nThe carrots are dirty, but Jonny cleans them.\nHe gives the carrots to a goat, a donkey, a horse and a little pony.\n\nA cat is cleaning her tail.\nA dog is sitting in the sun.\nThe dog is sad. He wants to play.\n“You hide and I will find you,” says Jonny.\n“There you are! I found you!”\n\nThere are birds on the farm too.\nJonny sees ducks and chicks.\nHe sees a tall ostrich.\n\n“Help me!” says Mrs. Chicken.\n“I can’t find my egg!”\nJonny wants to help Mrs. Chicken.\nHe pushes open the door.\nHe looks all around.\nThere it is on the ground!\n\nNow all the animals like Jonny.\nThey know he is a nice bear.\n“I’m glad I came to the farm today.\nI had fun and now I have many new friends,” says Jonny.\n“And we have a new friend too,” say all the animals.", "qs": [["What does Mother Bear say?", ["Don’t play in the rain", "Don’t eat dinner", "Don’t go to school", "Don’t sing"], 0], ["Who does Jonny say good morning to?", ["Miss Caterpillar", "Mrs. Chicken", "The farmer", "The owl"], 0], ["What do the bees do when Jonny puts his hand in the hive?", ["They buzz around his head", "They sleep", "They sing", "They give him honey"], 0], ["What are the mice eating?", ["Seeds", "Carrots", "Corn", "Cheese"], 0], ["What does Jonny give to the goat, the donkey, the horse and the pony?", ["Carrots", "Corn", "Milk", "Seeds"], 0], ["What can Mrs. Chicken not find?", ["Her egg", "Her chicks", "Her barn", "Her door"], 0], ["How does Jonny feel at the end?", ["Glad", "Sad", "Hungry", "Afraid"], 0]]}], "cloze": [["What are you? Are you a grape? No, I am ___.", "not"], ["Are you a banana? Yes, I ___.", "am"], ["Good ___, Miss Caterpillar.", "morning"], ["Welcome to my ___.", "farm"], ["I have many ___ on my farm.", "animals"], ["Jonny pulls some ___ out of the ground.", "carrots"], ["I’m glad I came to the farm ___.", "today"], ["Big yellow ___ and small green grape dance too.", "banana"]], "order": ["What are you?", "Are you a grape?", "No, I am not.", "Yes, I am a banana.", "Welcome to my farm.", "I have many animals on my farm.", "Please look around.", "Good morning, Miss Caterpillar.", "Now I have many new friends."]},
-6:{"title": "Food, Drink & Helping Others", "audio": "audio/u6.json", "words": [["cookie", "bánh quy", "🍪", "/ˈkʊki/"], ["ice cream", "kem", "🍦", "/ˈaɪs kriːm/"], ["jam", "mứt", "", "/dʒæm/"], ["donut", "bánh vòng", "🍩", "/ˈdoʊnʌt/"], ["cake", "bánh ngọt", "🍰", "/keɪk/"], ["chips", "khoai tây chiên", "🍟", "/tʃɪps/"], ["candy", "kẹo", "🍬", "/ˈkændi/"], ["eggs", "những quả trứng", "🥚", "/eɡz/"], ["ham", "giăm bông", "", "/hæm/"], ["pancakes", "bánh kếp", "🥞", "/ˈpænkeɪks/"], ["pizza", "bánh pizza", "🍕", "/ˈpiːtsə/"], ["hamburger", "bánh mì kẹp thịt", "🍔", "/ˈhæmbɜːrɡər/"], ["hot dog", "xúc xích kẹp bánh", "🌭", "/ˈhɑːt dɔːɡ/"], ["popcorn", "bắp rang", "🍿", "/ˈpɑːpkɔːrn/"], ["sandwich", "bánh mì kẹp", "🥪", "/ˈsænwɪtʃ/"], ["turkey", "gà tây", "🦃", "/ˈtɜːrki/"], ["noodles", "mì sợi", "🍜", "/ˈnuːdlz/"], ["salad", "món rau trộn", "🥗", "/ˈsæləd/"], ["bread", "bánh mì", "🍞", "/bred/"], ["butter", "bơ", "🧈", "/ˈbʌtər/"], ["soup", "món súp", "🥣", "/suːp/"], ["spaghetti", "mì Ý", "🍝", "/spəˈɡeti/"], ["rice", "cơm, gạo", "🍚", "/raɪs/"], ["meat", "thịt", "🥩", "/miːt/"], ["juice", "nước ép", "🧃", "/dʒuːs/"], ["milk", "sữa", "🥛", "/mɪlk/"], ["breakfast", "bữa sáng", "🍳", "/ˈbrekfəst/"], ["lunch", "bữa trưa", "🍱", "/lʌntʃ/"], ["snack", "bữa ăn nhẹ", "🍪", "/snæk/"], ["dinner", "bữa tối", "🍽️", "/ˈdɪnər/"], ["stomach", "cái bụng", "", "/ˈstʌmək/"], ["hurt", "bị đau", "🤕", "/hɜːrt/"], ["sweets", "đồ ngọt", "🍭", "/swiːts/"], ["picnic", "buổi dã ngoại", "🧺", "/ˈpɪknɪk/"], ["store", "cửa hàng", "🏪", "/stɔːr/"], ["groceries", "hàng tạp hóa", "🛒", "/ˈɡroʊsəriz/"], ["hungry", "đói", "", "/ˈhʌŋɡri/"], ["thirsty", "khát", "", "/ˈθɜːrsti/"], ["full", "no", "", "/fʊl/"], ["want", "muốn", "🙋", "/wɑːnt/"], ["help", "giúp đỡ", "🤝", "/help/"], ["hen", "con gà mái", "🐔", "/hen/"], ["chicks", "những con gà con", "🐥", "/tʃɪks/"], ["garden", "khu vườn", "🌻", "/ˈɡɑːrdn/"], ["seeds", "hạt giống", "🌱", "/siːdz/"], ["cheese", "phô mai", "🧀", "/tʃiːz/"], ["bad", "hư, xấu", "👎", "/bæd/"], ["sad", "buồn", "😢", "/sæd/"]], "passages": [{"title": "Sad Sam", "text": "This is the story of a very bad boy.\nThis is Sam.\n\nBefore breakfast, Sam ate 10 cookies.\nFor breakfast, Sam’s mother fixed eggs and ham, pancakes, juice and milk.\n“I’m not hungry,” said Sam. “I’m not thirsty. I don’t want to eat breakfast.”\n\nBefore lunch, Sam ate ice cream and jam.\nFor lunch, Sam’s mother made pizza, hamburgers and hot dogs.\n“I’m not hungry,” said Sam. “I don’t want to eat lunch.”\n\nBefore snack time, Sam ate five donuts.\nFor a snack, Sam’s mother fixed popcorn and little cheese sandwiches.\n“I’m not hungry,” said Sam. “I don’t want to eat a snack.”\n\nBefore dinner, Sam ate some cake and chips.\nFor dinner, Sam’s mother made turkey, noodles, salad, and bread and butter.\n“I’m full,” said Sam. “I don’t want to eat dinner.”\nBut then he ate some candy.\n\nWhen it was time to go to bed, Sam could not go to sleep.\n“My stomach hurts!” he cried.\n\nSo don’t be like Sam who ate too many sweets.\nAlways eat your soup and spaghetti, your rice and your meat.\nIf you eat too many sweets, you will be sad just like Sam.", "qs": [["What did Sam eat before breakfast?", ["10 cookies", "Five donuts", "Ice cream and jam", "Cake and chips"], 0], ["What did Sam’s mother make for lunch?", ["Pizza, hamburgers and hot dogs", "Eggs and ham", "Turkey and noodles", "Popcorn and sandwiches"], 0], ["What did Sam eat before snack time?", ["Five donuts", "10 cookies", "Some cake", "Ice cream"], 0], ["What did Sam say at dinner time?", ["I’m full", "I’m hungry", "I’m thirsty", "I’m cold"], 0], ["Why did Sam cry at bedtime?", ["His stomach hurt", "He was hungry", "He was cold", "He lost his toy"], 0], ["What should you always eat?", ["Soup and spaghetti, rice and meat", "Candy and cake", "Cookies and chips", "Donuts and ice cream"], 0]]}, {"title": "The Red Hen", "text": "A red hen once lived on a farm.\nShe had six little chicks.\n\nThe red hen went to the garden and looked for some seeds.\nShe wanted to make a garden.\n\nShe said, “Who will help me make my garden?”\nBut her friends said, “Not I.”", "qs": [["Where did the red hen live?", ["On a farm", "In a store", "In a school", "In a zoo"], 0], ["How many little chicks did she have?", ["Six", "Two", "Four", "Ten"], 0], ["What did the red hen look for in the garden?", ["Seeds", "Cookies", "Milk", "Eggs"], 0], ["What did her friends say?", ["Not I.", "Yes, I will.", "Me too.", "Help!"], 0]]}, {"title": "The Bears’ Picnic", "text": "After breakfast, the Bear family is going on a picnic.\nFather and Mother Bear prepare food for the picnic.\nThe little bears eat breakfast and get ready.", "qs": [["When is the Bear family going on a picnic?", ["After breakfast", "Before breakfast", "After dinner", "At night"], 0], ["Who prepare the food for the picnic?", ["Father and Mother Bear", "The little bears", "The teacher", "The farmer"], 0]]}, {"title": "Jonny Bear Helps at the Store", "text": "Jonny Bear helps not only his dad at his store, but all the animals to get their groceries.", "qs": [["Who does Jonny Bear help?", ["His dad and all the animals", "Only his mother", "Only his teacher", "Only his sister"], 0], ["What do the animals get at the store?", ["Groceries", "Jackets", "Books", "Toys"], 0]]}], "cloze": [["I’m not hungry. I don’t ___ to eat breakfast.", "want"], ["Do you want some juice? Yes, I ___.", "do"], ["Sam ate too many ___.", "sweets"], ["Sam’s ___ hurts!", "stomach"], ["Always eat your soup and ___.", "spaghetti"], ["For breakfast, Sam’s mother fixed eggs and ___.", "ham"], ["Who will ___ me make my garden?", "help"], ["After breakfast, the Bear family is going on a ___.", "picnic"]], "order": ["What do you want?", "Do you want some juice?", "Yes, I do.", "No, I do not.", "I am not hungry.", "I do not want to eat dinner.", "Who will help me?", "Always eat your soup and spaghetti.", "Sam ate too many sweets."]}
-};
-/* ===== HẾT DỮ LIỆU ===== */
-var RANGES=[[1,10],[11,20],[21,30]];
-var TITLES={vocab:"Bài kiểm tra từ vựng",listen:"Bài kiểm tra nghe",read:"Bài kiểm tra đọc",write:"Bài kiểm tra viết"};
-var KEY="grapeseed_app_v3",S={best:{}},openTab=null,curUnit=null,G=null,app=document.getElementById("app");
-try{var raw=localStorage.getItem(KEY);if(raw){S=JSON.parse(raw)||S;S.best=S.best||{}}}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
-var onHome=true;
-function voices(){try{return speechSynthesis.getVoices().filter(function(v){return /^en/i.test(v.lang)})}catch(e){return []}}
-function pickVoice(){var vs=voices();if(!vs.length)return null;
-if(S.voice){var f=vs.filter(function(v){return v.name===S.voice})[0];if(f)return f}
-var pref=/samantha|zira|jenny|aria|ava|allison|susan|karen|tessa|moira|serena|female/i;
-return vs.filter(function(v){return pref.test(v.name)&&/en[-_]US/i.test(v.lang)})[0]||vs.filter(function(v){return pref.test(v.name)})[0]||vs.filter(function(v){return /en[-_]US/i.test(v.lang)})[0]||vs[0]}
-var curAudio=null,playTok=0;
-function stopAudio(){playTok++;try{if(curAudio){curAudio.pause();curAudio=null}}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
-function playSeq(list,rate){var tok=++playTok,i=0;function next(){if(tok!==playTok||i>=list.length)return;var a=new Audio(list[i++]);a.playbackRate=rate;try{a.preservesPitch=true;a.webkitPreservesPitch=true}catch(e){}curAudio=a;a.onended=function(){setTimeout(next,rate<1?250:120)};a.onerror=next;a.play().catch(function(){})}next()}
-function playAudio(text,r){if(typeof AUDIO==="undefined")return false;var slow=r<.7,k=text.toLowerCase().trim(),list=[],rate=1;
-if(AUDIO["w:"+k]){list=[AUDIO[(slow&&AUDIO["s:"+k])?"s:"+k:"w:"+k]]}
-else{var ls=text.split(/\n+/).map(function(x){return x.trim()}).filter(Boolean);if(!ls.length||!ls.every(function(l){return AUDIO["l:"+l]}))return false;list=ls.map(function(l){return AUDIO["l:"+l]});if(slow)rate=.8}
-stopAudio();playSeq(list,rate);return true}
-function speak(w,r){if(playAudio(w,r))return;ttsSpeak(w,r)}
-function ttsSpeak(w,r){try{speechSynthesis.cancel();var v=pickVoice();w.split(/\n+/).forEach(function(line){if(!line.trim())return;var u=new SpeechSynthesisUtterance(line);u.lang="en-US";if(v){u.voice=v;u.lang=v.lang}u.rate=r;u.pitch=1.15;speechSynthesis.speak(u)})}catch(e){}}
-function voiceCard(){var vs=voices(),cur=pickVoice();
-if(!vs.length)return '<div class="vc"><b>Giọng đọc</b><p>Chưa thấy giọng tiếng Anh nào trên thiết bị. Hãy cài giọng tiếng Anh trong cài đặt Chuyển văn bản thành giọng nói của điện thoại.</p></div>';
-return '<div class="vc"><b>Giọng dự phòng</b><p>Chỉ dùng khi bài chưa có âm thanh AI. Chọn giọng nữ rồi bấm Nghe thử.</p><select id="vsel">'+vs.map(function(v){return '<option value="'+esc(v.name)+'"'+(cur&&cur.name===v.name?' selected':'')+'>'+esc(v.name)+' ('+v.lang+')</option>'}).join('')+'</select><button id="vtest" class="primary">🔊 Nghe thử</button></div>'}
-function bindVoice(){var sel=document.getElementById("vsel"),t=document.getElementById("vtest");if(!sel)return;
-sel.onchange=function(){S.voice=sel.value;save()};
-t.onclick=function(){S.voice=sel.value;save();speak("Hello! Let us learn English together.",.9)}}
-try{speechSynthesis.onvoiceschanged=function(){if(onHome)home()}}catch(e){}
-var audioState={};
-function loadAudio(n){var U=UNITS[n];if(!U||!U.audio||audioState[n]==="ok"||audioState[n]==="loading")return;audioState[n]="loading";refreshAudioNote();
-fetch(U.audio).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){Object.assign(AUDIO,d);audioState[n]="ok";refreshAudioNote()}).catch(function(e){audioState[n]="fail:"+(e&&e.message||"lỗi");refreshAudioNote()})}
-function refreshAudioNote(){var el=document.getElementById("anote");if(!el||curUnit===null)return;var U=UNITS[curUnit],st=audioState[curUnit];
-el.textContent=(!U||!U.audio)?"":st==="ok"?"🔊 Giọng AI đã sẵn sàng":st==="loading"?"⏳ Đang tải giọng AI...":"⚠️ Chưa tải được giọng AI ("+String(st||"").replace("fail:","")+"), tạm dùng giọng điện thoại"}
-function bestOf(u,t){var v=S.best[u+"_"+t];return v?v.s+"/"+v.n+" câu đúng":"chưa làm"}
-function wh(w){return '<span>'+esc(w[0])+'<small>'+w[3]+' · '+esc(w[1])+'</small></span>'}
-function audio(){return '<div class="aud"><button data-s=".95">🔊 Thường</button><button data-s=".5">🐢 Chậm</button></div>'}
+const VERSION = "2026-11-11.1";
+const NUM_Q = { listen: 10, vocab: 10, read: 10, write: 8 };
 
-function home(){
-onHome=true;try{stopAudio()}catch(e){}
-var h='<h1>Grapeseed</h1><div class="tabs">';
-RANGES.forEach(function(r,i){h+='<button class="tab'+(openTab===i?' on':'')+'" data-tab="'+i+'">Unit '+r[0]+' - '+r[1]+'</button>'});
-h+='</div>';
-if(openTab!==null){var r=RANGES[openTab];h+='<div class="ulist">';
-for(var u=r[0];u<=r[1];u++)h+='<button data-u="'+u+'" class="'+(UNITS[u]?'has':'empty')+(curUnit===u?' sel':'')+'">'+u+'</button>';
-h+='</div>'}
-if(curUnit!==null){
-var U=UNITS[curUnit];h+='<h2>Unit '+curUnit+(U?' - '+esc(U.title):'')+'</h2><p class="live" id="anote"></p>';
-if(U){h+='<p>Đúng được 1 điểm, sai không có điểm.</p><div class="tests">'+
-[["vocab","🔤","Xem từ tiếng Anh, chọn nghĩa tiếng Việt"],["listen","🎧","Nghe từ, chọn từ đúng, có phiên âm và nghĩa"],["read","📖","Đọc truyện Grapeseed, chọn đáp án đúng"],["write","✍️","Viết từ, điền chỗ trống, sắp xếp câu"]].map(function(t){
-return '<button class="test" data-t="'+t[0]+'"><span class="i">'+t[1]+'</span><span><b>'+TITLES[t[0]]+'</b><small>'+t[2]+'</small><small>Lần gần nhất: '+bestOf(curUnit,t[0])+'</small></span></button>'}).join('')+'</div>';
-}else h+='<div class="empty-msg">Unit này chưa có nội dung.</div>';
-}else if(openTab===null)h+='<p style="margin-top:14px">Bấm vào một nhóm unit để chọn bài.</p>';
-app.innerHTML=h;
-if(curUnit!==null){loadAudio(curUnit);refreshAudioNote()}
-app.querySelectorAll("[data-tab]").forEach(function(b){b.onclick=function(){var i=+b.dataset.tab;openTab=(openTab===i)?null:i;home()}});
-app.querySelectorAll("[data-u]").forEach(function(b){b.onclick=function(){curUnit=+b.dataset.u;home()}});
-app.querySelectorAll("[data-t]").forEach(function(b){b.onclick=function(){start(b.dataset.t)}});
+let unitsMeta = null;
+let currentUnit = null;
+let currentAudio = null;
+let audioCache = {};
+let progress = {};
+let missingAudio = new Set();
+let voiceStatus = "loading"; // loading | ready | fallback
+
+// ---------- helpers ----------
+function $(sel, el=document) { return el.querySelector(sel); }
+function $$(sel, el=document) { return [...el.querySelectorAll(sel)]; }
+function normalizeKey(text, forWord=false) {
+  if (!text) return "";
+  let t = text.replace(/[’‘]/g,"'").replace(/[“”]/g,'"');
+  t = t.replace(/\s+/g," ").trim();
+  if (forWord) t = t.toLowerCase();
+  return t;
+}
+function loadProgress() {
+  try { progress = JSON.parse(localStorage.getItem("gs_progress") || "{}"); }
+  catch(e) { progress = {}; }
+}
+function saveProgress() {
+  try { localStorage.setItem("gs_progress", JSON.stringify(progress)); } catch(e) {}
+}
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+function pick(arr, n) {
+  return shuffle(arr).slice(0, Math.min(n, arr.length));
 }
 
-function start(type){
-onHome=false;
-var U=UNITS[curUnit],qs=[];
-if(type==="vocab"||type==="listen"){
-var listen=type==="listen";
-shuffle(U.words).slice(0,listen?N_LISTEN:N_VOCAB).forEach(function(w){
-var o=shuffle(U.words.filter(function(x){return x[1]!==w[1]&&x[0]!==w[0]})).slice(0,3);
-var all=shuffle([w].concat(o));
-qs.push({k:"mc",mode:listen?"listen":"word",w:w,say:w[0],ans:String(all.indexOf(w)),
-opts:all.map(function(x){return listen?wh(x):'<span>'+esc(x[1])+'</span>'}),
-log:w[0]+" "+w[3]+" = "+w[1]})});
-}else if(type==="read"){
-U.passages.forEach(function(p){p.qs.forEach(function(q){
-var idx=shuffle([0,1,2,3]);
-qs.push({k:"mc",mode:"read",p:p,q:q[0],say:p.text,ans:String(idx.indexOf(q[2])),
-opts:idx.map(function(i){return '<span>'+esc(q[1][i])+'</span>'}),log:q[0]+" "+q[1][q[2]]})})});
-}else{
-shuffle(U.words).slice(0,N_SPELL).forEach(function(w){qs.push({k:"spell",w:w,say:w[0],ans:w[0],log:w[0]+" "+w[3]})});
-shuffle(U.cloze).slice(0,N_CLOZE).forEach(function(c){qs.push({k:"cloze",t:c[0],ans:c[1],log:c[0].replace("___",c[1])})});
-shuffle(U.order).slice(0,N_ORDER).forEach(function(s){qs.push({k:"order",s:s,ans:s,log:s})});
+// ---------- audio ----------
+async function playKey(key) {
+  const a = currentAudio && currentAudio[key];
+  if (a && a.startsWith("data:audio")) {
+    const audio = new Audio(a);
+    try { await audio.play(); } catch(e) {}
+    return true;
+  }
+  // fallback Web Speech
+  missingAudio.add(key);
+  if ("speechSynthesis" in window) {
+    const u = new SpeechSynthesisUtterance(key.replace(/^[wsl]:/, ""));
+    u.lang = "en-US";
+    u.rate = key.startsWith("s:") ? 0.7 : 1.0;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+    return false;
+  }
+  return false;
 }
-G={type:type,qs:qs,i:0,score:0,log:[],done:false,sel:null,built:[]};
-question();
+function playText(text, slow=false) {
+  const nk = normalizeKey(text, false);
+  const key = (slow ? "s:" : "l:") + (slow ? normalizeKey(text, true) : nk);
+  // try exact first
+  if (currentAudio) {
+    const tryKeys = slow
+      ? ["s:"+normalizeKey(text,true), "w:"+normalizeKey(text,true)]
+      : ["l:"+nk, "w:"+normalizeKey(text,true)];
+    for (const k of tryKeys) {
+      if (currentAudio[k]) return playKey(k);
+    }
+  }
+  return playKey(key);
 }
-function head(){
-return '<div class="top"><button id="quit">Thoát</button><span class="live">Điểm: '+G.score+'/'+G.qs.length+'</span></div><div class="bar"><i style="width:'+Math.round(G.i/G.qs.length*100)+'%"></i></div><p class="tt">Unit '+curUnit+' - '+TITLES[G.type]+' - Câu '+(G.i+1)+'/'+G.qs.length+'</p>';
+function playWord(en, slow=false) {
+  const k = (slow ? "s:" : "w:") + normalizeKey(en, true);
+  return playKey(k);
 }
-function bindAudio(q,auto){
-app.querySelectorAll("[data-s]").forEach(function(b){b.onclick=function(){speak(q.say,+b.dataset.s)}});
-if(auto)setTimeout(function(){speak(q.say,.95)},250);
+
+// ---------- data loading ----------
+async function loadUnits() {
+  const r = await fetch(`units.json?v=${VERSION}`);
+  unitsMeta = await r.json();
+  return unitsMeta;
 }
-function question(){
-if(G.i>=G.qs.length)return result();
-var q=G.qs[G.i],h=head();G.done=false;G.sel=null;G.built=[];
-if(q.k==="mc"){
-if(q.mode==="word")h+='<div class="word">'+esc(q.w[0])+'</div><div class="ipa">'+q.w[3]+'</div>'+audio()+'<p class="qtxt" style="text-align:center">Chọn nghĩa tiếng Việt đúng</p>';
-else if(q.mode==="listen")h+=audio()+'<p class="qtxt" style="text-align:center">Nghe và chọn từ đúng</p>';
-else h+='<div class="pass"><b>'+esc(q.p.title)+'</b>'+esc(q.p.text)+'</div>'+audio()+'<p class="qtxt">'+esc(q.q)+'</p>';
-h+='<div class="opts">'+q.opts.map(function(o,i){return '<button data-v="'+i+'">'+o+'<span class="mk"></span></button>'}).join('')+'</div>';
-}else if(q.k==="spell"){
-h+=audio()+'<p class="qtxt" style="text-align:center">Nghe và viết từ</p><input type="text" id="ans" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Gõ từ vừa nghe">';
-}else if(q.k==="cloze"){
-h+='<p class="qtxt" style="text-align:center">Điền từ còn thiếu</p><div class="blank">'+esc(q.t).replace("___","_____")+'</div><input type="text" id="ans" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Gõ từ cần điền">';
-}else{
-q.pool=shuffle(q.s.split(" ").map(function(t,i){return {t:t,i:i}}));
-for(var n=0;n<5&&q.pool.map(function(x){return x.i}).join()==="0,1,2,3,4,5".slice(0,q.pool.length*2-1);n++)q.pool=shuffle(q.pool);
-h+='<p class="qtxt" style="text-align:center">Sắp xếp các từ thành câu đúng</p><div class="chips ans" id="built"></div><div class="chips" id="pool"></div>';
+async function loadUnit(id) {
+  const meta = unitsMeta.units.find(u => u.id === id);
+  if (!meta) throw new Error("Unit not found");
+  const [data, audio] = await Promise.all([
+    fetch(`${meta.data}?v=${meta.rev}`).then(r => r.json()),
+    fetch(`${meta.audio}?v=${meta.rev}`).then(r => r.ok ? r.json() : {}).catch(() => ({}))
+  ]);
+  currentUnit = data;
+  currentAudio = audio || {};
+  const keysNeeded = countNeededKeys(data);
+  const have = Object.keys(currentAudio).filter(k => currentAudio[k] && currentAudio[k].startsWith("data:audio")).length;
+  if (have === 0) {
+    voiceStatus = "fallback";
+  } else if (have < keysNeeded * 0.5) {
+    voiceStatus = "fallback";
+  } else {
+    voiceStatus = "ready";
+  }
+  return data;
 }
-h+='<div id="fb"></div><button class="primary" id="act">'+(q.k==="mc"?"Chọn":"Kiểm tra")+'</button>';
-app.innerHTML=h;
-document.getElementById("quit").onclick=home;
-var act=document.getElementById("act");
-if(q.k==="mc"||q.k==="spell")bindAudio(q,q.mode==="listen"||q.k==="spell");
-if(q.mode==="word"){}
-if(q.k==="mc"){
-act.disabled=true;
-app.querySelectorAll("[data-v]").forEach(function(b){b.onclick=function(){
-if(G.done)return;G.sel=b.dataset.v;
-app.querySelectorAll("[data-v]").forEach(function(x){x.classList.toggle("pick",x===b)});act.disabled=false}});
+function countNeededKeys(data) {
+  let n = 0;
+  (data.words||[]).forEach(() => n += 2);
+  (data.passages||[]).forEach(p => {
+    (p.text||"").split("\n").forEach(l => { if (l.trim()) n++; });
+  });
+  (data.dialogs||[]).forEach(d => { if (d.q) n++; if (d.a) n++; });
+  (data.order||[]).forEach(s => { if (s.trim()) n++; });
+  (data.cloze||[]).forEach(c => { if (c.s) n++; });
+  (data.write||[]).forEach(w => { if (w.q) n++; });
+  return n;
 }
-if(q.k==="order"){chips(q);act.disabled=true}
-if(q.k==="spell"||q.k==="cloze"){var inp=document.getElementById("ans");inp.onkeydown=function(e){if(e.key==="Enter"&&!G.done)act.click()}}
-act.onclick=function(){
-if(G.done){G.i++;question();return}
-var good=false,msg="";
-if(q.k==="mc"){
-good=G.sel===q.ans;
-app.querySelectorAll("[data-v]").forEach(function(x){var m=x.querySelector(".mk");x.classList.remove("pick");
-if(x.dataset.v===q.ans){x.classList.add("ok");m.textContent="✓";m.style.color="var(--ok)"}
-else if(x.dataset.v===G.sel){x.classList.add("no");m.textContent="✗";m.style.color="var(--bad)"}});
-msg=good?"Đúng! +1 điểm":"Sai. "+q.log;
-}else if(q.k==="order"){
-good=G.built.map(function(x){return x.t}).join(" ")===q.s;
-msg=good?"Đúng! +1 điểm":"Sai. Câu đúng: "+q.s;
-}else{
-var inp2=document.getElementById("ans"),v=inp2.value.trim().toLowerCase();
-if(!v){return}
-good=v===q.ans;inp2.disabled=true;
-msg=good?"Đúng! +1 điểm":"Sai. Đáp án: "+q.ans+(q.w?" "+q.w[3]:"");
+
+// ---------- views ----------
+function renderHeader(title, backFn) {
+  return `
+    <div class="header">
+      ${backFn ? `<button class="btn btn-ghost" id="btn-back" style="padding:8px 12px">←</button>` : ""}
+      <h1>${title}</h1>
+    </div>`;
 }
-G.done=true;if(good)G.score++;G.log.push([q.log,good]);
-document.getElementById("fb").innerHTML='<div class="fb '+(good?'ok':'no')+'"><span class="mk">'+(good?'✓':'✗')+'</span><span>'+esc(msg)+'</span></div>';
-act.textContent=G.i+1>=G.qs.length?"Xem kết quả":"Câu tiếp theo";act.disabled=false;
-if(q.k==="order"){document.getElementById("pool").innerHTML="";document.getElementById("built").querySelectorAll("button").forEach(function(b){b.disabled=true})}
-};
+
+function viewHome() {
+  const groups = [
+    { title: "Unit 1 – 10", units: unitsMeta.units.filter(u => u.id >= 1 && u.id <= 10) },
+    { title: "Unit 11 – 20", units: unitsMeta.units.filter(u => u.id >= 11 && u.id <= 20) },
+    { title: "Unit 21 – 30", units: unitsMeta.units.filter(u => u.id >= 21 && u.id <= 30) }
+  ].filter(g => g.units.length);
+  let html = renderHeader("Grapeseed") + `<div class="screen">`;
+  html += `<p class="muted" style="margin-bottom:16px">Chọn unit để học. Giọng AI Kokoro (af_heart).</p>`;
+  groups.forEach(g => {
+    html += `<div class="section-title">${g.title}</div><div class="unit-list">`;
+    g.units.forEach(u => {
+      html += `<button class="unit-btn" data-id="${u.id}">
+        <span class="num">${u.id}</span>
+        <span><strong>${u.title}</strong><br><span class="muted">Unit ${u.id}</span></span>
+      </button>`;
+    });
+    html += `</div>`;
+  });
+  html += `<div style="margin-top:24px"><button class="btn btn-ghost btn-lg" id="btn-review">Ôn tổng hợp nhiều unit</button></div>`;
+  html += `<div style="margin-top:12px"><button class="btn btn-ghost btn-lg" id="btn-check">Kiểm tra dữ liệu (?check=1)</button></div>`;
+  html += `</div>`;
+  $("#view").innerHTML = html;
+  $$(".unit-btn").forEach(b => b.onclick = () => openUnit(+b.dataset.id));
+  $("#btn-review").onclick = () => viewReviewSelect();
+  $("#btn-check").onclick = () => { location.search = "?check=1"; };
 }
-function chips(q){
-var b=document.getElementById("built"),p=document.getElementById("pool");
-function draw(){
-b.innerHTML="";p.innerHTML="";
-G.built.forEach(function(x,i){var e=document.createElement("button");e.textContent=x.t;e.onclick=function(){if(G.done)return;G.built.splice(i,1);q.pool.push(x);draw()};b.appendChild(e)});
-q.pool.forEach(function(x,i){var e=document.createElement("button");e.textContent=x.t;e.onclick=function(){if(G.done)return;q.pool.splice(i,1);G.built.push(x);draw()};p.appendChild(e)});
-document.getElementById("act").disabled=G.done?false:q.pool.length>0;
+
+async function openUnit(id) {
+  $("#view").innerHTML = renderHeader("Đang tải...") + `<div class="screen"><p class="muted">Đang tải Unit ${id}...</p></div>`;
+  try {
+    await loadUnit(id);
+    viewUnitHome();
+  } catch(e) {
+    $("#view").innerHTML = renderHeader("Lỗi") + `<div class="screen"><p>Không tải được unit. ${e.message}</p>
+      <button class="btn btn-primary" onclick="viewHome()">Về trang chủ</button></div>`;
+  }
 }
-draw();
+
+function voiceBadge() {
+  if (voiceStatus === "ready") return `<div class="status-voice">✓ Giọng AI đã sẵn sàng</div>`;
+  if (voiceStatus === "loading") return `<div class="status-voice loading">Đang tải giọng AI...</div>`;
+  return `<div class="status-voice warn">⚠ Chưa tải được giọng AI (file audio trống hoặc thiếu). Tạm dùng giọng điện thoại. Chạy make_audio.py để tạo audio/u1.json</div>`;
 }
-function result(){
-var n=G.qs.length,sc=G.score;
-S.best[curUnit+"_"+G.type]={s:sc,n:n};save();
-var h='<h1 style="text-align:center;margin-bottom:0">Kết quả</h1><p class="sc2">Unit '+curUnit+' - '+TITLES[G.type]+'</p><div class="score">'+sc+'/'+n+'</div><p class="sc2">câu đúng</p><div class="rv">';
-G.log.forEach(function(l){h+='<div class="'+(l[1]?'y':'n')+'"><span class="m">'+(l[1]?'✓':'✗')+'</span><span>'+esc(l[0])+'</span></div>'});
-h+='</div><div class="stack"><button class="primary" id="again">Làm lại bài này</button><button id="hm" style="text-align:center">Về danh sách unit</button></div>';
-app.innerHTML=h;
-document.getElementById("again").onclick=function(){start(G.type)};
-document.getElementById("hm").onclick=home;
+
+function viewUnitHome() {
+  const u = currentUnit;
+  let html = renderHeader(`Unit ${u.id}`, () => viewHome()) + `<div class="screen">`;
+  html += voiceBadge();
+  html += `<h2 style="font-size:1.3rem;margin-bottom:4px">${u.title}</h2>`;
+  html += `<p class="muted" style="margin-bottom:18px">${(u.words||[]).length} từ · ${(u.passages||[]).length} bài đọc</p>`;
+  html += `<div class="nav-tabs" id="tabs">
+    <button class="active" data-v="words">Học từ</button>
+    <button data-v="read">Đọc bài</button>
+    <button data-v="listen">Nghe</button>
+    <button data-v="vocab">Từ vựng</button>
+    <button data-v="readtest">Đọc</button>
+    <button data-v="write">Viết</button>
+  </div>`;
+  html += `<div id="panel"></div></div>`;
+  $("#view").innerHTML = html;
+  $("#btn-back").onclick = () => viewHome();
+  $$("#tabs button").forEach(b => {
+    b.onclick = () => {
+      $$("#tabs button").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      showPanel(b.dataset.v);
+    };
+  });
+  showPanel("words");
 }
-home();
+
+function showPanel(name) {
+  const panel = $("#panel");
+  if (name === "words") panel.innerHTML = panelWords();
+  else if (name === "read") panel.innerHTML = panelRead();
+  else if (name === "listen") startTest("listen");
+  else if (name === "vocab") startTest("vocab");
+  else if (name === "readtest") startTest("read");
+  else if (name === "write") startTest("write");
+}
+
+function panelWords() {
+  const words = currentUnit.words || [];
+  let html = `<p class="muted" style="margin-bottom:12px">Bấm thẻ để nghe. Nút nghe chậm bên dưới.</p>`;
+  html += `<div id="word-area"></div>`;
+  html += `<div style="display:flex;gap:10px;margin-top:16px">
+    <button class="btn btn-primary" id="w-prev" style="flex:1">← Trước</button>
+    <button class="btn btn-listen" id="w-slow" style="flex:1.4">🐢 Nghe chậm</button>
+    <button class="btn btn-primary" id="w-next" style="flex:1">Sau →</button>
+  </div>`;
+  setTimeout(() => {
+    let idx = 0;
+    const area = $("#word-area");
+    function render() {
+      const w = words[idx];
+      if (!w) return;
+      area.innerHTML = `<div class="card word-card">
+        <div class="emoji">${w.emoji || "📖"}</div>
+        <div class="en">${w.en}</div>
+        <div class="ipa">${w.ipa || ""}</div>
+        <div class="vi">${w.vi || ""}</div>
+        <div class="muted" style="margin-top:8px">${idx+1} / ${words.length}</div>
+      </div>`;
+      area.onclick = () => playWord(w.en);
+    }
+    render();
+    $("#w-prev").onclick = () => { idx = (idx - 1 + words.length) % words.length; render(); };
+    $("#w-next").onclick = () => { idx = (idx + 1) % words.length; render(); };
+    $("#w-slow").onclick = () => playWord(words[idx].en, true);
+  }, 0);
+  return html;
+}
+
+function panelRead() {
+  const passages = currentUnit.passages || [];
+  if (!passages.length) return `<p class="muted">Không có bài đọc.</p>`;
+  let html = `<div class="nav-tabs" id="pass-tabs">`;
+  passages.forEach((p,i) => {
+    html += `<button class="${i===0?"active":""}" data-i="${i}">${p.title}</button>`;
+  });
+  html += `</div><div id="pass-content"></div>`;
+  setTimeout(() => {
+    function show(i) {
+      const p = passages[i];
+      const lines = (p.text || "").split("\n");
+      let h = `<div class="card"><div class="muted" style="margin-bottom:8px">${p.type} · ${p.src || ""}</div>`;
+      lines.forEach(line => {
+        if (!line.trim()) h += `<div style="height:10px"></div>`;
+        else h += `<div class="passage-line" data-line="${encodeURIComponent(line)}">${line}</div>`;
+      });
+      h += `<button class="btn btn-listen" id="play-all" style="margin-top:14px">🔊 Nghe cả bài</button></div>`;
+      if (p.qs && p.qs.length) {
+        h += `<div class="section-title">Câu hỏi hiểu bài</div>`;
+        p.qs.forEach((q, qi) => {
+          h += `<div class="card" style="margin-bottom:12px"><strong>${qi+1}. ${q.q}</strong><div style="margin-top:8px">`;
+          const opts = shuffle(q.options.map((o,oi)=>({o,oi})));
+          opts.forEach(({o,oi}) => {
+            h += `<button class="opt qs-opt" data-qi="${qi}" data-oi="${oi}">${o}</button>`;
+          });
+          h += `</div><div class="feedback" id="fb-${qi}"></div></div>`;
+        });
+      }
+      $("#pass-content").innerHTML = h;
+      $$(".passage-line").forEach(el => {
+        el.onclick = () => {
+          $$(".passage-line").forEach(x => x.classList.remove("active"));
+          el.classList.add("active");
+          playText(decodeURIComponent(el.dataset.line));
+        };
+      });
+      $("#play-all").onclick = async () => {
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          await playText(line);
+          await new Promise(r => setTimeout(r, 900));
+        }
+      };
+      $$(".qs-opt").forEach(btn => {
+        btn.onclick = () => {
+          const qi = +btn.dataset.qi;
+          const oi = +btn.dataset.oi;
+          const q = p.qs[qi];
+          const fb = $(`#fb-${qi}`);
+          $$(".qs-opt").filter(b => +b.dataset.qi === qi).forEach(b => {
+            b.disabled = true;
+            if (+b.dataset.oi === q.answer) b.classList.add("correct");
+          });
+          if (oi === q.answer) {
+            btn.classList.add("correct");
+            fb.className = "feedback ok";
+            fb.textContent = "Đúng rồi! 👏";
+          } else {
+            btn.classList.add("wrong");
+            fb.className = "feedback bad";
+            fb.textContent = "Chưa đúng. Đáp án đúng đã tô xanh.";
+          }
+        };
+      });
+    }
+    $$("#pass-tabs button").forEach(b => {
+      b.onclick = () => {
+        $$("#pass-tabs button").forEach(x => x.classList.remove("active"));
+        b.classList.add("active");
+        show(+b.dataset.i);
+      };
+    });
+    show(0);
+  }, 0);
+  return html;
+}
+
+// ---------- Tests ----------
+let testState = null;
+
+function startTest(type) {
+  const u = currentUnit;
+  const questions = buildQuestions(type, u);
+  if (!questions.length) {
+    $("#panel").innerHTML = `<p class="muted">Unit này chưa đủ dữ liệu cho bài ${type}.</p>`;
+    return;
+  }
+  testState = {
+    type, questions, idx: 0, correct: 0, answers: [], answered: false
+  };
+  renderQuestion();
+}
+
+function buildQuestions(type, u) {
+  const qs = [];
+  const words = (u.words || []).filter(w => w.en);
+  const withEmoji = words.filter(w => w.emoji && w.emoji.length < 4);
+  const byCat = {};
+  words.forEach(w => {
+    const c = w.cat || "thing";
+    if (!byCat[c]) byCat[c] = [];
+    byCat[c].push(w);
+  });
+
+  if (type === "listen") {
+    // Part 1: hear word → choose picture
+    pick(withEmoji, 5).forEach(w => {
+      const distractors = pick((byCat[w.cat] || words).filter(x => x.en !== w.en && x.emoji), 3);
+      const opts = shuffle([w, ...distractors]).slice(0,4);
+      while (opts.length < 4) {
+        const extra = pick(withEmoji.filter(x => !opts.find(o=>o.en===x.en)), 1)[0];
+        if (extra) opts.push(extra); else break;
+      }
+      qs.push({
+        part: "Phần 1 – Nghe từ, chọn hình",
+        kind: "listen-pic",
+        prompt: "Nghe và chọn hình đúng",
+        audioWord: w.en,
+        options: opts.map(o => ({ en: o.en, emoji: o.emoji, ipa: o.ipa })),
+        answer: opts.findIndex(o => o.en === w.en)
+      });
+    });
+    // Part 2: hear sentence → answer
+    const lines = [];
+    (u.passages||[]).forEach(p => (p.text||"").split("\n").forEach(l => { if (l.trim().length > 8) lines.push(l.trim()); }));
+    (u.dialogs||[]).forEach(d => { if (d.q) lines.push(d.q); if (d.a) lines.push(d.a); });
+    pick(lines, 3).forEach(line => {
+      qs.push({
+        part: "Phần 2 – Nghe câu, trả lời",
+        kind: "listen-q",
+        prompt: "Nghe câu rồi chọn ý đúng",
+        audioText: line,
+        options: shuffle([
+          line,
+          "I see a cat.",
+          "The bird is sleeping.",
+          "My father is small."
+        ].filter((v,i,a)=>a.indexOf(v)===i)).slice(0,4),
+        answer: 0 // will fix after shuffle? better rebuild
+      });
+      // fix answer after
+      const last = qs[qs.length-1];
+      last.options = shuffle([line, "I see a cat.", "The bird is sleeping.", "My father is small."]);
+      last.answer = last.options.indexOf(line);
+    });
+    // Part 3: simple
+    pick(withEmoji, 2).forEach(w => {
+      qs.push({
+        part: "Phần 3 – Nghe và chọn",
+        kind: "listen-pic",
+        prompt: "Nghe từ, chọn hình",
+        audioWord: w.en,
+        options: shuffle(pick(withEmoji, 4).map(o => ({en:o.en,emoji:o.emoji,ipa:o.ipa}))),
+        answer: 0
+      });
+      const last = qs[qs.length-1];
+      last.answer = last.options.findIndex(o => o.en === w.en);
+      if (last.answer < 0) { last.options[0] = {en:w.en,emoji:w.emoji,ipa:w.ipa}; last.answer=0; }
+    });
+  }
+
+  if (type === "vocab") {
+    // picture → word
+    pick(withEmoji, 4).forEach(w => {
+      const distractors = pick(words.filter(x => x.en !== w.en), 3);
+      const opts = shuffle([w, ...distractors]);
+      qs.push({
+        part: "Phần 1 – Nhìn hình chọn từ",
+        kind: "pic-word",
+        prompt: `${w.emoji || "📖"}  Đây là gì?`,
+        options: opts.map(o => ({ en: o.en, ipa: o.ipa })),
+        answer: opts.findIndex(o => o.en === w.en)
+      });
+    });
+    // riddles
+    pick(u.riddles || [], 3).forEach(r => {
+      const ans = words.find(w => w.en === r.answer) || { en: r.answer, ipa: "" };
+      const distractors = pick(words.filter(x => x.en !== r.answer), 3);
+      const opts = shuffle([ans, ...distractors]);
+      qs.push({
+        part: "Phần 2 – Câu đố",
+        kind: "riddle",
+        prompt: r.clue,
+        options: opts.map(o => ({ en: o.en, ipa: o.ipa || "" })),
+        answer: opts.findIndex(o => o.en === r.answer)
+      });
+    });
+    // odd one out
+    const cats = Object.keys(byCat).filter(c => byCat[c].length >= 3);
+    pick(cats, 3).forEach(c => {
+      const same = pick(byCat[c], 3);
+      const otherCat = pick(Object.keys(byCat).filter(x => x !== c), 1)[0];
+      const odd = pick(byCat[otherCat] || words, 1)[0];
+      if (!odd) return;
+      const opts = shuffle([...same, odd]);
+      qs.push({
+        part: "Phần 3 – Chọn từ khác nhóm",
+        kind: "odd",
+        prompt: "Từ nào khác nhóm?",
+        options: opts.map(o => ({ en: o.en, ipa: o.ipa })),
+        answer: opts.findIndex(o => o.en === odd.en)
+      });
+    });
+  }
+
+  if (type === "read") {
+    // passage qs
+    (u.passages || []).forEach(p => {
+      (p.qs || []).forEach(q => {
+        const opts = shuffle(q.options.map((o,i)=>({o,i})));
+        qs.push({
+          part: "Đọc hiểu – " + p.title,
+          kind: "mc",
+          prompt: q.q,
+          options: opts.map(x => x.o),
+          answer: opts.findIndex(x => x.i === q.answer)
+        });
+      });
+    });
+    // dialogs match
+    pick(u.dialogs || [], 3).forEach(d => {
+      const others = pick((u.dialogs||[]).filter(x => x.a !== d.a), 3).map(x => x.a);
+      const opts = shuffle([d.a, ...others]);
+      qs.push({
+        part: "Hội thoại",
+        kind: "mc",
+        prompt: d.q,
+        options: opts,
+        answer: opts.indexOf(d.a)
+      });
+    });
+    // order (simple: pick 1 sentence, ask next? or skip if few)
+    if ((u.order||[]).length >= 3) {
+      const seq = u.order.slice(0,4);
+      qs.push({
+        part: "Sắp xếp",
+        kind: "order",
+        prompt: "Sắp xếp các câu theo đúng thứ tự câu chuyện",
+        items: shuffle([...seq]),
+        correctOrder: seq
+      });
+    }
+  }
+
+  if (type === "write") {
+    // cloze
+    pick(u.cloze || [], 3).forEach(c => {
+      qs.push({
+        part: "Điền từ",
+        kind: "cloze",
+        prompt: c.s.replace("___", "______"),
+        answer: c.a,
+        hint: c.a
+      });
+    });
+    // order words (from order sentences)
+    pick(u.order || [], 2).forEach(sent => {
+      const wordsIn = sent.replace(/[.,!?]/g,"").split(/\s+/).filter(Boolean);
+      qs.push({
+        part: "Xếp từ thành câu",
+        kind: "scramble",
+        prompt: "Xếp các từ thành câu đúng",
+        items: shuffle(wordsIn),
+        answer: sent.replace(/[.,!?]/g,"").trim().toLowerCase()
+      });
+    });
+    // free write
+    pick(u.write || [], 3).forEach(w => {
+      qs.push({
+        part: "Viết câu",
+        kind: "free",
+        prompt: w.q,
+        model: w.model
+      });
+    });
+  }
+
+  return qs.slice(0, NUM_Q[type] || 10);
+}
+
+function renderQuestion() {
+  const st = testState;
+  if (!st) return;
+  if (st.idx >= st.questions.length) {
+    return showResult();
+  }
+  const q = st.questions[st.idx];
+  st.answered = false;
+  let html = renderHeader(`Unit ${currentUnit.id} · ${st.type}`, () => viewUnitHome());
+  html += `<div class="screen">`;
+  html += `<div style="display:flex;justify-content:space-between;align-items:center">
+    <button class="btn btn-ghost" id="btn-exit" style="padding:8px 12px">Thoát</button>
+    <span class="muted">Câu ${st.idx+1}/${st.questions.length}</span>
+  </div>`;
+  html += `<div class="progress-bar"><div style="width:${(st.idx/st.questions.length)*100}%"></div></div>`;
+  html += `<div class="muted" style="margin-bottom:8px">${q.part || ""}</div>`;
+  html += `<div class="card" id="qcard">`;
+  html += `<div style="font-weight:800;font-size:1.15rem;margin-bottom:12px">${q.prompt}</div>`;
+
+  if (q.kind === "listen-pic" || q.kind === "listen-q") {
+    html += `<button class="btn btn-listen" id="btn-listen">🔊 Nghe</button>`;
+    html += `<p class="muted" style="margin:8px 0 12px;font-size:.85rem">Bé cần bấm nghe ít nhất 1 lần mới chọn đáp án.</p>`;
+  }
+
+  if (q.kind === "listen-pic" || q.kind === "pic-word") {
+    html += `<div class="grid2" id="opts">`;
+    (q.options||[]).forEach((o,i) => {
+      if (q.kind === "listen-pic") {
+        html += `<button class="opt-img" data-i="${i}" disabled>
+          <span class="emoji">${o.emoji||"❓"}</span>
+          <span class="en">${o.en}</span>
+          <span class="ipa">${o.ipa||""}</span>
+        </button>`;
+      } else {
+        html += `<button class="opt" data-i="${i}">${o.en}<br><span class="muted" style="font-weight:400">${o.ipa||""}</span></button>`;
+      }
+    });
+    html += `</div>`;
+  } else if (q.kind === "riddle" || q.kind === "odd" || q.kind === "mc" || q.kind === "listen-q") {
+    html += `<div id="opts">`;
+    (q.options||[]).forEach((o,i) => {
+      const label = typeof o === "string" ? o : (o.en + (o.ipa ? `<br><span class="muted" style="font-weight:400">${o.ipa}</span>` : ""));
+      html += `<button class="opt" data-i="${i}" ${q.kind==="listen-q"?"disabled":""}>${label}</button>`;
+    });
+    html += `</div>`;
+  } else if (q.kind === "cloze") {
+    html += `<input id="cloze-in" type="text" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);font-size:1.1rem;font-family:inherit" placeholder="Viết từ còn thiếu...">`;
+    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:12px">Kiểm tra</button>`;
+  } else if (q.kind === "scramble") {
+    html += `<div id="scramble-bank" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>`;
+    html += `<div id="scramble-out" style="min-height:48px;padding:12px;border:2px dashed var(--border);border-radius:12px;margin-bottom:12px"></div>`;
+    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans">Kiểm tra</button>`;
+  } else if (q.kind === "order") {
+    html += `<div id="order-list"></div>`;
+    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:12px">Kiểm tra thứ tự</button>`;
+  } else if (q.kind === "free") {
+    html += `<textarea id="free-in" rows="3" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);font-size:1.05rem;font-family:inherit" placeholder="Viết câu trả lời..."></textarea>`;
+    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:12px">Xem đáp án mẫu</button>`;
+  }
+
+  html += `<div class="feedback" id="fb"></div>`;
+  html += `<button class="btn btn-primary btn-lg hidden" id="btn-next">Câu tiếp →</button>`;
+  html += `</div></div>`;
+  $("#view").innerHTML = html;
+  $("#btn-back").onclick = () => viewUnitHome();
+  $("#btn-exit").onclick = () => viewUnitHome();
+
+  let listened = q.kind !== "listen-pic" && q.kind !== "listen-q";
+
+  if (q.kind === "listen-pic" || q.kind === "listen-q") {
+    $("#btn-listen").onclick = async () => {
+      if (q.audioWord) await playWord(q.audioWord);
+      else if (q.audioText) await playText(q.audioText);
+      listened = true;
+      $$("#opts [data-i]").forEach(b => b.disabled = false);
+      $("#btn-listen").textContent = "🔊 Nghe lại";
+    };
+  }
+
+  function markAnswer(chosen) {
+    if (st.answered) return;
+    st.answered = true;
+    const correct = chosen === q.answer;
+    if (correct) st.correct++;
+    st.answers.push({ q, chosen, correct });
+    const opts = $$("#opts [data-i]");
+    opts.forEach(b => {
+      b.disabled = true;
+      const i = +b.dataset.i;
+      if (i === q.answer) b.classList.add("correct");
+      if (i === chosen && !correct) b.classList.add("wrong");
+    });
+    const fb = $("#fb");
+    if (correct) {
+      fb.className = "feedback ok";
+      fb.textContent = "Đúng rồi! 👏";
+    } else {
+      fb.className = "feedback bad";
+      fb.textContent = "Chưa đúng. Đáp án đúng đã tô xanh.";
+    }
+    $("#btn-next").classList.remove("hidden");
+  }
+
+  $$("#opts [data-i]").forEach(b => {
+    b.onclick = () => {
+      if (!listened) return;
+      markAnswer(+b.dataset.i);
+    };
+  });
+
+  if (q.kind === "cloze") {
+    $("#btn-check-ans").onclick = () => {
+      if (st.answered) return;
+      const val = normalizeKey($("#cloze-in").value, true);
+      const ans = normalizeKey(q.answer, true);
+      st.answered = true;
+      const ok = val === ans;
+      if (ok) st.correct++;
+      st.answers.push({ q, chosen: val, correct: ok });
+      const fb = $("#fb");
+      if (ok) { fb.className="feedback ok"; fb.textContent="Đúng rồi! 👏"; }
+      else { fb.className="feedback bad"; fb.textContent=`Chưa đúng. Đáp án: ${q.answer}`; }
+      $("#btn-next").classList.remove("hidden");
+    };
+  }
+
+  if (q.kind === "scramble") {
+    const bank = $("#scramble-bank");
+    const out = $("#scramble-out");
+    const chosen = [];
+    q.items.forEach((w,i) => {
+      const b = document.createElement("button");
+      b.className = "btn btn-ghost";
+      b.style.padding = "8px 12px";
+      b.textContent = w;
+      b.onclick = () => {
+        if (b.disabled) return;
+        b.disabled = true;
+        chosen.push(w);
+        out.textContent = chosen.join(" ");
+      };
+      bank.appendChild(b);
+    });
+    $("#btn-check-ans").onclick = () => {
+      if (st.answered) return;
+      st.answered = true;
+      const got = normalizeKey(chosen.join(" "), true);
+      const ok = got === normalizeKey(q.answer, true);
+      if (ok) st.correct++;
+      st.answers.push({ q, chosen: got, correct: ok });
+      const fb = $("#fb");
+      if (ok) { fb.className="feedback ok"; fb.textContent="Đúng rồi! 👏"; }
+      else { fb.className="feedback bad"; fb.textContent=`Chưa đúng. Câu đúng: ${q.answer}`; }
+      $("#btn-next").classList.remove("hidden");
+    };
+  }
+
+  if (q.kind === "order") {
+    const list = $("#order-list");
+    const items = [...q.items];
+    function draw() {
+      list.innerHTML = "";
+      items.forEach((s,i) => {
+        const row = document.createElement("div");
+        row.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:8px";
+        row.innerHTML = `<button class="btn btn-ghost" data-up="${i}" style="padding:6px 10px">↑</button>
+          <button class="btn btn-ghost" data-down="${i}" style="padding:6px 10px">↓</button>
+          <span class="card" style="flex:1;padding:10px">${s}</span>`;
+        list.appendChild(row);
+      });
+      $$("[data-up]").forEach(b => b.onclick = () => {
+        const i = +b.dataset.up;
+        if (i>0) { [items[i-1],items[i]]=[items[i],items[i-1]]; draw(); }
+      });
+      $$("[data-down]").forEach(b => b.onclick = () => {
+        const i = +b.dataset.down;
+        if (i<items.length-1) { [items[i],items[i+1]]=[items[i+1],items[i]]; draw(); }
+      });
+    }
+    draw();
+    $("#btn-check-ans").onclick = () => {
+      if (st.answered) return;
+      st.answered = true;
+      const ok = items.every((s,i) => s === q.correctOrder[i]);
+      if (ok) st.correct++;
+      st.answers.push({ q, chosen: items, correct: ok });
+      const fb = $("#fb");
+      if (ok) { fb.className="feedback ok"; fb.textContent="Đúng rồi! 👏"; }
+      else { fb.className="feedback bad"; fb.textContent="Chưa đúng thứ tự."; }
+      $("#btn-next").classList.remove("hidden");
+    };
+  }
+
+  if (q.kind === "free") {
+    $("#btn-check-ans").onclick = () => {
+      if (st.answered) return;
+      st.answered = true;
+      st.answers.push({ q, chosen: $("#free-in").value, correct: null });
+      const fb = $("#fb");
+      fb.className = "feedback ok";
+      fb.innerHTML = `Đáp án mẫu (bố mẹ đối chiếu):<br><strong>${q.model}</strong>`;
+      $("#btn-next").classList.remove("hidden");
+    };
+  }
+
+  $("#btn-next").onclick = () => {
+    st.idx++;
+    renderQuestion();
+  };
+}
+
+function showResult() {
+  const st = testState;
+  let html = renderHeader("Kết quả", () => viewUnitHome()) + `<div class="screen">`;
+  html += `<div class="card" style="text-align:center;margin-bottom:16px">
+    <div style="font-size:2rem;font-weight:800">${st.correct}/${st.questions.length}</div>
+    <p class="muted">Con đúng ${st.correct}/${st.questions.length} câu</p>
+  </div>`;
+  const wrong = st.answers.filter(a => a.correct === false);
+  if (wrong.length) {
+    html += `<div class="section-title">Mục cần ôn</div>`;
+    wrong.forEach(a => {
+      const label = a.q.audioWord || a.q.prompt || a.q.answer || "";
+      html += `<div class="card" style="margin-bottom:8px;display:flex;align-items:center;gap:10px">
+        <span style="flex:1">${label.slice(0,60)}</span>
+        <button class="btn btn-ghost" data-retry="${encodeURIComponent(JSON.stringify(a.q))}" style="padding:8px 12px">🔊</button>
+      </div>`;
+    });
+  }
+  html += `<button class="btn btn-primary btn-lg" id="btn-retry-wrong" style="margin-top:12px">Làm lại các câu sai</button>`;
+  html += `<button class="btn btn-ghost btn-lg" id="btn-retry-all" style="margin-top:10px">Làm lại từ đầu</button>`;
+  html += `<button class="btn btn-ghost btn-lg" id="btn-back-unit" style="margin-top:10px">Về unit</button>`;
+  html += `</div>`;
+  $("#view").innerHTML = html;
+  $("#btn-back").onclick = () => viewUnitHome();
+  $("#btn-back-unit").onclick = () => viewUnitHome();
+  $("#btn-retry-all").onclick = () => startTest(st.type);
+  $("#btn-retry-wrong").onclick = () => {
+    if (!wrong.length) return startTest(st.type);
+    testState = {
+      type: st.type,
+      questions: wrong.map(a => a.q),
+      idx: 0, correct: 0, answers: [], answered: false
+    };
+    renderQuestion();
+  };
+  $$("[data-retry]").forEach(b => {
+    b.onclick = () => {
+      try {
+        const q = JSON.parse(decodeURIComponent(b.dataset.retry));
+        if (q.audioWord) playWord(q.audioWord);
+        else if (q.audioText) playText(q.audioText);
+        else if (q.prompt) playText(q.prompt);
+      } catch(e) {}
+    };
+  });
+}
+
+function viewReviewSelect() {
+  let html = renderHeader("Ôn tổng hợp", () => viewHome()) + `<div class="screen">`;
+  html += `<p class="muted" style="margin-bottom:12px">Chọn các unit muốn ôn (hiện chỉ có Unit 1).</p>`;
+  unitsMeta.units.forEach(u => {
+    html += `<label style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid var(--border)">
+      <input type="checkbox" value="${u.id}" checked> Unit ${u.id}: ${u.title}
+    </label>`;
+  });
+  html += `<button class="btn btn-primary btn-lg" id="btn-start-review" style="margin-top:16px">Bắt đầu ôn</button></div>`;
+  $("#view").innerHTML = html;
+  $("#btn-back").onclick = () => viewHome();
+  $("#btn-start-review").onclick = async () => {
+    const ids = $$("input:checked").map(c => +c.value);
+    if (!ids.length) return;
+    await loadUnit(ids[0]);
+    startTest("vocab");
+  };
+}
+
+async function viewCheck() {
+  let html = renderHeader("Kiểm tra dữ liệu") + `<div class="screen">`;
+  html += `<p class="muted">Trang này giúp bố mẹ kiểm tra unit thiếu audio hay không.</p>`;
+  for (const meta of unitsMeta.units) {
+    try {
+      const data = await fetch(`${meta.data}?v=${meta.rev}`).then(r => r.json());
+      const audio = await fetch(`${meta.audio}?v=${meta.rev}`).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+      const needed = [];
+      (data.words||[]).forEach(w => {
+        const en = normalizeKey(w.en, true);
+        needed.push("w:"+en, "s:"+en);
+      });
+      (data.passages||[]).forEach(p => {
+        (p.text||"").split("\n").forEach(l => {
+          if (l.trim()) needed.push("l:"+normalizeKey(l));
+        });
+      });
+      (data.dialogs||[]).forEach(d => {
+        if (d.q) needed.push("l:"+normalizeKey(d.q));
+        if (d.a) needed.push("l:"+normalizeKey(d.a));
+      });
+      (data.order||[]).forEach(s => { if (s.trim()) needed.push("l:"+normalizeKey(s)); });
+      (data.cloze||[]).forEach(c => {
+        const s = (c.s||"").replace("___", c.a||"");
+        if (s.trim()) needed.push("l:"+normalizeKey(s));
+      });
+      (data.write||[]).forEach(w => { if (w.q) needed.push("l:"+normalizeKey(w.q)); });
+      const uniq = [...new Set(needed)];
+      const have = uniq.filter(k => audio[k] && audio[k].startsWith("data:audio"));
+      const miss = uniq.filter(k => !audio[k] || !audio[k].startsWith("data:audio"));
+      html += `<div class="card" style="margin-bottom:14px">
+        <strong>Unit ${data.id}: ${data.title}</strong>
+        <div class="muted">Từ: ${(data.words||[]).length} · Bài đọc: ${(data.passages||[]).length}</div>
+        <div style="margin-top:8px">Audio cần: <strong>${uniq.length}</strong> · Có: <strong>${have.length}</strong> · Thiếu: <strong style="color:var(--bad)">${miss.length}</strong></div>`;
+      if (miss.length) {
+        html += `<div class="check-list" style="margin-top:8px;max-height:120px;overflow:auto"><ul>`;
+        miss.slice(0,40).forEach(k => html += `<li class="chip">${k.slice(0,50)}</li>`);
+        if (miss.length > 40) html += `<li>... và ${miss.length-40} khóa nữa</li>`;
+        html += `</ul></div>`;
+      } else {
+        html += `<div class="status-voice" style="margin-top:8px">✓ Đủ audio</div>`;
+      }
+      html += `</div>`;
+    } catch(e) {
+      html += `<div class="card">Unit ${meta.id}: lỗi tải – ${e.message}</div>`;
+    }
+  }
+  html += `<button class="btn btn-primary btn-lg" onclick="location.search=''">Về trang chủ</button></div>`;
+  $("#view").innerHTML = html;
+}
+
+// ---------- boot ----------
+loadProgress();
+(async () => {
+  try {
+    await loadUnits();
+    if (location.search.includes("check=1")) {
+      await viewCheck();
+    } else {
+      viewHome();
+    }
+  } catch(e) {
+    $("#view").innerHTML = `<div class="screen"><h2>Lỗi tải units.json</h2><p>${e.message}</p>
+      <p class="muted">Hãy chắc chắn file units.json nằm cùng thư mục với index.html</p></div>`;
+  }
+})();
 </script>
 </body>
 </html>
