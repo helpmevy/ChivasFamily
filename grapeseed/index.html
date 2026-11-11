@@ -17,6 +17,7 @@
   --card: #FFFFFF;
   --primary: #2F6BFF;
   --primary-dark: #1E4FCC;
+  --primary-soft: #E8F0FF;
   --text: #16284A;
   --muted: #5A6B8C;
   --ok: #1B8F5A;
@@ -24,7 +25,8 @@
   --bad: #C2410C;
   --bad-bg: #FDEBDD;
   --border: #D6E0F5;
-  --shadow: 0 4px 14px rgba(47,107,255,.12);
+  --shadow: 0 6px 20px rgba(47,107,255,.10);
+  --radius: 18px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -32,6 +34,7 @@
     --card: #1E293B;
     --primary: #60A5FA;
     --primary-dark: #3B82F6;
+    --primary-soft: #1E3A5F;
     --text: #E2E8F0;
     --muted: #94A3B8;
     --ok: #34D399;
@@ -39,7 +42,7 @@
     --bad: #F97316;
     --bad-bg: #7C2D12;
     --border: #334155;
-    --shadow: 0 4px 14px rgba(0,0,0,.4);
+    --shadow: 0 6px 20px rgba(0,0,0,.35);
   }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -56,114 +59,326 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  color: inherit;
 }
-button:focus-visible, a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
-.app { max-width: 520px; margin: 0 auto; min-height: 100%; padding-bottom: 40px; }
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
 .header {
-  position: sticky; top: 0; z-index: 20;
-  background: var(--bg); padding: 12px 16px;
-  display: flex; align-items: center; gap: 10px;
+  position: sticky; top: 0; z-index: 30;
+  background: var(--bg);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   border-bottom: 1px solid var(--border);
 }
-.header h1 { font-size: 1.15rem; font-weight: 800; flex: 1; }
+.header h1 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  flex: 1;
+  line-height: 1.25;
+}
+.btn-back {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Buttons */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 12px 18px; border-radius: 14px; font-weight: 700; font-size: 1rem;
-  transition: transform .15s, background .15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  transition: transform .12s, background .15s, box-shadow .15s;
 }
 .btn:active { transform: scale(.97); }
-.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(47,107,255,.25);
+}
 .btn-primary:hover { background: var(--primary-dark); }
-.btn-ghost { background: var(--card); color: var(--text); border: 1.5px solid var(--border); }
-.btn-lg { padding: 16px 22px; font-size: 1.1rem; width: 100%; }
+.btn-ghost {
+  background: var(--card);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-lg {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  border-radius: 16px;
+}
 .btn-listen {
-  background: linear-gradient(135deg, #2F6BFF, #7C3AED);
-  color: #fff; width: 100%; padding: 16px; border-radius: 16px; font-size: 1.15rem;
+  background: linear-gradient(135deg, #2F6BFF 0%, #7C3AED 100%);
+  color: #fff;
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(124,58,237,.25);
 }
+
+/* Cards & layout */
 .card {
-  background: var(--card); border-radius: 18px; padding: 18px;
-  box-shadow: var(--shadow); border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
 }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.screen { padding: 16px; flex: 1; }
 .muted { color: var(--muted); font-size: .9rem; }
 .hidden { display: none !important; }
-.screen { padding: 16px; }
+
+/* Program home */
+.program-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+.program-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 18px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  text-align: left;
+  width: 100%;
+  transition: transform .12s, border-color .15s;
+}
+.program-card:active { transform: scale(.98); }
+.program-card .icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2F6BFF, #7C3AED);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+.program-card .info { flex: 1; min-width: 0; }
+.program-card .name { font-size: 1.2rem; font-weight: 800; }
+.program-card .desc { font-size: .88rem; color: var(--muted); margin-top: 2px; }
+
+/* Unit list */
 .unit-list { display: flex; flex-direction: column; gap: 10px; }
 .unit-btn {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px; border-radius: 16px; background: var(--card);
-  border: 1.5px solid var(--border); text-align: left; width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  text-align: left;
+  width: 100%;
   box-shadow: var(--shadow);
 }
 .unit-btn .num {
-  width: 44px; height: 44px; border-radius: 12px;
-  background: var(--primary); color: #fff;
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  background: var(--primary);
+  color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+  font-weight: 800; font-size: 1.15rem;
+  flex-shrink: 0;
 }
-.word-card {
-  text-align: center; padding: 24px 16px;
+.unit-btn .title { font-weight: 700; font-size: 1.05rem; }
+.unit-btn .sub { font-size: .85rem; color: var(--muted); margin-top: 2px; }
+
+/* Activity menu (unit home) – no horizontal scroll */
+.activity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
 }
-.word-card .emoji { font-size: 64px; line-height: 1; margin-bottom: 8px; }
-.word-card .en { font-size: 1.8rem; font-weight: 800; }
-.word-card .ipa { color: var(--muted); font-size: 1rem; margin: 4px 0; }
-.word-card .vi { font-size: 1.15rem; margin-top: 6px; }
+.activity-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+  min-height: 110px;
+  text-align: center;
+  transition: transform .12s, border-color .15s;
+}
+.activity-btn:active { transform: scale(.97); }
+.activity-btn .ico {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.activity-btn .label {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+.activity-btn .hint {
+  font-size: .78rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* Word card */
+.word-card { text-align: center; padding: 28px 16px; }
+.word-card .emoji { font-size: 68px; line-height: 1; margin-bottom: 10px; }
+.word-card .en { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; }
+.word-card .ipa { color: var(--muted); font-size: 1.05rem; margin: 6px 0; }
+.word-card .vi { font-size: 1.2rem; margin-top: 4px; font-weight: 600; }
+
+/* Passage */
 .passage-line {
-  padding: 12px 14px; border-radius: 12px; margin-bottom: 6px;
-  background: var(--bg); border: 1px solid transparent; cursor: pointer;
+  padding: 13px 14px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  background: var(--bg);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  font-size: 1.02rem;
 }
-.passage-line:hover, .passage-line.active { border-color: var(--primary); background: #E8F0FF; }
-@media (prefers-color-scheme: dark) {
-  .passage-line:hover, .passage-line.active { background: #1E3A5F; }
+.passage-line:hover, .passage-line.active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
 }
+
+/* Progress & options */
 .progress-bar {
-  height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 8px 0 16px;
+  height: 7px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0 16px;
 }
-.progress-bar > div { height: 100%; background: var(--primary); transition: width .3s; }
+.progress-bar > div {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width .3s;
+}
 .opt {
-  display: block; width: 100%; text-align: left;
-  padding: 14px 16px; border-radius: 14px; margin-bottom: 10px;
-  background: var(--card); border: 2px solid var(--border); font-weight: 600;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 15px 16px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  font-weight: 600;
+  font-size: 1.02rem;
+  line-height: 1.3;
 }
 .opt.correct { border-color: var(--ok); background: var(--ok-bg); }
 .opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
 .opt-img {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  padding: 14px 8px; border-radius: 14px; border: 2px solid var(--border);
-  background: var(--card); text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 10px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  text-align: center;
+  min-height: 120px;
 }
-.opt-img .emoji { font-size: 42px; }
+.opt-img .emoji { font-size: 44px; line-height: 1; }
 .opt-img .en { font-weight: 700; font-size: .95rem; }
 .opt-img .ipa { font-size: .75rem; color: var(--muted); }
 .opt-img.correct { border-color: var(--ok); background: var(--ok-bg); }
 .opt-img.wrong { border-color: var(--bad); background: var(--bad-bg); }
-.feedback { margin: 12px 0; font-weight: 700; min-height: 28px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.feedback {
+  margin: 14px 0 6px;
+  font-weight: 700;
+  min-height: 26px;
+  font-size: 1.05rem;
+}
 .feedback.ok { color: var(--ok); }
 .feedback.bad { color: var(--bad); }
-.nav-tabs {
-  display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 12px;
-  -webkit-overflow-scrolling: touch;
-}
-.nav-tabs button {
-  flex-shrink: 0; padding: 10px 14px; border-radius: 999px;
-  background: var(--card); border: 1.5px solid var(--border); font-weight: 700; font-size: .9rem;
-}
-.nav-tabs button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
 .status-voice {
-  font-size: .8rem; padding: 6px 12px; border-radius: 8px;
-  background: var(--ok-bg); color: var(--ok); margin-bottom: 12px;
+  font-size: .82rem;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--ok-bg);
+  color: var(--ok);
+  margin-bottom: 14px;
+  font-weight: 600;
 }
 .status-voice.warn { background: var(--bad-bg); color: var(--bad); }
 .status-voice.loading { background: #FEF3C7; color: #B45309; }
-.section-title { font-size: 1.05rem; font-weight: 800; margin: 16px 0 10px; }
-.check-list { font-size: .85rem; }
-.check-list li { margin-bottom: 4px; }
+
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 18px 0 10px;
+}
+
+/* Passage tabs – compact, wrap if needed */
+.pass-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.pass-tabs button {
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  font-weight: 700;
+  font-size: .88rem;
+}
+.pass-tabs button.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
 .chip {
-  display: inline-block; padding: 4px 10px; border-radius: 999px;
-  background: var(--border); font-size: .8rem; margin: 2px;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--border);
+  font-size: .8rem;
+  margin: 2px;
 }
 </style>
 </head>
@@ -173,16 +388,15 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--primary); outli
 </div>
 
 <script>
-const VERSION = "2026-11-11.1";
+const VERSION = "2026-11-11.2";
 const NUM_Q = { listen: 10, vocab: 10, read: 10, write: 8 };
 
 let unitsMeta = null;
 let currentUnit = null;
 let currentAudio = null;
-let audioCache = {};
 let progress = {};
 let missingAudio = new Set();
-let voiceStatus = "loading"; // loading | ready | fallback
+let voiceStatus = "loading";
 
 // ---------- helpers ----------
 function $(sel, el=document) { return el.querySelector(sel); }
@@ -221,7 +435,6 @@ async function playKey(key) {
     try { await audio.play(); } catch(e) {}
     return true;
   }
-  // fallback Web Speech
   missingAudio.add(key);
   if ("speechSynthesis" in window) {
     const u = new SpeechSynthesisUtterance(key.replace(/^[wsl]:/, ""));
@@ -235,8 +448,6 @@ async function playKey(key) {
 }
 function playText(text, slow=false) {
   const nk = normalizeKey(text, false);
-  const key = (slow ? "s:" : "l:") + (slow ? normalizeKey(text, true) : nk);
-  // try exact first
   if (currentAudio) {
     const tryKeys = slow
       ? ["s:"+normalizeKey(text,true), "w:"+normalizeKey(text,true)]
@@ -245,14 +456,13 @@ function playText(text, slow=false) {
       if (currentAudio[k]) return playKey(k);
     }
   }
-  return playKey(key);
+  return playKey((slow ? "s:" : "l:") + (slow ? normalizeKey(text,true) : nk));
 }
 function playWord(en, slow=false) {
-  const k = (slow ? "s:" : "w:") + normalizeKey(en, true);
-  return playKey(k);
+  return playKey((slow ? "s:" : "w:") + normalizeKey(en, true));
 }
 
-// ---------- data loading ----------
+// ---------- data ----------
 async function loadUnits() {
   const r = await fetch(`units.json?v=${VERSION}`);
   unitsMeta = await r.json();
@@ -269,13 +479,7 @@ async function loadUnit(id) {
   currentAudio = audio || {};
   const keysNeeded = countNeededKeys(data);
   const have = Object.keys(currentAudio).filter(k => currentAudio[k] && currentAudio[k].startsWith("data:audio")).length;
-  if (have === 0) {
-    voiceStatus = "fallback";
-  } else if (have < keysNeeded * 0.5) {
-    voiceStatus = "fallback";
-  } else {
-    voiceStatus = "ready";
-  }
+  voiceStatus = (have === 0 || have < keysNeeded * 0.4) ? "fallback" : "ready";
   return data;
 }
 function countNeededKeys(data) {
@@ -292,225 +496,293 @@ function countNeededKeys(data) {
 }
 
 // ---------- views ----------
-function renderHeader(title, backFn) {
+function header(title, backFn) {
   return `
     <div class="header">
-      ${backFn ? `<button class="btn btn-ghost" id="btn-back" style="padding:8px 12px">←</button>` : ""}
+      ${backFn ? `<button class="btn-back" id="btn-back" aria-label="Quay lại">←</button>` : `<div style="width:42px"></div>`}
       <h1>${title}</h1>
     </div>`;
-}
-
-function viewHome() {
-  const groups = [
-    { title: "Unit 1 – 10", units: unitsMeta.units.filter(u => u.id >= 1 && u.id <= 10) },
-    { title: "Unit 11 – 20", units: unitsMeta.units.filter(u => u.id >= 11 && u.id <= 20) },
-    { title: "Unit 21 – 30", units: unitsMeta.units.filter(u => u.id >= 21 && u.id <= 30) }
-  ].filter(g => g.units.length);
-  let html = renderHeader("Grapeseed") + `<div class="screen">`;
-  html += `<p class="muted" style="margin-bottom:16px">Chọn unit để học. Giọng AI Kokoro (af_heart).</p>`;
-  groups.forEach(g => {
-    html += `<div class="section-title">${g.title}</div><div class="unit-list">`;
-    g.units.forEach(u => {
-      html += `<button class="unit-btn" data-id="${u.id}">
-        <span class="num">${u.id}</span>
-        <span><strong>${u.title}</strong><br><span class="muted">Unit ${u.id}</span></span>
-      </button>`;
-    });
-    html += `</div>`;
-  });
-  html += `<div style="margin-top:24px"><button class="btn btn-ghost btn-lg" id="btn-review">Ôn tổng hợp nhiều unit</button></div>`;
-  html += `<div style="margin-top:12px"><button class="btn btn-ghost btn-lg" id="btn-check">Kiểm tra dữ liệu (?check=1)</button></div>`;
-  html += `</div>`;
-  $("#view").innerHTML = html;
-  $$(".unit-btn").forEach(b => b.onclick = () => openUnit(+b.dataset.id));
-  $("#btn-review").onclick = () => viewReviewSelect();
-  $("#btn-check").onclick = () => { location.search = "?check=1"; };
-}
-
-async function openUnit(id) {
-  $("#view").innerHTML = renderHeader("Đang tải...") + `<div class="screen"><p class="muted">Đang tải Unit ${id}...</p></div>`;
-  try {
-    await loadUnit(id);
-    viewUnitHome();
-  } catch(e) {
-    $("#view").innerHTML = renderHeader("Lỗi") + `<div class="screen"><p>Không tải được unit. ${e.message}</p>
-      <button class="btn btn-primary" onclick="viewHome()">Về trang chủ</button></div>`;
-  }
 }
 
 function voiceBadge() {
   if (voiceStatus === "ready") return `<div class="status-voice">✓ Giọng AI đã sẵn sàng</div>`;
   if (voiceStatus === "loading") return `<div class="status-voice loading">Đang tải giọng AI...</div>`;
-  return `<div class="status-voice warn">⚠ Chưa tải được giọng AI (file audio trống hoặc thiếu). Tạm dùng giọng điện thoại. Chạy make_audio.py để tạo audio/u1.json</div>`;
+  return `<div class="status-voice warn">⚠ Chưa có file audio. Tạm dùng giọng điện thoại. Chạy make_audio.py để tạo giọng Kokoro.</div>`;
+}
+
+/* ===== 1. APP HOME – danh sách chương trình ===== */
+function viewAppHome() {
+  let html = header("Học tiếng Anh") + `<div class="screen">`;
+  html += `<p class="muted" style="margin-bottom:18px">Chọn chương trình học</p>`;
+  html += `<div class="program-grid">`;
+  html += `
+    <button class="program-card" id="go-grapeseed">
+      <div class="icon">🍇</div>
+      <div class="info">
+        <div class="name">GrapeSEED</div>
+        <div class="desc">Unit 1 · Động vật, gia đình & bạn bè</div>
+      </div>
+    </button>
+  `;
+  // Placeholder cho tương lai
+  html += `
+    <button class="program-card" style="opacity:.55" disabled>
+      <div class="icon" style="background:#94A3B8">📚</div>
+      <div class="info">
+        <div class="name">RAZ Kids</div>
+        <div class="desc">Sắp có</div>
+      </div>
+    </button>
+  `;
+  html += `</div></div>`;
+  $("#view").innerHTML = html;
+  $("#go-grapeseed").onclick = () => viewGrapeseedHome();
+}
+
+/* ===== 2. GRAPESEED HOME – danh sách unit ===== */
+function viewGrapeseedHome() {
+  const groups = [
+    { title: "Unit 1 – 10", units: unitsMeta.units.filter(u => u.id >= 1 && u.id <= 10) },
+    { title: "Unit 11 – 20", units: unitsMeta.units.filter(u => u.id >= 11 && u.id <= 20) },
+    { title: "Unit 21 – 30", units: unitsMeta.units.filter(u => u.id >= 21 && u.id <= 30) }
+  ].filter(g => g.units.length);
+
+  let html = header("GrapeSEED", () => viewAppHome()) + `<div class="screen">`;
+  html += `<p class="muted" style="margin-bottom:16px">Chọn unit để học</p>`;
+  groups.forEach(g => {
+    html += `<div class="section-title" style="margin-top:4px">${g.title}</div>`;
+    html += `<div class="unit-list">`;
+    g.units.forEach(u => {
+      html += `
+        <button class="unit-btn" data-id="${u.id}">
+          <span class="num">${u.id}</span>
+          <span>
+            <div class="title">${u.title}</div>
+            <div class="sub">Unit ${u.id}</div>
+          </span>
+        </button>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+  $("#view").innerHTML = html;
+  $("#btn-back").onclick = () => viewAppHome();
+  $$(".unit-btn").forEach(b => b.onclick = () => openUnit(+b.dataset.id));
+}
+
+/* ===== 3. UNIT HOME – menu hoạt động (lưới 2 cột, không cuộn ngang) ===== */
+async function openUnit(id) {
+  $("#view").innerHTML = header("Đang tải...") + `<div class="screen"><p class="muted">Đang tải Unit ${id}...</p></div>`;
+  try {
+    await loadUnit(id);
+    viewUnitHome();
+  } catch(e) {
+    $("#view").innerHTML = header("Lỗi") + `<div class="screen"><p>Không tải được unit. ${e.message}</p>
+      <button class="btn btn-primary btn-lg" style="margin-top:16px" id="btn-back-err">Về danh sách</button></div>`;
+    $("#btn-back-err").onclick = () => viewGrapeseedHome();
+  }
 }
 
 function viewUnitHome() {
   const u = currentUnit;
-  let html = renderHeader(`Unit ${u.id}`, () => viewHome()) + `<div class="screen">`;
+  let html = header(`Unit ${u.id}`, () => viewGrapeseedHome()) + `<div class="screen">`;
   html += voiceBadge();
-  html += `<h2 style="font-size:1.3rem;margin-bottom:4px">${u.title}</h2>`;
+  html += `<h2 style="font-size:1.35rem;font-weight:800;margin-bottom:2px">${u.title}</h2>`;
   html += `<p class="muted" style="margin-bottom:18px">${(u.words||[]).length} từ · ${(u.passages||[]).length} bài đọc</p>`;
-  html += `<div class="nav-tabs" id="tabs">
-    <button class="active" data-v="words">Học từ</button>
-    <button data-v="read">Đọc bài</button>
-    <button data-v="listen">Nghe</button>
-    <button data-v="vocab">Từ vựng</button>
-    <button data-v="readtest">Đọc</button>
-    <button data-v="write">Viết</button>
+
+  html += `<div class="activity-grid">
+    <button class="activity-btn" data-v="words">
+      <span class="ico">🃏</span>
+      <span class="label">Học từ</span>
+      <span class="hint">Thẻ từ + nghe</span>
+    </button>
+    <button class="activity-btn" data-v="read">
+      <span class="ico">📖</span>
+      <span class="label">Đọc bài</span>
+      <span class="hint">Story & nghe</span>
+    </button>
+    <button class="activity-btn" data-v="listen">
+      <span class="ico">👂</span>
+      <span class="label">Nghe</span>
+      <span class="hint">Kiểm tra nghe</span>
+    </button>
+    <button class="activity-btn" data-v="vocab">
+      <span class="ico">🔤</span>
+      <span class="label">Từ vựng</span>
+      <span class="hint">Hình · đố · nhóm</span>
+    </button>
+    <button class="activity-btn" data-v="readtest">
+      <span class="ico">📝</span>
+      <span class="label">Đọc</span>
+      <span class="hint">Hiểu bài · hội thoại</span>
+    </button>
+    <button class="activity-btn" data-v="write">
+      <span class="ico">✍️</span>
+      <span class="label">Viết</span>
+      <span class="hint">Điền · xếp · viết</span>
+    </button>
   </div>`;
-  html += `<div id="panel"></div></div>`;
+
+  html += `</div>`;
   $("#view").innerHTML = html;
-  $("#btn-back").onclick = () => viewHome();
-  $$("#tabs button").forEach(b => {
-    b.onclick = () => {
-      $$("#tabs button").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
-      showPanel(b.dataset.v);
-    };
+  $("#btn-back").onclick = () => viewGrapeseedHome();
+  $$(".activity-btn").forEach(b => {
+    b.onclick = () => showActivity(b.dataset.v);
   });
-  showPanel("words");
 }
 
-function showPanel(name) {
-  const panel = $("#panel");
-  if (name === "words") panel.innerHTML = panelWords();
-  else if (name === "read") panel.innerHTML = panelRead();
+function showActivity(name) {
+  if (name === "words") viewWords();
+  else if (name === "read") viewRead();
   else if (name === "listen") startTest("listen");
   else if (name === "vocab") startTest("vocab");
   else if (name === "readtest") startTest("read");
   else if (name === "write") startTest("write");
 }
 
-function panelWords() {
+/* ===== Học từ ===== */
+function viewWords() {
   const words = currentUnit.words || [];
-  let html = `<p class="muted" style="margin-bottom:12px">Bấm thẻ để nghe. Nút nghe chậm bên dưới.</p>`;
+  let html = header(`Unit ${currentUnit.id} · Học từ`, () => viewUnitHome()) + `<div class="screen">`;
   html += `<div id="word-area"></div>`;
-  html += `<div style="display:flex;gap:10px;margin-top:16px">
-    <button class="btn btn-primary" id="w-prev" style="flex:1">← Trước</button>
-    <button class="btn btn-listen" id="w-slow" style="flex:1.4">🐢 Nghe chậm</button>
-    <button class="btn btn-primary" id="w-next" style="flex:1">Sau →</button>
+  html += `<div style="display:flex;gap:10px;margin-top:18px">
+    <button class="btn btn-ghost" id="w-prev" style="flex:1;padding:14px">← Trước</button>
+    <button class="btn btn-listen" id="w-slow" style="flex:1.5">🐢 Nghe chậm</button>
+    <button class="btn btn-ghost" id="w-next" style="flex:1;padding:14px">Sau →</button>
   </div>`;
-  setTimeout(() => {
-    let idx = 0;
-    const area = $("#word-area");
-    function render() {
-      const w = words[idx];
-      if (!w) return;
-      area.innerHTML = `<div class="card word-card">
-        <div class="emoji">${w.emoji || "📖"}</div>
-        <div class="en">${w.en}</div>
-        <div class="ipa">${w.ipa || ""}</div>
-        <div class="vi">${w.vi || ""}</div>
-        <div class="muted" style="margin-top:8px">${idx+1} / ${words.length}</div>
-      </div>`;
-      area.onclick = () => playWord(w.en);
-    }
-    render();
-    $("#w-prev").onclick = () => { idx = (idx - 1 + words.length) % words.length; render(); };
-    $("#w-next").onclick = () => { idx = (idx + 1) % words.length; render(); };
-    $("#w-slow").onclick = () => playWord(words[idx].en, true);
-  }, 0);
-  return html;
+  html += `<p class="muted" style="text-align:center;margin-top:12px">Bấm vào thẻ để nghe tốc độ thường</p>`;
+  html += `</div>`;
+  $("#view").innerHTML = html;
+  $("#btn-back").onclick = () => viewUnitHome();
+
+  let idx = 0;
+  const area = $("#word-area");
+  function render() {
+    const w = words[idx];
+    if (!w) return;
+    area.innerHTML = `<div class="card word-card">
+      <div class="emoji">${w.emoji || "📖"}</div>
+      <div class="en">${w.en}</div>
+      <div class="ipa">${w.ipa || ""}</div>
+      <div class="vi">${w.vi || ""}</div>
+      <div class="muted" style="margin-top:12px">${idx+1} / ${words.length}</div>
+    </div>`;
+    area.onclick = () => playWord(w.en);
+  }
+  render();
+  $("#w-prev").onclick = () => { idx = (idx - 1 + words.length) % words.length; render(); };
+  $("#w-next").onclick = () => { idx = (idx + 1) % words.length; render(); };
+  $("#w-slow").onclick = () => playWord(words[idx].en, true);
 }
 
-function panelRead() {
+/* ===== Đọc bài ===== */
+function viewRead() {
   const passages = currentUnit.passages || [];
-  if (!passages.length) return `<p class="muted">Không có bài đọc.</p>`;
-  let html = `<div class="nav-tabs" id="pass-tabs">`;
+  if (!passages.length) {
+    $("#view").innerHTML = header("Đọc bài", () => viewUnitHome()) +
+      `<div class="screen"><p class="muted">Không có bài đọc.</p></div>`;
+    $("#btn-back").onclick = () => viewUnitHome();
+    return;
+  }
+  let html = header(`Unit ${currentUnit.id} · Đọc bài`, () => viewUnitHome()) + `<div class="screen">`;
+  html += `<div class="pass-tabs" id="pass-tabs">`;
   passages.forEach((p,i) => {
     html += `<button class="${i===0?"active":""}" data-i="${i}">${p.title}</button>`;
   });
-  html += `</div><div id="pass-content"></div>`;
-  setTimeout(() => {
-    function show(i) {
-      const p = passages[i];
-      const lines = (p.text || "").split("\n");
-      let h = `<div class="card"><div class="muted" style="margin-bottom:8px">${p.type} · ${p.src || ""}</div>`;
-      lines.forEach(line => {
-        if (!line.trim()) h += `<div style="height:10px"></div>`;
-        else h += `<div class="passage-line" data-line="${encodeURIComponent(line)}">${line}</div>`;
-      });
-      h += `<button class="btn btn-listen" id="play-all" style="margin-top:14px">🔊 Nghe cả bài</button></div>`;
-      if (p.qs && p.qs.length) {
-        h += `<div class="section-title">Câu hỏi hiểu bài</div>`;
-        p.qs.forEach((q, qi) => {
-          h += `<div class="card" style="margin-bottom:12px"><strong>${qi+1}. ${q.q}</strong><div style="margin-top:8px">`;
-          const opts = shuffle(q.options.map((o,oi)=>({o,oi})));
-          opts.forEach(({o,oi}) => {
-            h += `<button class="opt qs-opt" data-qi="${qi}" data-oi="${oi}">${o}</button>`;
-          });
-          h += `</div><div class="feedback" id="fb-${qi}"></div></div>`;
+  html += `</div><div id="pass-content"></div></div>`;
+  $("#view").innerHTML = html;
+  $("#btn-back").onclick = () => viewUnitHome();
+
+  function show(i) {
+    const p = passages[i];
+    const lines = (p.text || "").split("\n");
+    let h = `<div class="card"><div class="muted" style="margin-bottom:10px">${p.type} · ${p.src || ""}</div>`;
+    lines.forEach(line => {
+      if (!line.trim()) h += `<div style="height:10px"></div>`;
+      else h += `<div class="passage-line" data-line="${encodeURIComponent(line)}">${line}</div>`;
+    });
+    h += `<button class="btn btn-listen" id="play-all" style="margin-top:16px">🔊 Nghe cả bài</button></div>`;
+
+    if (p.qs && p.qs.length) {
+      h += `<div class="section-title">Câu hỏi hiểu bài</div>`;
+      p.qs.forEach((q, qi) => {
+        h += `<div class="card" style="margin-bottom:12px"><strong>${qi+1}. ${q.q}</strong><div style="margin-top:10px">`;
+        const opts = shuffle(q.options.map((o,oi)=>({o,oi})));
+        opts.forEach(({o,oi}) => {
+          h += `<button class="opt qs-opt" data-qi="${qi}" data-oi="${oi}">${o}</button>`;
         });
-      }
-      $("#pass-content").innerHTML = h;
-      $$(".passage-line").forEach(el => {
-        el.onclick = () => {
-          $$(".passage-line").forEach(x => x.classList.remove("active"));
-          el.classList.add("active");
-          playText(decodeURIComponent(el.dataset.line));
-        };
-      });
-      $("#play-all").onclick = async () => {
-        for (const line of lines) {
-          if (!line.trim()) continue;
-          await playText(line);
-          await new Promise(r => setTimeout(r, 900));
-        }
-      };
-      $$(".qs-opt").forEach(btn => {
-        btn.onclick = () => {
-          const qi = +btn.dataset.qi;
-          const oi = +btn.dataset.oi;
-          const q = p.qs[qi];
-          const fb = $(`#fb-${qi}`);
-          $$(".qs-opt").filter(b => +b.dataset.qi === qi).forEach(b => {
-            b.disabled = true;
-            if (+b.dataset.oi === q.answer) b.classList.add("correct");
-          });
-          if (oi === q.answer) {
-            btn.classList.add("correct");
-            fb.className = "feedback ok";
-            fb.textContent = "Đúng rồi! 👏";
-          } else {
-            btn.classList.add("wrong");
-            fb.className = "feedback bad";
-            fb.textContent = "Chưa đúng. Đáp án đúng đã tô xanh.";
-          }
-        };
+        h += `</div><div class="feedback" id="fb-${qi}"></div></div>`;
       });
     }
-    $$("#pass-tabs button").forEach(b => {
-      b.onclick = () => {
-        $$("#pass-tabs button").forEach(x => x.classList.remove("active"));
-        b.classList.add("active");
-        show(+b.dataset.i);
+    $("#pass-content").innerHTML = h;
+
+    $$(".passage-line").forEach(el => {
+      el.onclick = () => {
+        $$(".passage-line").forEach(x => x.classList.remove("active"));
+        el.classList.add("active");
+        playText(decodeURIComponent(el.dataset.line));
       };
     });
-    show(0);
-  }, 0);
-  return html;
+    $("#play-all").onclick = async () => {
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        await playText(line);
+        await new Promise(r => setTimeout(r, 850));
+      }
+    };
+    $$(".qs-opt").forEach(btn => {
+      btn.onclick = () => {
+        const qi = +btn.dataset.qi;
+        const oi = +btn.dataset.oi;
+        const q = p.qs[qi];
+        const fb = $(`#fb-${qi}`);
+        $$(".qs-opt").filter(b => +b.dataset.qi === qi).forEach(b => {
+          b.disabled = true;
+          if (+b.dataset.oi === q.answer) b.classList.add("correct");
+        });
+        if (oi === q.answer) {
+          btn.classList.add("correct");
+          fb.className = "feedback ok";
+          fb.textContent = "Đúng rồi! 👏";
+        } else {
+          btn.classList.add("wrong");
+          fb.className = "feedback bad";
+          fb.textContent = "Chưa đúng. Đáp án đúng đã tô xanh.";
+        }
+      };
+    });
+  }
+
+  $$("#pass-tabs button").forEach(b => {
+    b.onclick = () => {
+      $$("#pass-tabs button").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      show(+b.dataset.i);
+    };
+  });
+  show(0);
 }
 
-// ---------- Tests ----------
+/* ===== Tests ===== */
 let testState = null;
 
 function startTest(type) {
-  const u = currentUnit;
-  const questions = buildQuestions(type, u);
+  const questions = buildQuestions(type, currentUnit);
   if (!questions.length) {
-    $("#panel").innerHTML = `<p class="muted">Unit này chưa đủ dữ liệu cho bài ${type}.</p>`;
+    $("#view").innerHTML = header("Kiểm tra", () => viewUnitHome()) +
+      `<div class="screen"><p class="muted">Unit này chưa đủ dữ liệu cho bài này.</p>
+       <button class="btn btn-ghost btn-lg" style="margin-top:16px" id="btn-back2">Quay lại</button></div>`;
+    $("#btn-back").onclick = $("#btn-back2").onclick = () => viewUnitHome();
     return;
   }
-  testState = {
-    type, questions, idx: 0, correct: 0, answers: [], answered: false
-  };
+  testState = { type, questions, idx: 0, correct: 0, answers: [], answered: false };
   renderQuestion();
 }
 
 function buildQuestions(type, u) {
   const qs = [];
   const words = (u.words || []).filter(w => w.en);
-  const withEmoji = words.filter(w => w.emoji && w.emoji.length < 4);
+  const withEmoji = words.filter(w => w.emoji && w.emoji.length < 5);
   const byCat = {};
   words.forEach(w => {
     const c = w.cat || "thing";
@@ -519,10 +791,9 @@ function buildQuestions(type, u) {
   });
 
   if (type === "listen") {
-    // Part 1: hear word → choose picture
     pick(withEmoji, 5).forEach(w => {
       const distractors = pick((byCat[w.cat] || words).filter(x => x.en !== w.en && x.emoji), 3);
-      const opts = shuffle([w, ...distractors]).slice(0,4);
+      let opts = shuffle([w, ...distractors]).slice(0,4);
       while (opts.length < 4) {
         const extra = pick(withEmoji.filter(x => !opts.find(o=>o.en===x.en)), 1)[0];
         if (extra) opts.push(extra); else break;
@@ -536,47 +807,36 @@ function buildQuestions(type, u) {
         answer: opts.findIndex(o => o.en === w.en)
       });
     });
-    // Part 2: hear sentence → answer
     const lines = [];
     (u.passages||[]).forEach(p => (p.text||"").split("\n").forEach(l => { if (l.trim().length > 8) lines.push(l.trim()); }));
     (u.dialogs||[]).forEach(d => { if (d.q) lines.push(d.q); if (d.a) lines.push(d.a); });
     pick(lines, 3).forEach(line => {
+      const opts = shuffle([line, "I see a cat.", "The bird is sleeping.", "My father is small."]);
       qs.push({
         part: "Phần 2 – Nghe câu, trả lời",
         kind: "listen-q",
         prompt: "Nghe câu rồi chọn ý đúng",
         audioText: line,
-        options: shuffle([
-          line,
-          "I see a cat.",
-          "The bird is sleeping.",
-          "My father is small."
-        ].filter((v,i,a)=>a.indexOf(v)===i)).slice(0,4),
-        answer: 0 // will fix after shuffle? better rebuild
+        options: opts,
+        answer: opts.indexOf(line)
       });
-      // fix answer after
-      const last = qs[qs.length-1];
-      last.options = shuffle([line, "I see a cat.", "The bird is sleeping.", "My father is small."]);
-      last.answer = last.options.indexOf(line);
     });
-    // Part 3: simple
     pick(withEmoji, 2).forEach(w => {
+      let opts = shuffle(pick(withEmoji, 4).map(o => ({en:o.en,emoji:o.emoji,ipa:o.ipa})));
+      let ans = opts.findIndex(o => o.en === w.en);
+      if (ans < 0) { opts[0] = {en:w.en,emoji:w.emoji,ipa:w.ipa}; ans = 0; }
       qs.push({
         part: "Phần 3 – Nghe và chọn",
         kind: "listen-pic",
         prompt: "Nghe từ, chọn hình",
         audioWord: w.en,
-        options: shuffle(pick(withEmoji, 4).map(o => ({en:o.en,emoji:o.emoji,ipa:o.ipa}))),
-        answer: 0
+        options: opts,
+        answer: ans
       });
-      const last = qs[qs.length-1];
-      last.answer = last.options.findIndex(o => o.en === w.en);
-      if (last.answer < 0) { last.options[0] = {en:w.en,emoji:w.emoji,ipa:w.ipa}; last.answer=0; }
     });
   }
 
   if (type === "vocab") {
-    // picture → word
     pick(withEmoji, 4).forEach(w => {
       const distractors = pick(words.filter(x => x.en !== w.en), 3);
       const opts = shuffle([w, ...distractors]);
@@ -588,7 +848,6 @@ function buildQuestions(type, u) {
         answer: opts.findIndex(o => o.en === w.en)
       });
     });
-    // riddles
     pick(u.riddles || [], 3).forEach(r => {
       const ans = words.find(w => w.en === r.answer) || { en: r.answer, ipa: "" };
       const distractors = pick(words.filter(x => x.en !== r.answer), 3);
@@ -601,7 +860,6 @@ function buildQuestions(type, u) {
         answer: opts.findIndex(o => o.en === r.answer)
       });
     });
-    // odd one out
     const cats = Object.keys(byCat).filter(c => byCat[c].length >= 3);
     pick(cats, 3).forEach(c => {
       const same = pick(byCat[c], 3);
@@ -620,7 +878,6 @@ function buildQuestions(type, u) {
   }
 
   if (type === "read") {
-    // passage qs
     (u.passages || []).forEach(p => {
       (p.qs || []).forEach(q => {
         const opts = shuffle(q.options.map((o,i)=>({o,i})));
@@ -633,7 +890,6 @@ function buildQuestions(type, u) {
         });
       });
     });
-    // dialogs match
     pick(u.dialogs || [], 3).forEach(d => {
       const others = pick((u.dialogs||[]).filter(x => x.a !== d.a), 3).map(x => x.a);
       const opts = shuffle([d.a, ...others]);
@@ -645,13 +901,12 @@ function buildQuestions(type, u) {
         answer: opts.indexOf(d.a)
       });
     });
-    // order (simple: pick 1 sentence, ask next? or skip if few)
     if ((u.order||[]).length >= 3) {
       const seq = u.order.slice(0,4);
       qs.push({
         part: "Sắp xếp",
         kind: "order",
-        prompt: "Sắp xếp các câu theo đúng thứ tự câu chuyện",
+        prompt: "Sắp xếp các câu theo đúng thứ tự",
         items: shuffle([...seq]),
         correctOrder: seq
       });
@@ -659,17 +914,14 @@ function buildQuestions(type, u) {
   }
 
   if (type === "write") {
-    // cloze
     pick(u.cloze || [], 3).forEach(c => {
       qs.push({
         part: "Điền từ",
         kind: "cloze",
         prompt: c.s.replace("___", "______"),
-        answer: c.a,
-        hint: c.a
+        answer: c.a
       });
     });
-    // order words (from order sentences)
     pick(u.order || [], 2).forEach(sent => {
       const wordsIn = sent.replace(/[.,!?]/g,"").split(/\s+/).filter(Boolean);
       qs.push({
@@ -680,7 +932,6 @@ function buildQuestions(type, u) {
         answer: sent.replace(/[.,!?]/g,"").trim().toLowerCase()
       });
     });
-    // free write
     pick(u.write || [], 3).forEach(w => {
       qs.push({
         part: "Viết câu",
@@ -690,32 +941,30 @@ function buildQuestions(type, u) {
       });
     });
   }
-
   return qs.slice(0, NUM_Q[type] || 10);
 }
 
 function renderQuestion() {
   const st = testState;
   if (!st) return;
-  if (st.idx >= st.questions.length) {
-    return showResult();
-  }
+  if (st.idx >= st.questions.length) return showResult();
+
   const q = st.questions[st.idx];
   st.answered = false;
-  let html = renderHeader(`Unit ${currentUnit.id} · ${st.type}`, () => viewUnitHome());
+  let html = header(`Unit ${currentUnit.id}`, () => viewUnitHome());
   html += `<div class="screen">`;
-  html += `<div style="display:flex;justify-content:space-between;align-items:center">
-    <button class="btn btn-ghost" id="btn-exit" style="padding:8px 12px">Thoát</button>
-    <span class="muted">Câu ${st.idx+1}/${st.questions.length}</span>
+  html += `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <button class="btn btn-ghost" id="btn-exit" style="padding:10px 14px;font-size:.95rem">Thoát</button>
+    <span class="muted" style="font-weight:600">Câu ${st.idx+1}/${st.questions.length}</span>
   </div>`;
   html += `<div class="progress-bar"><div style="width:${(st.idx/st.questions.length)*100}%"></div></div>`;
-  html += `<div class="muted" style="margin-bottom:8px">${q.part || ""}</div>`;
+  html += `<div class="muted" style="margin-bottom:10px;font-weight:600">${q.part || ""}</div>`;
   html += `<div class="card" id="qcard">`;
-  html += `<div style="font-weight:800;font-size:1.15rem;margin-bottom:12px">${q.prompt}</div>`;
+  html += `<div style="font-weight:800;font-size:1.18rem;margin-bottom:14px;line-height:1.35">${q.prompt}</div>`;
 
   if (q.kind === "listen-pic" || q.kind === "listen-q") {
     html += `<button class="btn btn-listen" id="btn-listen">🔊 Nghe</button>`;
-    html += `<p class="muted" style="margin:8px 0 12px;font-size:.85rem">Bé cần bấm nghe ít nhất 1 lần mới chọn đáp án.</p>`;
+    html += `<p class="muted" style="margin:10px 0 14px;font-size:.85rem">Bé cần bấm nghe ít nhất 1 lần mới chọn được đáp án.</p>`;
   }
 
   if (q.kind === "listen-pic" || q.kind === "pic-word") {
@@ -728,34 +977,34 @@ function renderQuestion() {
           <span class="ipa">${o.ipa||""}</span>
         </button>`;
       } else {
-        html += `<button class="opt" data-i="${i}">${o.en}<br><span class="muted" style="font-weight:400">${o.ipa||""}</span></button>`;
+        html += `<button class="opt" data-i="${i}">${o.en}<br><span class="muted" style="font-weight:500;font-size:.88rem">${o.ipa||""}</span></button>`;
       }
     });
     html += `</div>`;
   } else if (q.kind === "riddle" || q.kind === "odd" || q.kind === "mc" || q.kind === "listen-q") {
     html += `<div id="opts">`;
     (q.options||[]).forEach((o,i) => {
-      const label = typeof o === "string" ? o : (o.en + (o.ipa ? `<br><span class="muted" style="font-weight:400">${o.ipa}</span>` : ""));
+      const label = typeof o === "string" ? o : (o.en + (o.ipa ? `<br><span class="muted" style="font-weight:500;font-size:.88rem">${o.ipa}</span>` : ""));
       html += `<button class="opt" data-i="${i}" ${q.kind==="listen-q"?"disabled":""}>${label}</button>`;
     });
     html += `</div>`;
   } else if (q.kind === "cloze") {
-    html += `<input id="cloze-in" type="text" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);font-size:1.1rem;font-family:inherit" placeholder="Viết từ còn thiếu...">`;
-    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:12px">Kiểm tra</button>`;
+    html += `<input id="cloze-in" type="text" autocomplete="off" style="width:100%;padding:15px 16px;border-radius:14px;border:2px solid var(--border);font-size:1.1rem;font-family:inherit;background:var(--bg);color:var(--text)" placeholder="Viết từ còn thiếu...">`;
+    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:14px">Kiểm tra</button>`;
   } else if (q.kind === "scramble") {
-    html += `<div id="scramble-bank" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>`;
-    html += `<div id="scramble-out" style="min-height:48px;padding:12px;border:2px dashed var(--border);border-radius:12px;margin-bottom:12px"></div>`;
+    html += `<div id="scramble-bank" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>`;
+    html += `<div id="scramble-out" style="min-height:52px;padding:14px;border:2px dashed var(--border);border-radius:14px;margin-bottom:14px;font-weight:600"></div>`;
     html += `<button class="btn btn-primary btn-lg" id="btn-check-ans">Kiểm tra</button>`;
   } else if (q.kind === "order") {
     html += `<div id="order-list"></div>`;
-    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:12px">Kiểm tra thứ tự</button>`;
+    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:14px">Kiểm tra thứ tự</button>`;
   } else if (q.kind === "free") {
-    html += `<textarea id="free-in" rows="3" style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);font-size:1.05rem;font-family:inherit" placeholder="Viết câu trả lời..."></textarea>`;
-    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:12px">Xem đáp án mẫu</button>`;
+    html += `<textarea id="free-in" rows="3" style="width:100%;padding:15px;border-radius:14px;border:2px solid var(--border);font-size:1.05rem;font-family:inherit;background:var(--bg);color:var(--text)" placeholder="Viết câu trả lời..."></textarea>`;
+    html += `<button class="btn btn-primary btn-lg" id="btn-check-ans" style="margin-top:14px">Xem đáp án mẫu</button>`;
   }
 
   html += `<div class="feedback" id="fb"></div>`;
-  html += `<button class="btn btn-primary btn-lg hidden" id="btn-next">Câu tiếp →</button>`;
+  html += `<button class="btn btn-primary btn-lg hidden" id="btn-next" style="margin-top:8px">Câu tiếp →</button>`;
   html += `</div></div>`;
   $("#view").innerHTML = html;
   $("#btn-back").onclick = () => viewUnitHome();
@@ -779,29 +1028,20 @@ function renderQuestion() {
     const correct = chosen === q.answer;
     if (correct) st.correct++;
     st.answers.push({ q, chosen, correct });
-    const opts = $$("#opts [data-i]");
-    opts.forEach(b => {
+    $$("#opts [data-i]").forEach(b => {
       b.disabled = true;
       const i = +b.dataset.i;
       if (i === q.answer) b.classList.add("correct");
       if (i === chosen && !correct) b.classList.add("wrong");
     });
     const fb = $("#fb");
-    if (correct) {
-      fb.className = "feedback ok";
-      fb.textContent = "Đúng rồi! 👏";
-    } else {
-      fb.className = "feedback bad";
-      fb.textContent = "Chưa đúng. Đáp án đúng đã tô xanh.";
-    }
+    if (correct) { fb.className = "feedback ok"; fb.textContent = "Đúng rồi! 👏"; }
+    else { fb.className = "feedback bad"; fb.textContent = "Chưa đúng. Đáp án đúng đã tô xanh."; }
     $("#btn-next").classList.remove("hidden");
   }
 
   $$("#opts [data-i]").forEach(b => {
-    b.onclick = () => {
-      if (!listened) return;
-      markAnswer(+b.dataset.i);
-    };
+    b.onclick = () => { if (!listened) return; markAnswer(+b.dataset.i); };
   });
 
   if (q.kind === "cloze") {
@@ -824,10 +1064,10 @@ function renderQuestion() {
     const bank = $("#scramble-bank");
     const out = $("#scramble-out");
     const chosen = [];
-    q.items.forEach((w,i) => {
+    q.items.forEach(w => {
       const b = document.createElement("button");
       b.className = "btn btn-ghost";
-      b.style.padding = "8px 12px";
+      b.style.padding = "10px 14px";
       b.textContent = w;
       b.onclick = () => {
         if (b.disabled) return;
@@ -859,9 +1099,10 @@ function renderQuestion() {
       items.forEach((s,i) => {
         const row = document.createElement("div");
         row.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:8px";
-        row.innerHTML = `<button class="btn btn-ghost" data-up="${i}" style="padding:6px 10px">↑</button>
-          <button class="btn btn-ghost" data-down="${i}" style="padding:6px 10px">↓</button>
-          <span class="card" style="flex:1;padding:10px">${s}</span>`;
+        row.innerHTML = `
+          <button class="btn btn-ghost" data-up="${i}" style="padding:8px 12px;min-width:42px">↑</button>
+          <button class="btn btn-ghost" data-down="${i}" style="padding:8px 12px;min-width:42px">↓</button>
+          <span class="card" style="flex:1;padding:12px 14px;font-weight:600">${s}</span>`;
         list.appendChild(row);
       });
       $$("[data-up]").forEach(b => b.onclick = () => {
@@ -899,31 +1140,28 @@ function renderQuestion() {
     };
   }
 
-  $("#btn-next").onclick = () => {
-    st.idx++;
-    renderQuestion();
-  };
+  $("#btn-next").onclick = () => { st.idx++; renderQuestion(); };
 }
 
 function showResult() {
   const st = testState;
-  let html = renderHeader("Kết quả", () => viewUnitHome()) + `<div class="screen">`;
-  html += `<div class="card" style="text-align:center;margin-bottom:16px">
-    <div style="font-size:2rem;font-weight:800">${st.correct}/${st.questions.length}</div>
-    <p class="muted">Con đúng ${st.correct}/${st.questions.length} câu</p>
+  let html = header("Kết quả", () => viewUnitHome()) + `<div class="screen">`;
+  html += `<div class="card" style="text-align:center;margin-bottom:18px;padding:28px 20px">
+    <div style="font-size:2.4rem;font-weight:800;letter-spacing:-0.03em">${st.correct}/${st.questions.length}</div>
+    <p class="muted" style="margin-top:6px">Con đúng ${st.correct}/${st.questions.length} câu</p>
   </div>`;
   const wrong = st.answers.filter(a => a.correct === false);
   if (wrong.length) {
     html += `<div class="section-title">Mục cần ôn</div>`;
     wrong.forEach(a => {
       const label = a.q.audioWord || a.q.prompt || a.q.answer || "";
-      html += `<div class="card" style="margin-bottom:8px;display:flex;align-items:center;gap:10px">
-        <span style="flex:1">${label.slice(0,60)}</span>
-        <button class="btn btn-ghost" data-retry="${encodeURIComponent(JSON.stringify(a.q))}" style="padding:8px 12px">🔊</button>
+      html += `<div class="card" style="margin-bottom:8px;display:flex;align-items:center;gap:12px;padding:14px 16px">
+        <span style="flex:1;font-weight:600">${String(label).slice(0,55)}</span>
+        <button class="btn btn-ghost" data-retry="${encodeURIComponent(JSON.stringify(a.q))}" style="padding:10px 14px">🔊</button>
       </div>`;
     });
   }
-  html += `<button class="btn btn-primary btn-lg" id="btn-retry-wrong" style="margin-top:12px">Làm lại các câu sai</button>`;
+  html += `<button class="btn btn-primary btn-lg" id="btn-retry-wrong" style="margin-top:14px">Làm lại các câu sai</button>`;
   html += `<button class="btn btn-ghost btn-lg" id="btn-retry-all" style="margin-top:10px">Làm lại từ đầu</button>`;
   html += `<button class="btn btn-ghost btn-lg" id="btn-back-unit" style="margin-top:10px">Về unit</button>`;
   html += `</div>`;
@@ -952,28 +1190,10 @@ function showResult() {
   });
 }
 
-function viewReviewSelect() {
-  let html = renderHeader("Ôn tổng hợp", () => viewHome()) + `<div class="screen">`;
-  html += `<p class="muted" style="margin-bottom:12px">Chọn các unit muốn ôn (hiện chỉ có Unit 1).</p>`;
-  unitsMeta.units.forEach(u => {
-    html += `<label style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid var(--border)">
-      <input type="checkbox" value="${u.id}" checked> Unit ${u.id}: ${u.title}
-    </label>`;
-  });
-  html += `<button class="btn btn-primary btn-lg" id="btn-start-review" style="margin-top:16px">Bắt đầu ôn</button></div>`;
-  $("#view").innerHTML = html;
-  $("#btn-back").onclick = () => viewHome();
-  $("#btn-start-review").onclick = async () => {
-    const ids = $$("input:checked").map(c => +c.value);
-    if (!ids.length) return;
-    await loadUnit(ids[0]);
-    startTest("vocab");
-  };
-}
-
+/* ===== Check page (chỉ khi ?check=1) ===== */
 async function viewCheck() {
-  let html = renderHeader("Kiểm tra dữ liệu") + `<div class="screen">`;
-  html += `<p class="muted">Trang này giúp bố mẹ kiểm tra unit thiếu audio hay không.</p>`;
+  let html = header("Kiểm tra dữ liệu") + `<div class="screen">`;
+  html += `<p class="muted" style="margin-bottom:14px">Trang nội bộ. Không hiện trên app bình thường.</p>`;
   for (const meta of unitsMeta.units) {
     try {
       const data = await fetch(`${meta.data}?v=${meta.rev}`).then(r => r.json());
@@ -984,9 +1204,7 @@ async function viewCheck() {
         needed.push("w:"+en, "s:"+en);
       });
       (data.passages||[]).forEach(p => {
-        (p.text||"").split("\n").forEach(l => {
-          if (l.trim()) needed.push("l:"+normalizeKey(l));
-        });
+        (p.text||"").split("\n").forEach(l => { if (l.trim()) needed.push("l:"+normalizeKey(l)); });
       });
       (data.dialogs||[]).forEach(d => {
         if (d.q) needed.push("l:"+normalizeKey(d.q));
@@ -1006,20 +1224,21 @@ async function viewCheck() {
         <div class="muted">Từ: ${(data.words||[]).length} · Bài đọc: ${(data.passages||[]).length}</div>
         <div style="margin-top:8px">Audio cần: <strong>${uniq.length}</strong> · Có: <strong>${have.length}</strong> · Thiếu: <strong style="color:var(--bad)">${miss.length}</strong></div>`;
       if (miss.length) {
-        html += `<div class="check-list" style="margin-top:8px;max-height:120px;overflow:auto"><ul>`;
-        miss.slice(0,40).forEach(k => html += `<li class="chip">${k.slice(0,50)}</li>`);
-        if (miss.length > 40) html += `<li>... và ${miss.length-40} khóa nữa</li>`;
-        html += `</ul></div>`;
+        html += `<div style="margin-top:8px;max-height:120px;overflow:auto">`;
+        miss.slice(0,30).forEach(k => html += `<span class="chip">${k.slice(0,45)}</span>`);
+        if (miss.length > 30) html += `<span class="chip">+${miss.length-30}</span>`;
+        html += `</div>`;
       } else {
         html += `<div class="status-voice" style="margin-top:8px">✓ Đủ audio</div>`;
       }
       html += `</div>`;
     } catch(e) {
-      html += `<div class="card">Unit ${meta.id}: lỗi tải – ${e.message}</div>`;
+      html += `<div class="card">Unit ${meta.id}: lỗi – ${e.message}</div>`;
     }
   }
-  html += `<button class="btn btn-primary btn-lg" onclick="location.search=''">Về trang chủ</button></div>`;
+  html += `<button class="btn btn-primary btn-lg" id="btn-home">Về trang chủ</button></div>`;
   $("#view").innerHTML = html;
+  $("#btn-home").onclick = () => { location.search = ""; viewAppHome(); };
 }
 
 // ---------- boot ----------
@@ -1030,7 +1249,7 @@ loadProgress();
     if (location.search.includes("check=1")) {
       await viewCheck();
     } else {
-      viewHome();
+      viewAppHome();
     }
   } catch(e) {
     $("#view").innerHTML = `<div class="screen"><h2>Lỗi tải units.json</h2><p>${e.message}</p>
