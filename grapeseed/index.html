@@ -9,6 +9,7 @@
 <title>Grapeseed</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -517,7 +518,19 @@ function viewAppHome() {
   html += `<div class="program-grid">`;
   html += `
     <button class="program-card" id="go-grapeseed">
-      <div class="icon">🍇</div>
+      <div class="icon" style="background:#F3E8FF"><svg viewBox="100 20 312 400" width="40" height="40" aria-hidden="true">
+          <defs>
+            <radialGradient id="gg" cx="0.35" cy="0.3" r="0.8"><stop offset="0" stop-color="#C4A1FF"/><stop offset=".55" stop-color="#8B4DE8"/><stop offset="1" stop-color="#5B21B6"/></radialGradient>
+            <linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6EE7A0"/><stop offset="1" stop-color="#16A34A"/></linearGradient>
+          </defs>
+          <path d="M256 160C256 125 268 102 292 88" stroke="#7A4A22" stroke-width="16" stroke-linecap="round" fill="none"/>
+          <path d="M292 92C292 40 350 22 398 40C398 92 350 120 292 92Z" fill="url(#gl)"/>
+          <g fill="url(#gg)"><circle cx="176" cy="214" r="58"/><circle cx="336" cy="214" r="58"/><circle cx="256" cy="204" r="58"/><circle cx="214" cy="288" r="58"/><circle cx="298" cy="288" r="58"/><circle cx="256" cy="360" r="58"/></g>
+          <g fill="#fff" opacity=".55"><ellipse cx="156" cy="192" rx="14" ry="9" transform="rotate(-35 156 192)"/><ellipse cx="236" cy="182" rx="14" ry="9" transform="rotate(-35 236 182)"/><ellipse cx="316" cy="192" rx="14" ry="9" transform="rotate(-35 316 192)"/><ellipse cx="194" cy="266" rx="14" ry="9" transform="rotate(-35 194 266)"/><ellipse cx="278" cy="266" rx="14" ry="9" transform="rotate(-35 278 266)"/><ellipse cx="236" cy="338" rx="14" ry="9" transform="rotate(-35 236 338)"/></g>
+          <circle cx="238" cy="366" r="7" fill="#2E1065"/><circle cx="274" cy="366" r="7" fill="#2E1065"/>
+          <path d="M242 380Q256 394 270 380" stroke="#2E1065" stroke-width="6" stroke-linecap="round" fill="none"/>
+          <circle cx="222" cy="382" r="9" fill="#FF9EC4" opacity=".7"/><circle cx="290" cy="382" r="9" fill="#FF9EC4" opacity=".7"/>
+        </svg></div>
       <div class="info">
         <div class="name">GrapeSEED</div>
         <div class="desc">Unit 1 · Động vật, gia đình & bạn bè</div>
