@@ -550,6 +550,73 @@ body {
   body { background-attachment: scroll; }
 }
 
+
+/* ===== PATH MAP (kiểu Duolingo) ===== */
+.path-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 10px 52px 8px 4px; flex-shrink: 0;
+}
+.path-hello { font-family: var(--font-title); font-weight: 800; font-size: 1.15rem; color: #28563D; }
+.path-scroll {
+  flex: 1; min-height: 0;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 0 40px;
+  scrollbar-width: thin; scrollbar-color: #5FA874 rgba(255,255,255,.5);
+}
+.path-scroll::-webkit-scrollbar { width: 10px; }
+.path-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,.5); border-radius: 8px; }
+.path-scroll::-webkit-scrollbar-thumb { background: #5FA874; border-radius: 8px; border: 2px solid rgba(255,255,255,.6); }
+.path-wrap { position: relative; width: 100%; max-width: 420px; margin: 0 auto; }
+.path-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.path-svg path {
+  fill: none; stroke: rgba(255,255,255,.95); stroke-width: 12; stroke-linecap: round;
+  stroke-dasharray: 1 20; vector-effect: non-scaling-stroke;
+}
+.path-banner {
+  position: absolute; left: 4%; right: 4%;
+  min-height: 62px; padding: 8px 14px;
+  border-radius: 18px; color: #fff;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 5px 0 rgba(0,0,0,.18);
+  background: #4DAD68; z-index: 2;
+}
+.path-banner.clickable { cursor: pointer; }
+.path-banner.clickable:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
+.path-banner .emo { font-size: 1.8rem; line-height: 1; }
+.path-banner .txt { flex: 1; min-width: 0; }
+.path-banner .u-num { font-size: .78rem; font-weight: 800; letter-spacing: .5px; opacity: .9; text-transform: uppercase; }
+.path-banner .u-name { font-family: var(--font-title); font-size: 1.15rem; font-weight: 700; line-height: 1.15; }
+.path-banner.locked-b { background: #9AA7A0; }
+.path-node {
+  position: absolute; width: 76px; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; z-index: 3;
+}
+.path-node .btn-circle {
+  width: 76px; height: 76px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: #fff;
+  border: 3px solid rgba(255,255,255,.95);
+  box-shadow: 0 7px 0 rgba(0,0,0,.2);
+}
+.path-node:active .btn-circle { transform: translateY(5px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+.path-node.easy .btn-circle { background: linear-gradient(135deg, #5CC079, #2F8F52); }
+.path-node.hard .btn-circle { background: linear-gradient(135deg, #FFB347, #E8861A); }
+.path-node.locked .btn-circle { background: #B6C0BA; box-shadow: 0 7px 0 rgba(0,0,0,.12); font-size: 1.6rem; }
+.path-node.recent .btn-circle { outline: 4px solid #fff; outline-offset: 3px; }
+.path-node .lv {
+  font-family: var(--font-title); font-weight: 800; font-size: .95rem;
+  background: rgba(255,253,244,.95); color: #28563D;
+  padding: 1px 10px; border-radius: 10px;
+}
+.path-node .st { font-size: .8rem; letter-spacing: 1px; color: #F2A30F; text-shadow: 0 1px 0 rgba(255,255,255,.8); }
+.path-node.locked .st { visibility: hidden; }
+@media (max-width: 380px) {
+  .path-node { width: 66px; }
+  .path-node .btn-circle { width: 66px; height: 66px; font-size: 1.7rem; }
+}
+
 </style>
 </head>
 <body>
@@ -882,6 +949,11 @@ function render() {
   app.innerHTML = fn();
   // bind events after render
   bindScreenEvents();
+  if (STATE.screen === 'home') {
+    const sc = document.getElementById('pathScroll');
+    const cur = sc && sc.querySelector('.path-node.current');
+    if (sc && cur) sc.scrollTop = Math.max(0, cur.offsetTop - sc.clientHeight / 2);
+  }
 }
 
 function renderProfiles() {
@@ -909,33 +981,74 @@ function renderProfiles() {
 function renderHome() {
   const p = getProfile();
   if (!p) { showScreen('profiles'); return ''; }
+  const TOTAL = 10;                    // số unit trên đường
   const units = window.GS.unitList || [];
-  let path = '';
-  units.forEach((u, i) => {
-    const bestE = (p.best && p.best[u.id + '_easy']) || 0;
-    const bestH = (p.best && p.best[u.id + '_hard']) || 0;
-    const starsE = '★'.repeat(bestE) + '☆'.repeat(5 - bestE);
-    const starsH = '★'.repeat(bestH) + '☆'.repeat(5 - bestH);
-    const isRecent = p.lastUnit === u.id;
-    path += `
-      ${i > 0 ? '<div class="map-connector"></div>' : ''}
-      <div class="map-unit" data-unit="${u.id}">
-        <div class="map-node ${isRecent ? 'recent' : ''}" style="background:${u.theme.primary}">${u.emoji}</div>
-        <div class="map-info">
-          <div class="map-title">${u.short}: ${u.title}</div>
-          <div class="map-stars" style="color:#FFB300">Easy ${starsE}</div>
-          <div class="map-stars" style="color:#FF8F00">Hard ${starsH}</div>
+  const BLOCK_H = 272;                 // chiều cao mỗi unit (px)
+  const BANNER_TOP = 8, EASY_Y = 118, HARD_Y = 168;   // vị trí trong block
+  const EASY_X = 25, HARD_X = 75;      // % theo chiều ngang
+  const H = TOTAL * BLOCK_H;
+  const pad2 = n => (n < 10 ? '0' + n : '' + n);
+  const bannerColors = ['#4DAD68','#3AA6B9','#F2A93B','#8E7CC3','#E2736E'];
+
+  let nodes = '';
+  let d = '';
+  let hasCurrent = false;
+  for (let i = 0; i < TOTAL; i++) {
+    const id = 'u' + pad2(i + 1);
+    const u = units.find(x => x.id === id);   // chưa có dữ liệu => u = undefined => khóa
+    const top = i * BLOCK_H;
+    const yE = top + EASY_Y, yH = top + HARD_Y;
+    const isRecent = !!u && p.lastUnit === id;
+    const isCurrent = isRecent || (!hasCurrent && !p.lastUnit && !!u);
+    if (isCurrent) hasCurrent = true;
+
+    // đường nối: Easy -> Hard -> Easy của unit sau
+    if (i === 0) d += `M ${EASY_X} ${yE} `;
+    d += `C ${EASY_X} ${yE + 35}, ${HARD_X} ${yH - 35}, ${HARD_X} ${yH} `;
+    if (i < TOTAL - 1) {
+      const nE = (i + 1) * BLOCK_H + EASY_Y;
+      d += `C ${HARD_X} ${yH + 40}, ${EASY_X} ${nE - 40}, ${EASY_X} ${nE} `;
+    }
+
+    const color = u && u.theme && u.theme.primary ? u.theme.primary : bannerColors[i % bannerColors.length];
+    const label = u ? `${u.short || ('Unit ' + (i + 1))}${u.title ? ': ' + u.title : ''}` : '';
+    nodes += `
+      <div class="path-banner ${u ? 'clickable' : 'locked-b'}" ${u ? `data-unit="${id}"` : ''}
+           style="top:${top + BANNER_TOP}px; ${u ? 'background:' + color : ''}">
+        <div class="emo">${u ? (u.emoji || '📘') : '🔒'}</div>
+        <div class="txt">
+          <div class="u-num">Unit ${i + 1}</div>
+          <div class="u-name">${u ? esc(u.title || u.short || '') : 'Coming soon'}</div>
         </div>
-      </div>
-    `;
-  });
+      </div>`;
+
+    ['easy', 'hard'].forEach(lv => {
+      const best = (p.best && p.best[id + '_' + lv]) || 0;
+      const stars = '★'.repeat(best) + '☆'.repeat(Math.max(0, 5 - best));
+      const x = lv === 'easy' ? EASY_X : HARD_X;
+      const y = lv === 'easy' ? yE : yH;
+      nodes += `
+      <div class="path-node ${lv} ${u ? '' : 'locked'} ${isRecent ? 'recent' : ''} ${isCurrent ? 'current' : ''}"
+           data-unit="${id}" data-level="${lv}"
+           style="left:${x}%; top:${y - 38}px">
+        <div class="btn-circle">${u ? (lv === 'easy' ? '🌱' : '🔥') : '🔒'}</div>
+        <div class="lv">${lv === 'easy' ? 'Easy' : 'Hard'}</div>
+        <div class="st">${stars}</div>
+      </div>`;
+    });
+  }
+
   return `
     <button class="parent-lock" id="btnParent">🔒</button>
-    <div class="map-path">${path}</div>
-    <div style="text-align:center;margin:12px 0 6px;">
-      <div style="font-size:0.85rem;color:#315B43;font-weight:800;">Hello,</div>
-      <div class="header-title" style="font-size:1.4rem;margin-bottom:10px;">${esc(p.name)} ${p.avatar}</div>
-      <button class="btn btn-ghost" id="btnSwitchProfile" style="min-height:44px;">Switch player</button>
+    <div class="path-top">
+      <div class="path-hello">${p.avatar} ${esc(p.name)}</div>
+      <button class="btn btn-ghost" id="btnSwitchProfile" style="min-height:40px;padding:6px 14px;font-size:.95rem;">Switch</button>
+    </div>
+    <div class="path-scroll" id="pathScroll">
+      <div class="path-wrap" style="height:${H}px">
+        <svg class="path-svg" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><path d="${d}"/></svg>
+        ${nodes}
+      </div>
     </div>
   `;
 }
@@ -1187,7 +1300,16 @@ function bindScreenEvents() {
   if (addP) addP.addEventListener('click', () => { playSfx('tap'); showAddProfile(); });
 
   // Home
-  document.querySelectorAll('.map-unit').forEach(el => {
+  // Nút Easy / Hard trên đường: bấm là vào làm bài luôn
+  document.querySelectorAll('.path-node').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.classList.contains('locked')) { playSfx('tap'); return; }
+      const lv = el.dataset.level;
+      loadUnit(el.dataset.unit, () => startQuiz(lv));   // startQuiz đã có tiếng bấm
+    });
+  });
+  // Bấm vào banner tên unit: mở màn hình unit cũ (có "Practice missed words")
+  document.querySelectorAll('.path-banner[data-unit]').forEach(el => {
     el.addEventListener('click', () => {
       playSfx('tap');
       loadUnit(el.dataset.unit);
@@ -1302,20 +1424,17 @@ function arraysEqual(a, b) {
    ============================================================ */
 let currentTries = 0;
 
-function loadUnit(unitId) {
+function loadUnit(unitId, cb) {
   STATE.currentUnit = unitId;
-  // dynamic script load
-  if (window.GS.units[unitId]) {
+  const done = () => {
     STATE.unitData = window.GS.units[unitId];
-    showScreen('unit');
-    return;
-  }
+    if (cb) cb(); else showScreen('unit');
+  };
+  // dynamic script load
+  if (window.GS.units[unitId]) { done(); return; }
   const s = document.createElement('script');
   s.src = 'data/' + unitId + '.js';
-  s.onload = () => {
-    STATE.unitData = window.GS.units[unitId];
-    showScreen('unit');
-  };
+  s.onload = done;
   s.onerror = () => {
     alert('Unit data not found: ' + unitId);
   };
