@@ -667,8 +667,12 @@ body {
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="config.js"></script>
-<script src="data/units.js"></script>
+<script>
+/* ===== PHIÊN BẢN APP – ĐỔI SỐ NÀY MỖI LẦN CẬP NHẬT BẤT KỲ FILE NÀO (index.html, config.js, data/*.js) =====
+   Các máy đang mở app sẽ tự thấy số khác và tự tải bản mới. */
+const APP_VERSION = '2026-11-14.1';
+document.write('<script src="config.js?v=' + APP_VERSION + '"><\/script><script src="data/units.js?v=' + APP_VERSION + '"><\/script>');
+</script>
 <script>
 /* ============================================================
    STATE & STORAGE
@@ -1467,7 +1471,7 @@ function loadUnit(unitId, cb) {
   // dynamic script load
   if (window.GS.units[unitId]) { done(); return; }
   const s = document.createElement('script');
-  s.src = 'data/' + unitId + '.js';
+  s.src = 'data/' + unitId + '.js?v=' + APP_VERSION;
   s.onload = done;
   s.onerror = () => {
     kidAlert({ emoji: '😢', title: 'Ôi, có lỗi rồi!', text: 'Không tìm thấy dữ liệu bài học (' + unitId + ').\nHãy thử lại sau nhé!' });
@@ -2379,15 +2383,54 @@ function showFamilyModal() {
 }
 
 /* ============================================================
+   TỰ ĐỘNG CẬP NHẬT BẢN MỚI
+   - Hỏi lại GitHub (bỏ qua cache) xem APP_VERSION có đổi không.
+   - Kiểm tra: lúc mở app, lúc quay lại app, lúc có mạng lại, mỗi 10 phút.
+   - Không cập nhật giữa lúc bé đang làm bài; dữ liệu bé luôn giữ nguyên.
+   ============================================================ */
+let updBusy = false;
+async function checkForUpdate() {
+  if (updBusy || navigator.onLine === false) return;
+  updBusy = true;
+  try {
+    const res = await withTimeout(fetch(location.pathname + '?nc=' + Date.now(), { cache: 'no-store' }), 8000);
+    if (!res.ok) return;
+    const text = await res.text();
+    const m = new RegExp("APP_VERSION\\s*=\\s*'([^']+)'").exec(text);
+    if (!m || m[1] === APP_VERSION) return;
+    applyUpdate(m[1]);
+  } catch (e) { /* offline hoặc mở bằng file:// → bỏ qua */ }
+  finally { updBusy = false; }
+}
+function applyUpdate(newVer) {
+  if (STATE.screen === 'quiz') return;                       // đang làm bài → chờ lần kiểm tra sau
+  try {
+    if (sessionStorage.getItem('gs_upd') === newVer) return; // chống lặp vô hạn
+    sessionStorage.setItem('gs_upd', newVer);
+  } catch (e) {}
+  saveLocal();
+  showBigToast('🍇 Đang cập nhật bản mới…');
+  setTimeout(() => location.replace(location.pathname + '?v=' + encodeURIComponent(newVer)), 1200);
+}
+function initUpdateCheck() {
+  setTimeout(checkForUpdate, 1500);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
+  window.addEventListener('pageshow', e => { if (e.persisted) checkForUpdate(); });
+  window.addEventListener('online', checkForUpdate);
+  setInterval(checkForUpdate, 10 * 60 * 1000);
+}
+
+/* ============================================================
    INIT
    ============================================================ */
 loadStorage();
 initSync();
+initUpdateCheck();
 // Xin trình duyệt giữ dữ liệu lâu dài (giảm nguy cơ bị tự xóa khi máy thiếu bộ nhớ)
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
 // preload unit 1
 const s0 = document.createElement('script');
-s0.src = 'data/u01.js';
+s0.src = 'data/u01.js?v=' + APP_VERSION;
 s0.onload = () => {
   if (!STATE.profiles.length) {
     // create default profile for first run
