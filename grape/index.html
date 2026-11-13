@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>GrapeSEED Test – Fun English Check</title>
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Andika:wght@400;700&display=swap" rel="stylesheet">
@@ -587,6 +589,31 @@ body {
   .path-node .btn-circle { width: 66px; height: 66px; font-size: 1.7rem; }
 }
 
+
+/* ===== PIN / Parent / Edit (thêm mới) ===== */
+.modal { max-height: 90vh; max-height: 90dvh; overflow-y: auto; }
+.pin-input { text-align: center; letter-spacing: .45em; font-size: 1.6rem !important; font-weight: 800; }
+.form-msg { color: #c0392b; min-height: 1.2em; font-size: .88rem; font-weight: 700; margin: -8px 0 10px; }
+.field-label { text-align: left; font-size: .85rem; font-weight: 800; color: var(--dark); margin-top: 4px; }
+.mini-btn {
+  width: 42px; height: 42px; flex-shrink: 0; border: none; border-radius: 12px;
+  background: #EAF2E5; font-size: 1.1rem; cursor: pointer;
+}
+.mini-btn:active { transform: scale(.92); }
+.mini-btn.danger { background: #FDE8E6; }
+.parent-row {
+  display: flex; align-items: center; gap: 8px; padding: 8px 2px;
+  border-bottom: 1px solid #E3ECDD; text-align: left;
+}
+.parent-row .pr-av { font-size: 1.7rem; }
+.parent-row .pr-name {
+  flex: 1; min-width: 0; font-family: var(--font-title); font-weight: 800;
+  color: var(--dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.parent-row .pr-name small { display: block; font-family: var(--font-body); font-weight: 700; color: #b26a00; font-size: .72rem; }
+.edit-me { margin-left: 6px; vertical-align: middle; width: 34px; height: 34px; font-size: .95rem; }
+.modal-wide { max-width: 420px !important; }
+.shake { animation: shake .4s; }
 </style>
 </head>
 <body>
@@ -630,7 +657,8 @@ const STATE = {
   screen: 'profiles',
   unitData: null,
   wrongReview: false,
-  reviewRange: null
+  reviewRange: null,
+  deleted: {}            // { profileId: timestamp } – hồ sơ đã bị cha mẹ xóa (để đồng bộ việc xóa)
 };
 
 const STORAGE_KEY = 'gs_test_v1';
@@ -642,6 +670,7 @@ function loadStorage() {
       const data = JSON.parse(raw);
       STATE.profiles = data.profiles || [];
       STATE.currentProfileId = data.currentProfileId || null;
+      STATE.deleted = data.deleted || {};
       if (data.settings) Object.assign(window.GS_CONFIG.defaults, data.settings);
     }
   } catch (e) { console.warn('Storage load fail', e); }
@@ -651,6 +680,7 @@ function saveLocal() {
     const data = {
       profiles: STATE.profiles,
       currentProfileId: STATE.currentProfileId,
+      deleted: STATE.deleted,
       settings: {
         volume: window.GS_CONFIG.defaults.volume,
         sfxVolume: window.GS_CONFIG.defaults.sfxVolume,
@@ -935,7 +965,10 @@ function renderProfiles() {
       <div>New friend</div>
     </div>
   ` : '';
+  const cur = getProfile();
+  const backBtn = cur ? `<button class="btn btn-ghost" id="btnBackProfile" style="align-self:flex-start;min-height:44px;padding:6px 16px;font-size:1rem;">← ${cur.avatar} ${esc(cur.name)}</button>` : '';
   return `
+    ${backBtn}
     <div class="header-title mt-16 welcome-title">🍇 wellcome to GrapeSeed</div>
     <p class="sub">Who is playing today?</p>
     <div class="profile-grid">${cards}${addBtn}</div>
@@ -1009,7 +1042,7 @@ function renderHome() {
 
   return `
     <div class="path-top">
-      <div class="path-hello">${p.avatar} ${esc(p.name)}</div>
+      <div class="path-hello">${p.avatar} ${esc(p.name)} <button class="mini-btn edit-me" id="btnEditMe" aria-label="Rename">✏️</button></div>
       <button class="btn btn-ghost" id="btnSwitchProfile" style="min-height:40px;padding:6px 14px;font-size:.95rem;">Switch</button>
     </div>
     <div class="path-scroll" id="pathScroll">
@@ -1247,11 +1280,17 @@ function bindScreenEvents() {
   document.querySelectorAll('.profile-card[data-id]').forEach(el => {
     el.addEventListener('click', () => {
       playSfx('tap');
-      STATE.currentProfileId = el.dataset.id;
-      saveLocal();
-      showScreen('home');
+      const p = STATE.profiles.find(x => x.id === el.dataset.id);
+      if (!p) return;
+      // Có PIN và chưa đăng nhập hồ sơ này => hỏi PIN
+      if (p.pin && p.id !== STATE.currentProfileId) { showPinLogin(p); return; }
+      enterProfile(p.id);
     });
   });
+  const backP = document.getElementById('btnBackProfile');
+  if (backP) backP.addEventListener('click', () => { playSfx('tap'); showScreen('home'); });
+  const editMe = document.getElementById('btnEditMe');
+  if (editMe) editMe.addEventListener('click', () => { playSfx('tap'); showEditMe(); });
   const addP = document.getElementById('btnAddProfile');
   if (addP) addP.addEventListener('click', () => { playSfx('tap'); showAddProfile(); });
   const famB = document.getElementById('btnFamily');
@@ -1574,38 +1613,264 @@ function animateResult(pct, stars) {
   }, 40);
 }
 
-function showAddProfile() {
-  const avatars = ['🐵','🐻','🐯','🐰','🦁','🐼','🦊','🐸','🐨','🦄'];
-  const modal = document.getElementById('modal');
-  const body = document.getElementById('modalBody');
-  body.innerHTML = `
-    <div class="header-title" style="font-size:1.3rem;">New friend</div>
-    <input id="newName" placeholder="Name" maxlength="12" autofocus>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0;">
-      ${avatars.map((a,i) => `<button class="btn btn-ghost av-pick" data-av="${a}" style="min-height:48px;width:48px;font-size:1.5rem;${i===0?'border:3px solid var(--primary);':''}">${a}</button>`).join('')}
-    </div>
-    <button class="btn btn-primary w-full" id="btnCreateP">Create</button>
-    <button class="btn btn-ghost w-full mt-8" id="btnCancelP">Cancel</button>
-  `;
-  modal.classList.add('show');
-  let chosen = avatars[0];
+const AVATARS = ['🐵','🐻','🐯','🐰','🦁','🐼','🦊','🐸','🐨','🦄'];
+const PARENT_PASS = '021188';   // mật khẩu khu vực cha mẹ (nằm trong code – chỉ ngăn bé bấm nhầm, không phải bảo mật thật)
+
+function enterProfile(id) {
+  STATE.currentProfileId = id;
+  saveLocal();
+  showScreen('home');
+}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+function isPin(s) { return /^\d{4}$/.test(s || ''); }
+function bindPinInput(inp, onFull) {      // chỉ cho nhập số, tối đa 4
+  inp.addEventListener('input', () => {
+    inp.value = inp.value.replace(/\D/g, '').slice(0, 4);
+    if (onFull && inp.value.length === 4) onFull();
+  });
+}
+function avatarPickerHTML(selected) {
+  return AVATARS.map(a => `<button type="button" class="btn btn-ghost av-pick" data-av="${a}" style="min-height:48px;width:48px;padding:0;font-size:1.5rem;${a === selected ? 'border:3px solid var(--primary);' : ''}">${a}</button>`).join('');
+}
+function bindAvatarPicker(body, onPick) {
   body.querySelectorAll('.av-pick').forEach(b => {
     b.addEventListener('click', () => {
-      chosen = b.dataset.av;
+      onPick(b.dataset.av);
       body.querySelectorAll('.av-pick').forEach(x => x.style.border = '');
       b.style.border = '3px solid var(--primary)';
     });
   });
+}
+
+/* ---- Tạo bé mới (bắt buộc tên + PIN 4 số) ---- */
+function showAddProfile() {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <div class="header-title" style="font-size:1.3rem;">New friend</div>
+    <input id="newName" placeholder="Name" maxlength="12" autocomplete="off">
+    <input id="newPin" class="pin-input" type="tel" inputmode="numeric" placeholder="PIN" maxlength="4" autocomplete="off">
+    <p class="sub" style="margin:-8px 0 8px;font-size:.8rem;">Chọn mã PIN 4 số để vào lại khu vực của bé</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 12px;">${avatarPickerHTML(AVATARS[0])}</div>
+    <p class="form-msg" id="newMsg"></p>
+    <button class="btn btn-primary w-full" id="btnCreateP">Create</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnCancelP">Cancel</button>
+  `;
+  modal.classList.add('show');
+  let chosen = AVATARS[0];
+  bindAvatarPicker(body, a => chosen = a);
+  bindPinInput(document.getElementById('newPin'));
+  const msg = t => { document.getElementById('newMsg').textContent = t; };
   document.getElementById('btnCreateP').addEventListener('click', () => {
-    const name = (document.getElementById('newName').value || '').trim() || 'Friend';
+    const name = (document.getElementById('newName').value || '').trim();
+    const pin = document.getElementById('newPin').value;
+    if (!name) { msg('Hãy nhập tên của bé.'); return; }
+    if (!isPin(pin)) { msg('Hãy nhập mã PIN đủ 4 chữ số.'); return; }
     const id = 'p_' + Date.now();
-    STATE.profiles.push({ id, name, avatar: chosen, history: [], wrongWords: {}, best: {}, updatedAt: Date.now() });
+    STATE.profiles.push({ id, name, avatar: chosen, pin, history: [], wrongWords: {}, best: {}, updatedAt: Date.now() });
     STATE.currentProfileId = id;
     saveStorage();
-    modal.classList.remove('show');
+    closeModal();
     showScreen('home');
   });
-  document.getElementById('btnCancelP').addEventListener('click', () => modal.classList.remove('show'));
+  document.getElementById('btnCancelP').addEventListener('click', closeModal);
+}
+
+/* ---- Nhập PIN để vào khu vực của bé ---- */
+function showPinLogin(p) {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <div style="font-size:3rem;line-height:1;">${p.avatar}</div>
+    <div class="header-title" style="font-size:1.3rem;margin-top:6px;">${esc(p.name)}</div>
+    <p class="sub mt-8">Nhập mã PIN 4 số</p>
+    <input id="loginPin" class="pin-input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" style="margin-top:12px;">
+    <p class="form-msg" id="loginMsg"></p>
+    <button class="btn btn-primary w-full" id="btnLoginGo">Vào</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnLoginCancel">Cancel</button>
+  `;
+  modal.classList.add('show');
+  const inp = document.getElementById('loginPin');
+  const go = () => {
+    if (inp.value === p.pin) { closeModal(); enterProfile(p.id); return; }
+    document.getElementById('loginMsg').textContent = 'PIN chưa đúng, thử lại nhé.';
+    inp.value = '';
+    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+    inp.focus();
+  };
+  bindPinInput(inp, go);
+  document.getElementById('btnLoginGo').addEventListener('click', () => { playSfx('tap'); go(); });
+  document.getElementById('btnLoginCancel').addEventListener('click', () => { playSfx('tap'); closeModal(); });
+  setTimeout(() => inp.focus(), 60);
+}
+
+/* ---- Bé tự đổi tên / avatar trong khu vực của mình ---- */
+function showEditMe() {
+  const p = getProfile();
+  if (!p) return;
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <div class="header-title" style="font-size:1.3rem;">✏️ My name</div>
+    <input id="editName" placeholder="Name" maxlength="12" autocomplete="off" value="${esc(p.name)}">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 12px;">${avatarPickerHTML(p.avatar)}</div>
+    ${p.pin ? '<p class="sub" style="margin-bottom:10px;font-size:.8rem;">Muốn đổi PIN thì nhờ cha mẹ nhé.</p>' : `
+      <div class="field-label">Đặt mã PIN 4 số (không bắt buộc)</div>
+      <input id="editPin" class="pin-input" type="tel" inputmode="numeric" maxlength="4" placeholder="PIN" autocomplete="off">`}
+    <p class="form-msg" id="editMsg"></p>
+    <button class="btn btn-primary w-full" id="btnEditSave">Save</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnEditCancel">Cancel</button>
+  `;
+  modal.classList.add('show');
+  let chosen = p.avatar;
+  bindAvatarPicker(body, a => chosen = a);
+  const pinEl = document.getElementById('editPin');
+  if (pinEl) bindPinInput(pinEl);
+  document.getElementById('btnEditSave').addEventListener('click', () => {
+    const name = (document.getElementById('editName').value || '').trim();
+    const msg = t => { document.getElementById('editMsg').textContent = t; };
+    if (!name) { msg('Tên không được để trống.'); return; }
+    if (pinEl && pinEl.value && !isPin(pinEl.value)) { msg('PIN phải đủ 4 chữ số (hoặc để trống).'); return; }
+    p.name = name; p.avatar = chosen;
+    if (pinEl && isPin(pinEl.value)) p.pin = pinEl.value;
+    p.updatedAt = Date.now();
+    saveStorage();
+    closeModal();
+    render();
+  });
+  document.getElementById('btnEditCancel').addEventListener('click', closeModal);
+}
+
+/* ---- Khu vực cha mẹ ---- */
+function showParentLogin() {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <div class="header-title" style="font-size:1.3rem;">🔐 Khu vực cha mẹ</div>
+    <p class="sub mt-8">Nhập mật khẩu để tiếp tục</p>
+    <input id="parentPass" type="password" inputmode="numeric" maxlength="20" autocomplete="off" placeholder="Mật khẩu" style="text-align:center;">
+    <p class="form-msg" id="parentMsg"></p>
+    <button class="btn btn-primary w-full" id="btnParentGo">Vào</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnParentCancel">Hủy</button>
+  `;
+  modal.classList.add('show');
+  const inp = document.getElementById('parentPass');
+  const go = () => {
+    if (inp.value === PARENT_PASS) { showParentArea(); return; }
+    document.getElementById('parentMsg').textContent = 'Sai mật khẩu.';
+    inp.value = '';
+    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+  };
+  document.getElementById('btnParentGo').addEventListener('click', () => { playSfx('tap'); go(); });
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+  document.getElementById('btnParentCancel').addEventListener('click', () => { playSfx('tap'); closeModal(); render(); });
+  setTimeout(() => inp.focus(), 60);
+}
+
+function showParentArea() {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modalBody');
+  const rows = STATE.profiles.length ? STATE.profiles.map(p => `
+    <div class="parent-row" data-id="${p.id}">
+      <span class="pr-av">${p.avatar}</span>
+      <span class="pr-name">${esc(p.name)}${p.pin ? '' : '<small>chưa có PIN</small>'}</span>
+      <button class="mini-btn" data-act="rename" aria-label="Đổi tên">✏️</button>
+      <button class="mini-btn" data-act="pin" aria-label="Đặt lại PIN">🔑</button>
+      <button class="mini-btn danger" data-act="del" aria-label="Xóa">🗑️</button>
+    </div>`).join('') : '<p class="sub" style="margin:12px 0;">Chưa có bé nào.</p>';
+  body.innerHTML = `
+    <div class="header-title" style="font-size:1.3rem;">🔐 Khu vực cha mẹ</div>
+    <p class="sub mt-8" style="margin-bottom:6px;">✏️ đổi tên &nbsp;·&nbsp; 🔑 đặt lại PIN &nbsp;·&nbsp; 🗑️ xóa</p>
+    <div style="margin-bottom:12px;">${rows}</div>
+    <button class="btn btn-primary w-full" id="btnExport">⬇️ Xuất dữ liệu (sao lưu)</button>
+    <button class="btn btn-accent w-full mt-8" id="btnImport">⬆️ Nhập dữ liệu</button>
+    <input type="file" id="importFile" accept=".json,application/json" class="hidden">
+    <button class="btn btn-ghost w-full mt-8" id="btnParentClose">Đóng</button>
+  `;
+  body.classList.add('modal-wide');
+  modal.classList.add('show');
+
+  body.querySelectorAll('.parent-row .mini-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      playSfx('tap');
+      const id = b.closest('.parent-row').dataset.id;
+      const p = STATE.profiles.find(x => x.id === id);
+      if (!p) return;
+      const act = b.dataset.act;
+      if (act === 'rename') {
+        const v = prompt('Tên mới cho bé:', p.name);
+        if (v === null) return;
+        const n = v.trim().slice(0, 12);
+        if (!n) { alert('Tên không được để trống.'); return; }
+        p.name = n; p.updatedAt = Date.now();
+        saveStorage(); showParentArea();
+      } else if (act === 'pin') {
+        const v = prompt('Mã PIN mới (4 chữ số) cho "' + p.name + '":', '');
+        if (v === null) return;
+        if (!isPin(v.trim())) { alert('PIN phải đủ 4 chữ số.'); return; }
+        p.pin = v.trim(); p.updatedAt = Date.now();
+        saveStorage(); showParentArea();
+        showBigToast('🔑 Đã đổi PIN');
+      } else if (act === 'del') {
+        if (!confirm('XÓA tài khoản "' + p.name + '"?\n\nToàn bộ sao và lịch sử của bé sẽ mất, không khôi phục được (trừ khi bạn đã xuất file sao lưu).')) return;
+        deleteProfile(id);
+        showParentArea();
+      }
+    });
+  });
+  document.getElementById('btnExport').addEventListener('click', () => { playSfx('tap'); exportData(); });
+  const fileEl = document.getElementById('importFile');
+  document.getElementById('btnImport').addEventListener('click', () => { playSfx('tap'); fileEl.value = ''; fileEl.click(); });
+  fileEl.addEventListener('change', () => { if (fileEl.files && fileEl.files[0]) importData(fileEl.files[0]); });
+  document.getElementById('btnParentClose').addEventListener('click', () => {
+    playSfx('tap'); body.classList.remove('modal-wide'); closeModal(); render();
+  });
+}
+
+function deleteProfile(id) {
+  STATE.profiles = STATE.profiles.filter(p => p.id !== id);
+  STATE.deleted[id] = Date.now();            // ghi "bia mộ" để các máy khác cũng xóa theo khi đồng bộ
+  if (STATE.currentProfileId === id) STATE.currentProfileId = null;
+  saveStorage();
+}
+
+function exportData() {
+  const data = { app: 'grapeseed-test', version: 1, exportedAt: new Date().toISOString(), profiles: STATE.profiles };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'grapeseed-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+function importData(file) {
+  const reader = new FileReader();
+  reader.onerror = () => alert('Không đọc được file.');
+  reader.onload = () => {
+    let data;
+    try { data = JSON.parse(reader.result); } catch (e) { alert('File không hợp lệ (không phải JSON).'); return; }
+    const list = data && Array.isArray(data.profiles) ? data.profiles : null;
+    if (!list || !list.length) { alert('File không có dữ liệu bé nào.'); return; }
+    const incoming = list.filter(p => p && typeof p.name === 'string').map(p => {
+      const c = Object.assign({ history: [], wrongWords: {}, best: {} }, p);
+      if (typeof c.id !== 'string' || !c.id || STATE.deleted[c.id]) {
+        c.id = 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);   // hồ sơ từng bị xóa => cấp id mới để khôi phục
+      }
+      if (!c.avatar) c.avatar = '🐵';
+      if (!c.updatedAt) c.updatedAt = Date.now();
+      return c;
+    });
+    if (!incoming.length) { alert('File không có dữ liệu hợp lệ.'); return; }
+    const before = STATE.profiles.length;
+    const [merged] = mergeProfiles(STATE.profiles, incoming, STATE.deleted);
+    STATE.profiles = merged;
+    saveStorage();
+    showParentArea();
+    showBigToast('✅ Đã nhập ' + incoming.length + ' bé');
+  };
+  reader.readAsText(file);
 }
 
 /* ============================================================
@@ -1699,9 +1964,11 @@ function mergeProfile(a, b) {
   const out = Object.assign({}, a); let changed = false;
   if ((b.updatedAt || 0) > (a.updatedAt || 0)) {
     out.name = b.name; out.avatar = b.avatar; out.updatedAt = b.updatedAt;
+    if (b.pin) out.pin = b.pin;
     if (b.lastUnit) out.lastUnit = b.lastUnit;
     changed = true;
   }
+  if (!out.pin && b.pin) { out.pin = b.pin; changed = true; }
   const seen = new Set((a.history || []).map(histKey));
   const add = (b.history || []).filter(h => !seen.has(histKey(h)));
   if (add.length) {
@@ -1712,15 +1979,18 @@ function mergeProfile(a, b) {
   const [ww, c2] = maxMerge(a.wrongWords, b.wrongWords); if (c2) { out.wrongWords = ww; changed = true; }
   return [out, changed];
 }
-function mergeProfiles(local, cloud) {
+function mergeProfiles(local, cloud, del) {
+  del = del || {};
   const list = []; let changed = false;
   local.forEach(a => {
+    if (del[a.id]) { changed = true; return; }          // đã bị cha mẹ xóa
     const b = (cloud || []).find(x => x.id === a.id);
     if (!b) { list.push(a); return; }
     const [m, c] = mergeProfile(a, b);
     list.push(c ? m : a); if (c) changed = true;
   });
   (cloud || []).forEach(b => {
+    if (del[b.id]) return;
     if (!local.find(x => x.id === b.id)) { list.push(Object.assign({ history: [], wrongWords: {}, best: {} }, b)); changed = true; }
   });
   return [list, changed];
@@ -1762,12 +2032,14 @@ async function syncNow() {
     const ref = fbDb.collection('families').doc(familyCode);
     const merged = await withTimeout(fbDb.runTransaction(async t => {
       const snap = await t.get(ref);
-      const cloud = (snap.exists && snap.data().profiles) || [];
-      const [m] = mergeProfiles(STATE.profiles, cloud);
-      t.set(ref, { profiles: toCloud(m), v: 1, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-      return m;
+      const d = snap.exists ? snap.data() : {};
+      const cloud = d.profiles || [];
+      const del = Object.assign({}, d.deleted || {}, STATE.deleted);
+      const [m] = mergeProfiles(STATE.profiles, cloud, del);
+      t.set(ref, { profiles: toCloud(m), deleted: del, v: 1, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      return { list: m, del };
     }), 12000);
-    applyMerged(merged);
+    applyMerged(merged.list, merged.del);
     syncDirty = false; lastSyncAt = Date.now(); setSync('ok');
     return true;
   } catch (e) {
@@ -1780,9 +2052,11 @@ async function syncNow() {
     if (syncAgain) { syncAgain = false; setTimeout(syncNow, 500); }
   }
 }
-function applyMerged(cloudMerged) {
-  const [list, changed] = mergeProfiles(STATE.profiles, cloudMerged);
-  if (!changed) return;
+function applyMerged(cloudMerged, del) {
+  let delChanged = false;
+  for (const k in (del || {})) if (!(k in STATE.deleted)) { STATE.deleted[k] = del[k]; delChanged = true; }
+  const [list, changed] = mergeProfiles(STATE.profiles, cloudMerged, STATE.deleted);
+  if (!changed && !delChanged) return;
   STATE.profiles = list;
   if (!STATE.profiles.find(p => p.id === STATE.currentProfileId)) STATE.currentProfileId = null;
   saveLocal();
@@ -1807,7 +2081,10 @@ async function connectFamily(code) {
   if (navigator.onLine === false) return 'Cần có mạng để kết nối lần đầu.';
   try {
     const snap = await withTimeout(fbDb.collection('families').doc(code).get(), 12000);
-    const cloud = (snap.exists && snap.data().profiles) || [];
+    const sd = snap.exists ? snap.data() : {};
+    const cloudDel = sd.deleted || {};
+    const cloud = (sd.profiles || []).filter(p => !cloudDel[p.id]);
+    Object.assign(STATE.deleted, cloudDel);
     // máy mới: bỏ hồ sơ "Friend" trống để không bị trùng với hồ sơ trên mây
     if (cloud.length && STATE.profiles.length === 1 && isPristine(STATE.profiles[0])) {
       STATE.profiles = [];
@@ -1815,7 +2092,7 @@ async function connectFamily(code) {
     }
     familyCode = code;
     try { localStorage.setItem(FAMILY_KEY, code); } catch (e) {}
-    const [list] = mergeProfiles(STATE.profiles, cloud);
+    const [list] = mergeProfiles(STATE.profiles, cloud, STATE.deleted);
     STATE.profiles = list;
     if (!STATE.profiles.find(p => p.id === STATE.currentProfileId)) STATE.currentProfileId = null;
     saveLocal();
@@ -1922,6 +2199,7 @@ function showFamilyModal() {
     <p class="sub mt-8" style="font-size:.85rem;">Nhập cùng mã này trên máy khác để thấy tên, avatar và sao của bé.</p>
     <button class="btn btn-primary w-full mt-8" id="btnFamSync">Đồng bộ ngay</button>
     <button class="btn btn-ghost w-full mt-8" id="btnFamOff">Ngắt kết nối</button>
+    <button class="btn btn-secondary w-full mt-8" id="btnParent">🔐 Khu vực cha mẹ</button>
     <button class="btn btn-ghost w-full mt-8" id="btnFamClose">Đóng</button>
   ` : `
     <div class="header-title" style="font-size:1.3rem;">👨‍👩‍👧 Mã gia đình</div>
@@ -1930,11 +2208,13 @@ function showFamilyModal() {
     <p class="sub" id="famMsg" style="color:#c0392b;min-height:1.2em;font-size:.85rem;"></p>
     <button class="btn btn-primary w-full" id="btnFamGo">Kết nối</button>
     <button class="btn btn-ghost w-full mt-8" id="btnFamNew">Tạo mã mới</button>
+    <button class="btn btn-secondary w-full mt-8" id="btnParent">🔐 Khu vực cha mẹ</button>
     <button class="btn btn-ghost w-full mt-8" id="btnFamClose">Đóng</button>
   `;
   modal.classList.add('show');
   const $ = id => document.getElementById(id);
   $('btnFamClose').addEventListener('click', () => { playSfx('tap'); modal.classList.remove('show'); render(); });
+  $('btnParent').addEventListener('click', () => { playSfx('tap'); showParentLogin(); });
   if (connected) {
     $('btnFamSync').addEventListener('click', () => { playSfx('tap'); syncNow(); });
     $('btnFamOff').addEventListener('click', () => {
