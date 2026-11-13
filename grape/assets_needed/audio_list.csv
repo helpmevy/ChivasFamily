@@ -1,0 +1,96 @@
+unit,id,type,text
+u01,alligator,word,alligator
+u01,animals,word,animals
+u01,baby,word,baby
+u01,ball,word,ball
+u01,bear,word,bear
+u01,big,word,big
+u01,small,word,small
+u01,little,word,little
+u01,bird,word,bird
+u01,boys,word,boys
+u01,brother,word,brother
+u01,chair,word,chair
+u01,circle,word,circle
+u01,line,word,line
+u01,climb,word,climb
+u01,come,word,come
+u01,go,word,go
+u01,crawl,word,crawl
+u01,dance,word,dance
+u01,elephant,word,elephant
+u01,family,word,family
+u01,fast,word,fast
+u01,slow,word,slow
+u01,father,word,father
+u01,floor,word,floor
+u01,fly,word,fly
+u01,friend,word,friend
+u01,giraffe,word,giraffe
+u01,girls,word,girls
+u01,gorilla,word,gorilla
+u01,grandfather,word,grandfather
+u01,grandmother,word,grandmother
+u01,grass,word,grass
+u01,hands,word,hands
+u01,hippo,word,hippo
+u01,hop,word,hop
+u01,house,word,house
+u01,jump,word,jump
+u01,kangaroo,word,kangaroo
+u01,lion,word,lion
+u01,monkey,word,monkey
+u01,mother,word,mother
+u01,over,word,over
+u01,under,word,under
+u01,panda,word,panda
+u01,play,word,play
+u01,rabbit,word,rabbit
+u01,rock,word,rock
+u01,run,word,run
+u01,sing,word,sing
+u01,sister,word,sister
+u01,sit,word,sit
+u01,sleep,word,sleep
+u01,snake,word,snake
+u01,stand,word,stand
+u01,steps,word,steps
+u01,stop,word,stop
+u01,tall,word,tall
+u01,short,word,short
+u01,teacher,word,teacher
+u01,through,word,through
+u01,tiger,word,tiger
+u01,tree,word,tree
+u01,turtle,word,turtle
+u01,up,word,up
+u01,down,word,down
+u01,walk,word,walk
+u01,yes,word,yes
+u01,no,word,no
+u01,zebra,word,zebra
+u01,zoo,word,zoo
+u01,one,word,one
+u01,two,word,two
+u01,three,word,three
+u01,four,word,four
+u01,five,word,five
+u01,six,word,six
+u01,seven,word,seven
+u01,eight,word,eight
+u01,nine,word,nine
+u01,ten,word,ten
+u01,p_hello,sentence,Hello!
+u01,p_what_name,sentence,What is your name?
+u01,p_how_are_you,sentence,How are you this morning?
+u01,p_where_is,sentence,Where is Arty?
+u01,p_good_morning,sentence,Good morning!
+u01,p_goodbye,sentence,Goodbye!
+u01,p_stand_up,sentence,Stand up.
+u01,p_sit_down,sentence,Sit down.
+u01,p_this_is_my,sentence,This is my father.
+u01,p_i_see,sentence,I see a panda.
+u01,p_do_you_like,sentence,Do you like red?
+u01,p_hop_like,sentence,Hop like a rabbit.
+u01,p_fly_like,sentence,Fly like a bird.
+u01,p_climb_like,sentence,Climb like a monkey.

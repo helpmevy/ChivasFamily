@@ -1,0 +1,3 @@
+Thư mục chứa file giọng đọc Kokoro cho Unit 1.
+Đặt file theo id: bear.mp3, hello.mp3, ...
+Tên file = id trong data/u01.js (chữ thường, không dấu).

@@ -1,0 +1,3 @@
+Thư mục hình ảnh Unit 1.
+Đặt file theo id: bear.png, tiger.png, ...
+Nếu thiếu, app dùng emoji + nền màu.
