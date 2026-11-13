@@ -1754,9 +1754,9 @@ function scheduleSync() {
   syncTimer = setTimeout(syncNow, 2000);
 }
 async function syncNow() {
-  if (!familyCode) return;
-  if (syncBusy) { syncAgain = true; return; }
-  if (!ensureFirebase() || navigator.onLine === false) { syncDirty = true; setSync('offline'); return; }
+  if (!familyCode) return false;
+  if (syncBusy) { syncAgain = true; return null; }
+  if (!ensureFirebase() || navigator.onLine === false) { syncDirty = true; setSync('offline'); return false; }
   syncBusy = true; setSync('syncing');
   try {
     const ref = fbDb.collection('families').doc(familyCode);
@@ -1769,10 +1769,12 @@ async function syncNow() {
     }), 12000);
     applyMerged(merged);
     syncDirty = false; lastSyncAt = Date.now(); setSync('ok');
+    return true;
   } catch (e) {
     console.warn('Sync fail', e);
     syncDirty = true;
     setSync(e && e.code === 'permission-denied' ? 'denied' : 'offline');
+    return false;
   } finally {
     syncBusy = false;
     if (syncAgain) { syncAgain = false; setTimeout(syncNow, 500); }
@@ -1817,13 +1819,49 @@ async function connectFamily(code) {
     STATE.profiles = list;
     if (!STATE.profiles.find(p => p.id === STATE.currentProfileId)) STATE.currentProfileId = null;
     saveLocal();
-    await syncNow();
+    const ok = await syncNow();
+    if (ok === false) {
+      const why = syncState;
+      familyCode = '';
+      try { localStorage.removeItem(FAMILY_KEY); } catch (e) {}
+      setSync('off');
+      return why === 'denied'
+        ? 'Firebase từ chối quyền ghi. Kiểm tra lại Rules trong Firestore.'
+        : 'Chưa lưu được lên Firebase (mạng yếu hoặc chưa tạo Firestore Database). Thử lại.';
+    }
     return '';
   } catch (e) {
     return e && e.code === 'permission-denied'
       ? 'Firebase từ chối quyền. Cần cập nhật Rules trong Firestore.'
       : 'Không kết nối được. Thử lại khi có mạng.';
   }
+}
+async function codeIsFree(code) {
+  code = normCode(code);
+  if (code.length < 6) return 'Mã cần ít nhất 6 ký tự (chữ, số hoặc dấu -).';
+  if (!ensureFirebase()) return 'Chưa tải được Firebase. Kiểm tra mạng rồi thử lại.';
+  if (navigator.onLine === false) return 'Cần có mạng để tạo mã mới.';
+  try {
+    const snap = await withTimeout(fbDb.collection('families').doc(code).get(), 12000);
+    return snap.exists ? 'Mã này đã có người dùng. Hãy chọn mã khác.' : '';
+  } catch (e) {
+    return e && e.code === 'permission-denied'
+      ? 'Firebase từ chối quyền. Cần cập nhật Rules trong Firestore.'
+      : 'Không kiểm tra được mã. Thử lại khi có mạng.';
+  }
+}
+function showBigToast(text) {
+  let t = document.getElementById('bigToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'bigToast';
+    t.style.cssText = 'position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) scale(.9);background:#398653;color:#fff;font-weight:800;font-size:1.9rem;font-family:var(--font-title),sans-serif;padding:22px 34px;border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,.35);z-index:300;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;text-align:center;';
+    document.body.appendChild(t);
+  }
+  t.textContent = text;
+  requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translate(-50%,-50%) scale(1)'; });
+  clearTimeout(t._h);
+  t._h = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%,-50%) scale(.9)'; }, 2200);
 }
 function disconnectFamily() {
   familyCode = '';
@@ -1834,6 +1872,43 @@ function randomCode() {
   const c = 'abcdefghjkmnpqrstuvwxyz23456789'; let s = 'gs-';
   for (let i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)];
   return s;
+}
+function showNewCodePopup() {
+  let ov = document.getElementById('modalNewCode');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 'modalNewCode';
+    ov.className = 'modal-overlay';
+    ov.style.zIndex = '90';                       // nổi trên popup "Mã gia đình" (z-index 80)
+    ov.innerHTML = `
+      <div class="modal">
+        <input id="newFamCode" placeholder="Nhập mã mới (từ 6 ký tự)" maxlength="30" autocapitalize="off" autocomplete="off" spellcheck="false">
+        <button class="btn btn-primary w-full" id="btnNewFamCreate">Tạo mã mới</button>
+      </div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('show'); });   // bấm ra ngoài để đóng
+  }
+  const inp = document.getElementById('newFamCode');
+  const btn = document.getElementById('btnNewFamCreate');
+  inp.value = '';
+  btn.disabled = false; btn.textContent = 'Tạo mã mới';
+  ov.classList.add('show');
+  setTimeout(() => inp.focus(), 50);
+  const go = async () => {
+    playSfx('tap');
+    const code = normCode(inp.value);
+    btn.disabled = true; btn.textContent = 'Đang kiểm tra…';
+    const err = await codeIsFree(code);
+    btn.disabled = false; btn.textContent = 'Tạo mã mới';
+    if (err) { alert(err); return; }
+    ov.classList.remove('show');                       // chỉ đóng popup này
+    const main = document.getElementById('famCode');   // điền mã vào ô của popup "Mã gia đình"
+    if (main) main.value = code;
+    const msg = document.getElementById('famMsg');
+    if (msg) msg.textContent = '';
+  };
+  btn.onclick = go;
+  inp.onkeydown = e => { if (e.key === 'Enter') go(); };
 }
 function showFamilyModal() {
   const modal = document.getElementById('modal');
@@ -1866,7 +1941,7 @@ function showFamilyModal() {
       if (confirm('Ngắt kết nối? Dữ liệu vẫn còn trên máy này.')) { disconnectFamily(); modal.classList.remove('show'); render(); }
     });
   } else {
-    $('btnFamNew').addEventListener('click', () => { playSfx('tap'); $('famCode').value = randomCode(); });
+    $('btnFamNew').addEventListener('click', () => { playSfx('tap'); showNewCodePopup(); });
     $('btnFamGo').addEventListener('click', async () => {
       playSfx('tap');
       const btn = $('btnFamGo'); btn.disabled = true; btn.textContent = 'Đang kết nối…';
@@ -1874,6 +1949,7 @@ function showFamilyModal() {
       if (err) { $('famMsg').textContent = err; btn.disabled = false; btn.textContent = 'Kết nối'; return; }
       modal.classList.remove('show');
       showScreen(STATE.currentProfileId ? 'home' : 'profiles');
+      showBigToast('✅ Đã kết nối');
     });
   }
 }
