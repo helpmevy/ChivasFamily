@@ -325,26 +325,6 @@ body { position: relative; }
 }
 .grapey svg { width: 100%; height: 100%; }
 
-/* Parent zone */
-.parent-lock {
-  position: absolute; top: 8px; right: 8px;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,0.4); border: none;
-  font-size: 1rem; cursor: pointer; opacity: 0.5;
-  z-index: 20;
-}
-.parent-panel {
-  position: fixed; inset: 0; background: #F5F7FA; z-index: 100;
-  display: none; flex-direction: column; overflow-y: auto;
-  padding: var(--safe-top) 16px var(--safe-bottom);
-  font-family: var(--font-body);
-}
-.parent-panel.open { display: flex; }
-.parent-panel h2 { font-family: var(--font-title); color: var(--dark); margin: 12px 0; }
-.parent-panel table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-.parent-panel th, .parent-panel td { padding: 8px 6px; border-bottom: 1px solid #E0E7FF; text-align: left; }
-.parent-panel th { background: #EEF3FF; font-weight: 700; }
-
 /* Confetti canvas */
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
 
@@ -513,21 +493,11 @@ body {
 .progress-fill { background: linear-gradient(90deg, #8DD7A1, #398653); }
 .q-prompt { color: #244F37; text-shadow: 0 1px 2px rgba(255,255,255,.9); }
 
-.parent-panel {
-  background: rgba(245, 250, 239, .98);
-  color: #294536;
-}
-.parent-panel th { background: #DCEEDC; color: #28563D; }
-.parent-panel th, .parent-panel td { border-bottom-color: #D5E7D4; }
 .modal-overlay { background: rgba(20, 49, 32, .48); }
 .modal input, .modal select {
   background: #FFFEF8;
   border-color: #C9E0CA;
   color: #294536;
-}
-.parent-lock {
-  background: rgba(255,253,244,.88);
-  box-shadow: 0 3px 10px rgba(25,66,43,.16);
 }
 .feedback-bar { background: rgba(255,253,244,.98); }
 
@@ -554,7 +524,7 @@ body {
 /* ===== PATH MAP (kiểu Duolingo) ===== */
 .path-top {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  padding: 10px 52px 8px 4px; flex-shrink: 0;
+  padding: 10px 4px 8px; flex-shrink: 0;
 }
 .path-hello { font-family: var(--font-title); font-weight: 800; font-size: 1.15rem; color: #28563D; }
 .path-scroll {
@@ -630,15 +600,6 @@ body {
 
 <div id="app">
   <!-- Screens injected by JS -->
-</div>
-
-<!-- Parent panel -->
-<div id="parentPanel" class="parent-panel" role="dialog" aria-label="Khu vực phụ huynh">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <h2>👨‍👩‍👧 Khu Phụ huynh</h2>
-    <button class="btn btn-ghost" onclick="closeParent()" style="min-height:44px;">Đóng</button>
-  </div>
-  <div id="parentContent"></div>
 </div>
 
 <!-- Modal -->
@@ -970,7 +931,6 @@ function renderProfiles() {
     </div>
   ` : '';
   return `
-    <button class="parent-lock" id="btnParent" title="Phụ huynh">🔒</button>
     <div class="header-title mt-16 welcome-title">🍇 wellcome to GrapeSeed</div>
     <p class="sub">Who is playing today?</p>
     <div class="profile-grid">${cards}${addBtn}</div>
@@ -1039,7 +999,6 @@ function renderHome() {
   }
 
   return `
-    <button class="parent-lock" id="btnParent">🔒</button>
     <div class="path-top">
       <div class="path-hello">${p.avatar} ${esc(p.name)}</div>
       <button class="btn btn-ghost" id="btnSwitchProfile" style="min-height:40px;padding:6px 14px;font-size:.95rem;">Switch</button>
@@ -1274,19 +1233,7 @@ function esc(s) {
 /* ============================================================
    BIND EVENTS
    ============================================================ */
-let parentHoldTimer = null;
-
 function bindScreenEvents() {
-  // Parent lock – hold 2s
-  const btnP = document.getElementById('btnParent');
-  if (btnP) {
-    const start = () => { parentHoldTimer = setTimeout(openParent, 2000); };
-    const end = () => { clearTimeout(parentHoldTimer); };
-    btnP.addEventListener('pointerdown', start);
-    btnP.addEventListener('pointerup', end);
-    btnP.addEventListener('pointerleave', end);
-  }
-
   // Profiles
   document.querySelectorAll('.profile-card[data-id]').forEach(el => {
     el.addEventListener('click', () => {
@@ -1616,105 +1563,6 @@ function animateResult(pct, stars) {
   }, 40);
 }
 
-/* ============================================================
-   PARENT ZONE
-   ============================================================ */
-function openParent() {
-  playSfx('tap');
-  const panel = document.getElementById('parentPanel');
-  const content = document.getElementById('parentContent');
-  const p = getProfile();
-  let html = '';
-  if (!p) {
-    html = '<p>Chưa chọn bé nào.</p>';
-  } else {
-    const hist = (p.history || []).slice(0, 20);
-    html += `<h3>Lịch sử – ${esc(p.name)}</h3>`;
-    html += `<table><tr><th>Ngày</th><th>Unit</th><th>Mức</th><th>Điểm</th><th>Sao</th></tr>`;
-    hist.forEach(h => {
-      html += `<tr><td>${h.date} ${h.time||''}</td><td>U${h.unit}</td><td>${h.level}</td><td>${h.pct}%</td><td>${h.stars}★</td></tr>`;
-    });
-    html += `</table>`;
-
-    // wrong words
-    const ww = p.wrongWords || {};
-    const topWrong = Object.entries(ww).sort((a,b)=>b[1]-a[1]).slice(0,15);
-    html += `<h3 style="margin-top:20px;">Từ hay sai</h3>`;
-    if (topWrong.length) {
-      html += '<ul>' + topWrong.map(([w,c]) => `<li><b>${esc(w)}</b> – ${c} lần</li>`).join('') + '</ul>';
-    } else html += '<p>Chưa có.</p>';
-
-    // settings
-    html += `<h3 style="margin-top:20px;">Cài đặt</h3>
-      <label>Âm lượng giọng đọc: <input type="range" id="setVol" min="0" max="1" step="0.05" value="${window.GS_CONFIG.defaults.volume}"></label><br>
-      <label>Số câu Easy: <input type="number" id="setQE" min="5" max="20" value="${window.GS_CONFIG.defaults.questionsEasy}" style="width:60px;"></label><br>
-      <label>Số câu Hard: <input type="number" id="setQH" min="5" max="20" value="${window.GS_CONFIG.defaults.questionsHard}" style="width:60px;"></label><br>
-      <label><input type="checkbox" id="setHint" ${window.GS_CONFIG.defaults.allowHint?'checked':''}> Gợi ý (Easy)</label><br>
-      <button class="btn btn-primary mt-8" id="btnSaveSet">Lưu cài đặt</button>
-    `;
-
-    // asset status
-    html += `<h3 style="margin-top:20px;">Tình trạng file âm thanh / hình</h3>
-      <p style="font-size:0.9rem;">App dùng speechSynthesis / emoji khi thiếu file. Đặt file đúng tên vào audio/kokoro/u01/ và images/u01/ để dùng file thật.</p>
-      <p>Audio đã kiểm tra: ${Object.keys(audioCache).filter(k=>audioCache[k]==='ok').length} OK, ${Object.keys(audioCache).filter(k=>audioCache[k]==='missing').length} thiếu</p>
-    `;
-
-    html += `<h3 style="margin-top:20px;">Sao lưu</h3>
-      <button class="btn btn-ghost" id="btnExport">Xuất JSON</button>
-      <button class="btn btn-ghost" id="btnImport">Nhập JSON</button>
-      <button class="btn btn-ghost" id="btnClearData" style="color:#c62828;">Xóa dữ liệu bé này</button>
-    `;
-  }
-  content.innerHTML = html;
-  panel.classList.add('open');
-
-  // bind settings
-  const btnSave = document.getElementById('btnSaveSet');
-  if (btnSave) btnSave.addEventListener('click', () => {
-    window.GS_CONFIG.defaults.volume = parseFloat(document.getElementById('setVol').value);
-    window.GS_CONFIG.defaults.questionsEasy = parseInt(document.getElementById('setQE').value) || 10;
-    window.GS_CONFIG.defaults.questionsHard = parseInt(document.getElementById('setQH').value) || 12;
-    window.GS_CONFIG.defaults.allowHint = document.getElementById('setHint').checked;
-    saveStorage();
-    alert('Đã lưu!');
-  });
-  const btnEx = document.getElementById('btnExport');
-  if (btnEx) btnEx.addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify({profiles: STATE.profiles}, null, 2)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'grapeseed-backup.json';
-    a.click();
-  });
-  const btnIm = document.getElementById('btnImport');
-  if (btnIm) btnIm.addEventListener('click', () => {
-    const inp = document.createElement('input');
-    inp.type = 'file'; inp.accept = '.json';
-    inp.onchange = () => {
-      const f = inp.files[0];
-      if (!f) return;
-      const r = new FileReader();
-      r.onload = () => {
-        try {
-          const data = JSON.parse(r.result);
-          if (data.profiles) { STATE.profiles = data.profiles; saveStorage(); alert('Đã nhập!'); location.reload(); }
-        } catch(e) { alert('File không hợp lệ'); }
-      };
-      r.readAsText(f);
-    };
-    inp.click();
-  });
-  const btnCl = document.getElementById('btnClearData');
-  if (btnCl) btnCl.addEventListener('click', () => {
-    if (!confirm('Xóa toàn bộ lịch sử của bé này?')) return;
-    const p = getProfile();
-    if (p) { p.history = []; p.wrongWords = {}; p.best = {}; saveStorage(); openParent(); }
-  });
-}
-function closeParent() {
-  document.getElementById('parentPanel').classList.remove('open');
-}
-
 function showAddProfile() {
   const avatars = ['🐵','🐻','🐯','🐰','🦁','🐼','🦊','🐸','🐨','🦄'];
   const modal = document.getElementById('modal');
@@ -1795,6 +1643,8 @@ function launchConfetti() {
    INIT
    ============================================================ */
 loadStorage();
+// Xin trình duyệt giữ dữ liệu lâu dài (giảm nguy cơ bị tự xóa khi máy thiếu bộ nhớ)
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
 // preload unit 1
 const s0 = document.createElement('script');
 s0.src = 'data/u01.js';
