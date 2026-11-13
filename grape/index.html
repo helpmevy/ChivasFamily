@@ -668,10 +668,41 @@ body {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-/* ===== PHIÊN BẢN APP – ĐỔI SỐ NÀY MỖI LẦN CẬP NHẬT BẤT KỲ FILE NÀO (index.html, config.js, data/*.js) =====
-   Các máy đang mở app sẽ tự thấy số khác và tự tải bản mới. */
-const APP_VERSION = '2026-11-14.1';
-document.write('<script src="config.js?v=' + APP_VERSION + '"><\/script><script src="data/units.js?v=' + APP_VERSION + '"><\/script>');
+/* ===== NẠP FILE DỮ LIỆU LUÔN MỚI + GHI NHẬN NỘI DUNG ĐÃ CHẠY (phục vụ tự động cập nhật) ===== */
+// Chỉ để các máy còn chạy bản cũ nhận ra có bản mới. KHÔNG cần đổi số này nữa.
+const APP_VERSION = '2026-11-14.2';
+window.__gsFp = {};    // đường dẫn file -> mã băm nội dung đã chạy
+function gsHash(str) {
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+function gsRun(url, text) {                        // chạy nội dung script + nhớ mã băm
+  const s = document.createElement('script');
+  s.setAttribute('data-gs-inj', '1');
+  s.text = text;
+  document.head.appendChild(s);
+  window.__gsFp[url] = gsHash(text);
+}
+function gsLoadSync(url) {                         // đồng bộ, luôn hỏi lại server (304 nếu chưa đổi)
+  try {
+    const x = new XMLHttpRequest();
+    x.open('GET', url, false);
+    x.setRequestHeader('Cache-Control', 'no-cache');
+    x.send();
+    if (x.status >= 200 && x.status < 300 && x.responseText) { gsRun(url, x.responseText); return true; }
+  } catch (e) {}
+  document.write('<script src="' + url + '"><\/script>');   // dự phòng (offline / file://): nạp kiểu thường
+  return false;
+}
+gsLoadSync('config.js');
+gsLoadSync('data/units.js');
 </script>
 <script>
 /* ============================================================
@@ -1470,13 +1501,21 @@ function loadUnit(unitId, cb) {
   };
   // dynamic script load
   if (window.GS.units[unitId]) { done(); return; }
-  const s = document.createElement('script');
-  s.src = 'data/' + unitId + '.js?v=' + APP_VERSION;
-  s.onload = done;
-  s.onerror = () => {
-    kidAlert({ emoji: '😢', title: 'Ôi, có lỗi rồi!', text: 'Không tìm thấy dữ liệu bài học (' + unitId + ').\nHãy thử lại sau nhé!' });
-  };
-  document.head.appendChild(s);
+  const url = 'data/' + unitId + '.js';
+  gsLoadFresh(url).then(() => { done(); }, () => {
+    const s = document.createElement('script');       // dự phòng: nạp kiểu thường
+    s.src = url;
+    s.onload = done;
+    s.onerror = () => {
+      kidAlert({ emoji: '😢', title: 'Ôi, có lỗi rồi!', text: 'Không tìm thấy dữ liệu bài học (' + unitId + ').\nHãy thử lại sau nhé!' });
+    };
+    document.head.appendChild(s);
+  });
+}
+function gsLoadFresh(url) {      // nạp file dữ liệu, luôn kiểm tra bản mới nhất
+  return fetch(url, { cache: 'no-cache' })
+    .then(r => { if (!r.ok) throw new Error('http ' + r.status); return r.text(); })
+    .then(t => { gsRun(url, t); });
 }
 
 function startQuiz(level) {
@@ -2383,36 +2422,52 @@ function showFamilyModal() {
 }
 
 /* ============================================================
-   TỰ ĐỘNG CẬP NHẬT BẢN MỚI
-   - Hỏi lại GitHub (bỏ qua cache) xem APP_VERSION có đổi không.
+   TỰ ĐỘNG CẬP NHẬT BẢN MỚI (không cần đổi số phiên bản)
+   - So sánh NỘI DUNG file đang chạy với bản mới nhất trên GitHub:
+       + index.html (phần CSS + JavaScript)
+       + config.js, data/units.js, data/uNN.js đã nạp
    - Kiểm tra: lúc mở app, lúc quay lại app, lúc có mạng lại, mỗi 10 phút.
-   - Không cập nhật giữa lúc bé đang làm bài; dữ liệu bé luôn giữ nguyên.
+   - Không cập nhật giữa lúc bé đang làm bài; dữ liệu của bé luôn giữ nguyên.
    ============================================================ */
+function fpOfDoc(doc) {
+  let s = '';
+  doc.querySelectorAll('style, script:not([src]):not([data-gs-inj])').forEach(n => { s += n.textContent + '\u0001'; });
+  return gsHash(s);
+}
+let RUNNING_FP = '';
 let updBusy = false;
 async function checkForUpdate() {
-  if (updBusy || navigator.onLine === false) return;
+  if (updBusy || !RUNNING_FP || navigator.onLine === false) return;
   updBusy = true;
   try {
-    const res = await withTimeout(fetch(location.pathname + '?nc=' + Date.now(), { cache: 'no-store' }), 8000);
-    if (!res.ok) return;
-    const text = await res.text();
-    const m = new RegExp("APP_VERSION\\s*=\\s*'([^']+)'").exec(text);
-    if (!m || m[1] === APP_VERSION) return;
-    applyUpdate(m[1]);
+    const changed = [];
+    const rh = await withTimeout(fetch(location.pathname, { cache: 'no-cache' }), 10000);
+    if (!rh.ok) return;
+    const doc = new DOMParser().parseFromString(await rh.text(), 'text/html');
+    const freshHtml = fpOfDoc(doc);
+    if (freshHtml !== RUNNING_FP) changed.push('html:' + freshHtml);
+    for (const url of Object.keys(window.__gsFp)) {
+      const r = await withTimeout(fetch(url, { cache: 'no-cache' }), 10000);
+      if (!r.ok) continue;
+      const h = gsHash(await r.text());
+      if (h !== window.__gsFp[url]) changed.push(url + ':' + h);
+    }
+    if (changed.length) applyUpdate(changed.join('|'));
   } catch (e) { /* offline hoặc mở bằng file:// → bỏ qua */ }
   finally { updBusy = false; }
 }
-function applyUpdate(newVer) {
+function applyUpdate(sig) {
   if (STATE.screen === 'quiz') return;                       // đang làm bài → chờ lần kiểm tra sau
   try {
-    if (sessionStorage.getItem('gs_upd') === newVer) return; // chống lặp vô hạn
-    sessionStorage.setItem('gs_upd', newVer);
+    if (sessionStorage.getItem('gs_upd') === sig) return;    // chống lặp vô hạn
+    sessionStorage.setItem('gs_upd', sig);
   } catch (e) {}
   saveLocal();
   showBigToast('🍇 Đang cập nhật bản mới…');
-  setTimeout(() => location.replace(location.pathname + '?v=' + encodeURIComponent(newVer)), 1200);
+  setTimeout(() => location.replace(location.pathname + '?u=' + Date.now().toString(36)), 1200);
 }
 function initUpdateCheck() {
+  RUNNING_FP = fpOfDoc(document);                            // "dấu vân tay" của bản đang chạy
   setTimeout(checkForUpdate, 1500);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
   window.addEventListener('pageshow', e => { if (e.persisted) checkForUpdate(); });
@@ -2428,10 +2483,8 @@ initSync();
 initUpdateCheck();
 // Xin trình duyệt giữ dữ liệu lâu dài (giảm nguy cơ bị tự xóa khi máy thiếu bộ nhớ)
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
-// preload unit 1
-const s0 = document.createElement('script');
-s0.src = 'data/u01.js?v=' + APP_VERSION;
-s0.onload = () => {
+// preload unit 1 (luôn nạp bản mới nhất)
+function bootAfterU01() {
   if (!STATE.profiles.length) {
     // create default profile for first run
     STATE.profiles.push({
@@ -2447,11 +2500,14 @@ s0.onload = () => {
     saveLocal();
   }
   showScreen(STATE.currentProfileId ? 'home' : 'profiles');
-};
-s0.onerror = () => {
-  showScreen('profiles');
-};
-document.head.appendChild(s0);
+}
+gsLoadFresh('data/u01.js').then(bootAfterU01, () => {
+  const s0 = document.createElement('script');   // dự phòng: nạp kiểu thường
+  s0.src = 'data/u01.js';
+  s0.onload = bootAfterU01;
+  s0.onerror = () => { showScreen('profiles'); };
+  document.head.appendChild(s0);
+});
 </script>
 </body>
 </html>
