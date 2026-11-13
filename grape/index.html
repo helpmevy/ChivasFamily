@@ -607,6 +607,8 @@ body {
   <div class="modal" id="modalBody"></div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="config.js"></script>
 <script src="data/units.js"></script>
 <script>
@@ -644,7 +646,7 @@ function loadStorage() {
     }
   } catch (e) { console.warn('Storage load fail', e); }
 }
-function saveStorage() {
+function saveLocal() {
   try {
     const data = {
       profiles: STATE.profiles,
@@ -661,6 +663,7 @@ function saveStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (e) { console.warn('Storage save fail', e); }
 }
+function saveStorage() { saveLocal(); scheduleSync(); }
 function getProfile() {
   return STATE.profiles.find(p => p.id === STATE.currentProfileId);
 }
@@ -684,6 +687,8 @@ function addHistory(entry) {
   const key = entry.unitId + '_' + entry.level;
   if (!p.best[key] || entry.stars > p.best[key]) p.best[key] = entry.stars;
   p.lastUnit = entry.unitId;
+  entry.ts = entry.ts || Date.now();
+  p.updatedAt = Date.now();
   saveStorage();
 }
 
@@ -934,6 +939,10 @@ function renderProfiles() {
     <div class="header-title mt-16 welcome-title">🍇 wellcome to GrapeSeed</div>
     <p class="sub">Who is playing today?</p>
     <div class="profile-grid">${cards}${addBtn}</div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn btn-ghost" id="btnFamily" style="min-height:44px;font-size:.95rem;">👨‍👩‍👧 Mã gia đình</button>
+      <p class="sub" id="syncBadge" style="font-size:.8rem;margin-top:6px;">${esc(syncText())}</p>
+    </div>
     <div class="grapey mt-16">${grapeySVG('idle')}</div>
   `;
 }
@@ -1239,12 +1248,14 @@ function bindScreenEvents() {
     el.addEventListener('click', () => {
       playSfx('tap');
       STATE.currentProfileId = el.dataset.id;
-      saveStorage();
+      saveLocal();
       showScreen('home');
     });
   });
   const addP = document.getElementById('btnAddProfile');
   if (addP) addP.addEventListener('click', () => { playSfx('tap'); showAddProfile(); });
+  const famB = document.getElementById('btnFamily');
+  if (famB) famB.addEventListener('click', () => { playSfx('tap'); showFamilyModal(); });
 
   // Home
   // Nút Easy / Hard trên đường: bấm là vào làm bài luôn
@@ -1588,7 +1599,7 @@ function showAddProfile() {
   document.getElementById('btnCreateP').addEventListener('click', () => {
     const name = (document.getElementById('newName').value || '').trim() || 'Friend';
     const id = 'p_' + Date.now();
-    STATE.profiles.push({ id, name, avatar: chosen, history: [], wrongWords: {}, best: {} });
+    STATE.profiles.push({ id, name, avatar: chosen, history: [], wrongWords: {}, best: {}, updatedAt: Date.now() });
     STATE.currentProfileId = id;
     saveStorage();
     modal.classList.remove('show');
@@ -1640,9 +1651,238 @@ function launchConfetti() {
 }
 
 /* ============================================================
+   FIREBASE SYNC (mã gia đình)
+   - localStorage vẫn là nguồn dữ liệu chính → mất mạng app chạy bình thường.
+   - Có mạng + có mã gia đình: tự gộp dữ liệu với Firestore (families/{mã}).
+   ============================================================ */
+const FB_CONFIG = {
+  apiKey: "AIzaSyCHmq6aGx4xKDJs54FAKkCqddOVKEirFtU",
+  authDomain: "chivasdingrape.firebaseapp.com",
+  projectId: "chivasdingrape",
+  storageBucket: "chivasdingrape.firebasestorage.app",
+  messagingSenderId: "823822871416",
+  appId: "1:823822871416:web:443c94946c3639ea72f68d"
+};
+const FAMILY_KEY = 'gs_family_code';
+let fbDb = null, familyCode = '';
+let syncState = 'off';            // off | syncing | ok | offline | denied
+let syncBusy = false, syncAgain = false, syncDirty = false, syncTimer = null, lastSyncAt = 0;
+try { familyCode = localStorage.getItem(FAMILY_KEY) || ''; } catch (e) {}
+
+function normCode(s) { return (s || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30); }
+function withTimeout(p, ms) {
+  return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: 'timeout' }), ms))]);
+}
+function ensureFirebase() {
+  if (fbDb) return true;
+  try {
+    if (typeof firebase === 'undefined' || !firebase.firestore) return false;
+    if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+    fbDb = firebase.firestore();
+    return true;
+  } catch (e) { console.warn('Firebase init fail', e); return false; }
+}
+function toCloud(list) {   // bỏ "answers" cho nhẹ (giới hạn 1MB/doc)
+  return JSON.parse(JSON.stringify(list.map(p => Object.assign({}, p, {
+    history: (p.history || []).map(h => { const c = Object.assign({}, h); delete c.answers; return c; })
+  }))));
+}
+
+/* ---- Gộp dữ liệu: không bao giờ làm mất điểm ---- */
+function histKey(h) { return h.ts ? 't' + h.ts : [h.unitId, h.level, h.date, h.time, h.score].join('|'); }
+function maxMerge(x, y) {
+  const o = Object.assign({}, x || {}); let c = false;
+  for (const k in (y || {})) if (!(k in o) || y[k] > o[k]) { o[k] = y[k]; c = true; }
+  return [o, c];
+}
+function mergeProfile(a, b) {
+  const out = Object.assign({}, a); let changed = false;
+  if ((b.updatedAt || 0) > (a.updatedAt || 0)) {
+    out.name = b.name; out.avatar = b.avatar; out.updatedAt = b.updatedAt;
+    if (b.lastUnit) out.lastUnit = b.lastUnit;
+    changed = true;
+  }
+  const seen = new Set((a.history || []).map(histKey));
+  const add = (b.history || []).filter(h => !seen.has(histKey(h)));
+  if (add.length) {
+    out.history = (a.history || []).concat(add).sort((x, y) => (y.ts || 0) - (x.ts || 0)).slice(0, 100);
+    changed = true;
+  }
+  const [bw, c1] = maxMerge(a.best, b.best);           if (c1) { out.best = bw; changed = true; }
+  const [ww, c2] = maxMerge(a.wrongWords, b.wrongWords); if (c2) { out.wrongWords = ww; changed = true; }
+  return [out, changed];
+}
+function mergeProfiles(local, cloud) {
+  const list = []; let changed = false;
+  local.forEach(a => {
+    const b = (cloud || []).find(x => x.id === a.id);
+    if (!b) { list.push(a); return; }
+    const [m, c] = mergeProfile(a, b);
+    list.push(c ? m : a); if (c) changed = true;
+  });
+  (cloud || []).forEach(b => {
+    if (!local.find(x => x.id === b.id)) { list.push(Object.assign({ history: [], wrongWords: {}, best: {} }, b)); changed = true; }
+  });
+  return [list, changed];
+}
+function isPristine(p) {
+  return p && p.id === 'p_default' && !(p.history || []).length && !Object.keys(p.best || {}).length;
+}
+
+/* ---- Đồng bộ ---- */
+function setSync(s) { syncState = s; updateSyncBadge(); }
+function syncText() {
+  if (!familyCode) return '☁️ Chưa kết nối mã gia đình';
+  return ({
+    syncing: '🔄 Đang đồng bộ…',
+    ok: '☁️ Đã lưu lên đám mây',
+    offline: '📴 Đang offline – sẽ tự đồng bộ khi có mạng',
+    denied: '⚠️ Firebase từ chối (kiểm tra Rules)',
+    off: '☁️ Sẵn sàng'
+  })[syncState] || '';
+}
+function updateSyncBadge() {
+  const el = document.getElementById('syncBadge');
+  if (el) el.textContent = syncText();
+  const el2 = document.getElementById('famStatus');
+  if (el2) el2.textContent = syncText();
+}
+function scheduleSync() {
+  if (!familyCode) return;
+  syncDirty = true;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncNow, 2000);
+}
+async function syncNow() {
+  if (!familyCode) return;
+  if (syncBusy) { syncAgain = true; return; }
+  if (!ensureFirebase() || navigator.onLine === false) { syncDirty = true; setSync('offline'); return; }
+  syncBusy = true; setSync('syncing');
+  try {
+    const ref = fbDb.collection('families').doc(familyCode);
+    const merged = await withTimeout(fbDb.runTransaction(async t => {
+      const snap = await t.get(ref);
+      const cloud = (snap.exists && snap.data().profiles) || [];
+      const [m] = mergeProfiles(STATE.profiles, cloud);
+      t.set(ref, { profiles: toCloud(m), v: 1, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      return m;
+    }), 12000);
+    applyMerged(merged);
+    syncDirty = false; lastSyncAt = Date.now(); setSync('ok');
+  } catch (e) {
+    console.warn('Sync fail', e);
+    syncDirty = true;
+    setSync(e && e.code === 'permission-denied' ? 'denied' : 'offline');
+  } finally {
+    syncBusy = false;
+    if (syncAgain) { syncAgain = false; setTimeout(syncNow, 500); }
+  }
+}
+function applyMerged(cloudMerged) {
+  const [list, changed] = mergeProfiles(STATE.profiles, cloudMerged);
+  if (!changed) return;
+  STATE.profiles = list;
+  if (!STATE.profiles.find(p => p.id === STATE.currentProfileId)) STATE.currentProfileId = null;
+  saveLocal();
+  if (['profiles', 'home', 'unit'].includes(STATE.screen)) render();   // không render giữa lúc đang làm bài
+}
+function initSync() {
+  ensureFirebase();
+  window.addEventListener('online', () => { if (familyCode) syncNow(); });
+  window.addEventListener('offline', () => { if (familyCode) setSync('offline'); });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && familyCode && Date.now() - lastSyncAt > 30000) syncNow();
+  });
+  setInterval(() => { if (familyCode && syncDirty) syncNow(); }, 60000);
+  if (familyCode) syncNow();
+}
+
+/* ---- Kết nối / ngắt mã gia đình ---- */
+async function connectFamily(code) {
+  code = normCode(code);
+  if (code.length < 6) return 'Mã cần ít nhất 6 ký tự (chữ, số hoặc dấu -).';
+  if (!ensureFirebase()) return 'Chưa tải được Firebase. Kiểm tra mạng rồi thử lại.';
+  if (navigator.onLine === false) return 'Cần có mạng để kết nối lần đầu.';
+  try {
+    const snap = await withTimeout(fbDb.collection('families').doc(code).get(), 12000);
+    const cloud = (snap.exists && snap.data().profiles) || [];
+    // máy mới: bỏ hồ sơ "Friend" trống để không bị trùng với hồ sơ trên mây
+    if (cloud.length && STATE.profiles.length === 1 && isPristine(STATE.profiles[0])) {
+      STATE.profiles = [];
+      STATE.currentProfileId = null;
+    }
+    familyCode = code;
+    try { localStorage.setItem(FAMILY_KEY, code); } catch (e) {}
+    const [list] = mergeProfiles(STATE.profiles, cloud);
+    STATE.profiles = list;
+    if (!STATE.profiles.find(p => p.id === STATE.currentProfileId)) STATE.currentProfileId = null;
+    saveLocal();
+    await syncNow();
+    return '';
+  } catch (e) {
+    return e && e.code === 'permission-denied'
+      ? 'Firebase từ chối quyền. Cần cập nhật Rules trong Firestore.'
+      : 'Không kết nối được. Thử lại khi có mạng.';
+  }
+}
+function disconnectFamily() {
+  familyCode = '';
+  try { localStorage.removeItem(FAMILY_KEY); } catch (e) {}
+  syncDirty = false; setSync('off');
+}
+function randomCode() {
+  const c = 'abcdefghjkmnpqrstuvwxyz23456789'; let s = 'gs-';
+  for (let i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)];
+  return s;
+}
+function showFamilyModal() {
+  const modal = document.getElementById('modal');
+  const body = document.getElementById('modalBody');
+  const connected = !!familyCode;
+  body.innerHTML = connected ? `
+    <div class="header-title" style="font-size:1.3rem;">👨‍👩‍👧 Mã gia đình</div>
+    <p class="sub mt-8">Mã đang dùng:</p>
+    <div style="font-size:1.6rem;font-weight:800;text-align:center;letter-spacing:2px;margin:6px 0;">${esc(familyCode)}</div>
+    <p class="sub" id="famStatus">${esc(syncText())}</p>
+    <p class="sub mt-8" style="font-size:.85rem;">Nhập cùng mã này trên máy khác để thấy tên, avatar và sao của bé.</p>
+    <button class="btn btn-primary w-full mt-8" id="btnFamSync">Đồng bộ ngay</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnFamOff">Ngắt kết nối</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnFamClose">Đóng</button>
+  ` : `
+    <div class="header-title" style="font-size:1.3rem;">👨‍👩‍👧 Mã gia đình</div>
+    <p class="sub mt-8">Nhập mã để lưu và dùng chung dữ liệu giữa các máy.</p>
+    <input id="famCode" placeholder="vd: gs-abc123" maxlength="30" autocapitalize="off" autocomplete="off" spellcheck="false">
+    <p class="sub" id="famMsg" style="color:#c0392b;min-height:1.2em;font-size:.85rem;"></p>
+    <button class="btn btn-primary w-full" id="btnFamGo">Kết nối</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnFamNew">Tạo mã mới</button>
+    <button class="btn btn-ghost w-full mt-8" id="btnFamClose">Đóng</button>
+  `;
+  modal.classList.add('show');
+  const $ = id => document.getElementById(id);
+  $('btnFamClose').addEventListener('click', () => { playSfx('tap'); modal.classList.remove('show'); render(); });
+  if (connected) {
+    $('btnFamSync').addEventListener('click', () => { playSfx('tap'); syncNow(); });
+    $('btnFamOff').addEventListener('click', () => {
+      if (confirm('Ngắt kết nối? Dữ liệu vẫn còn trên máy này.')) { disconnectFamily(); modal.classList.remove('show'); render(); }
+    });
+  } else {
+    $('btnFamNew').addEventListener('click', () => { playSfx('tap'); $('famCode').value = randomCode(); });
+    $('btnFamGo').addEventListener('click', async () => {
+      playSfx('tap');
+      const btn = $('btnFamGo'); btn.disabled = true; btn.textContent = 'Đang kết nối…';
+      const err = await connectFamily($('famCode').value);
+      if (err) { $('famMsg').textContent = err; btn.disabled = false; btn.textContent = 'Kết nối'; return; }
+      modal.classList.remove('show');
+      showScreen(STATE.currentProfileId ? 'home' : 'profiles');
+    });
+  }
+}
+
+/* ============================================================
    INIT
    ============================================================ */
 loadStorage();
+initSync();
 // Xin trình duyệt giữ dữ liệu lâu dài (giảm nguy cơ bị tự xóa khi máy thiếu bộ nhớ)
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
 // preload unit 1
@@ -1658,9 +1898,10 @@ s0.onload = () => {
       history: [],
       wrongWords: {},
       best: {},
+      updatedAt: 0
     });
     STATE.currentProfileId = 'p_default';
-    saveStorage();
+    saveLocal();
   }
   showScreen(STATE.currentProfileId ? 'home' : 'profiles');
 };
