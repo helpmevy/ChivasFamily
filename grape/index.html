@@ -614,6 +614,37 @@ body {
 .edit-me { margin-left: 6px; vertical-align: middle; width: 34px; height: 34px; font-size: .95rem; }
 .modal-wide { max-width: 420px !important; }
 .shake { animation: shake .4s; }
+
+/* ===== Popup thân thiện với trẻ em (thay confirm/alert/prompt của trình duyệt) ===== */
+.kd-overlay {
+  position: fixed; inset: 0; z-index: 150; padding: 20px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(30, 60, 40, .45);
+  animation: kdFade .18s ease;
+}
+.kd-card {
+  width: 100%; max-width: 340px; text-align: center;
+  background: #FFFDF4; border: 4px solid #fff; border-radius: 28px;
+  padding: 24px 20px 20px; box-shadow: 0 14px 40px rgba(20, 50, 30, .35);
+  max-height: 90vh; overflow-y: auto;
+  animation: kdPop .32s cubic-bezier(.34, 1.56, .64, 1);
+}
+.kd-emoji { font-size: 3.6rem; line-height: 1; display: inline-block; animation: kdBounce 1.6s ease-in-out infinite; }
+.kd-title { font-family: var(--font-title); font-weight: 800; font-size: 1.45rem; color: var(--dark); margin-top: 8px; }
+.kd-text { font-family: var(--font-body); font-weight: 700; font-size: 1.08rem; color: var(--text); margin: 8px 0 16px; line-height: 1.45; }
+.kd-input {
+  width: 100%; padding: 12px 14px; margin: 0 0 12px; outline: none;
+  border: 3px solid #D5E6D0; border-radius: 16px; background: #fff;
+  font-family: var(--font-body); font-size: 1.15rem; font-weight: 700; text-align: center; color: var(--text);
+}
+.kd-input:focus { border-color: var(--primary); }
+.kd-msg { margin: -4px 0 10px; }
+.kd-btns { display: flex; flex-direction: column; gap: 10px; }
+.kd-btns .btn { width: 100%; }
+.btn-danger { background: #E2736E; color: #fff; }
+@keyframes kdFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes kdPop { from { opacity: 0; transform: scale(.8) translateY(20px); } to { opacity: 1; transform: none; } }
+@keyframes kdBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 </style>
 </head>
 <body>
@@ -1327,8 +1358,14 @@ function bindScreenEvents() {
 
   // Quiz
   const btnQuit = document.getElementById('btnQuitQuiz');
-  if (btnQuit) btnQuit.addEventListener('click', () => {
-    if (confirm('Leave this test?')) { playSfx('tap'); showScreen('unit'); }
+  if (btnQuit) btnQuit.addEventListener('click', async () => {
+    playSfx('tap');
+    const stop = await kidConfirm({
+      emoji: '🍇', title: 'Khoan đã nè!',
+      text: 'Bạn có chắc chắn muốn dừng bài test không?',
+      yes: 'Có, dừng lại', no: 'Không, làm tiếp'
+    });
+    if (stop) showScreen('unit');
   });
   const btnReplay = document.getElementById('btnReplay');
   if (btnReplay) {
@@ -1433,7 +1470,7 @@ function loadUnit(unitId, cb) {
   s.src = 'data/' + unitId + '.js';
   s.onload = done;
   s.onerror = () => {
-    alert('Unit data not found: ' + unitId);
+    kidAlert({ emoji: '😢', title: 'Ôi, có lỗi rồi!', text: 'Không tìm thấy dữ liệu bài học (' + unitId + ').\nHãy thử lại sau nhé!' });
   };
   document.head.appendChild(s);
 }
@@ -1461,7 +1498,7 @@ function startWrongPractice() {
   // pick questions whose answer is in wrongWords
   const p = getProfile();
   if (!p || !p.wrongWords || !Object.keys(p.wrongWords).length) {
-    alert('No missed words yet. Great!');
+    kidAlert({ emoji: '🌟', title: 'Great job!', text: 'No missed words yet. Great!', ok: 'Yay!' });
     return;
   }
   if (!STATE.unitData) return;
@@ -1469,7 +1506,7 @@ function startWrongPractice() {
     q.answer && p.wrongWords[q.answer]
   );
   if (pool.length < 3) {
-    alert('Not enough missed items. Play more first!');
+    kidAlert({ emoji: '💪', title: 'Keep playing!', text: 'Not enough missed items. Play more first!', ok: 'OK' });
     return;
   }
   STATE.level = 'easy';
@@ -1791,28 +1828,36 @@ function showParentArea() {
   modal.classList.add('show');
 
   body.querySelectorAll('.parent-row .mini-btn').forEach(b => {
-    b.addEventListener('click', () => {
+    b.addEventListener('click', async () => {
       playSfx('tap');
       const id = b.closest('.parent-row').dataset.id;
       const p = STATE.profiles.find(x => x.id === id);
       if (!p) return;
       const act = b.dataset.act;
       if (act === 'rename') {
-        const v = prompt('Tên mới cho bé:', p.name);
+        const v = await kidPrompt({
+          emoji: '✏️', title: 'Đổi tên', text: 'Tên mới cho bé:', value: p.name, maxlength: 12,
+          validate: s => s.trim() ? '' : 'Tên không được để trống.'
+        });
         if (v === null) return;
-        const n = v.trim().slice(0, 12);
-        if (!n) { alert('Tên không được để trống.'); return; }
-        p.name = n; p.updatedAt = Date.now();
+        p.name = v.trim().slice(0, 12); p.updatedAt = Date.now();
         saveStorage(); showParentArea();
       } else if (act === 'pin') {
-        const v = prompt('Mã PIN mới (4 chữ số) cho "' + p.name + '":', '');
+        const v = await kidPrompt({
+          emoji: '🔑', title: 'Đặt lại PIN', text: 'Mã PIN mới (4 chữ số) cho "' + p.name + '":', pin: true, maxlength: 4,
+          validate: s => isPin(s) ? '' : 'PIN phải đủ 4 chữ số.'
+        });
         if (v === null) return;
-        if (!isPin(v.trim())) { alert('PIN phải đủ 4 chữ số.'); return; }
-        p.pin = v.trim(); p.updatedAt = Date.now();
+        p.pin = v; p.updatedAt = Date.now();
         saveStorage(); showParentArea();
         showBigToast('🔑 Đã đổi PIN');
       } else if (act === 'del') {
-        if (!confirm('XÓA tài khoản "' + p.name + '"?\n\nToàn bộ sao và lịch sử của bé sẽ mất, không khôi phục được (trừ khi bạn đã xuất file sao lưu).')) return;
+        const yes = await kidConfirm({
+          emoji: '🗑️', title: 'Xóa tài khoản?',
+          text: 'Bạn muốn xóa "' + p.name + '"?\nToàn bộ sao và lịch sử của bé sẽ mất, không khôi phục được (trừ khi đã xuất file sao lưu).',
+          yes: 'Xóa luôn', no: 'Không, giữ lại', danger: true
+        });
+        if (!yes) return;
         deleteProfile(id);
         showParentArea();
       }
@@ -1847,12 +1892,12 @@ function exportData() {
 
 function importData(file) {
   const reader = new FileReader();
-  reader.onerror = () => alert('Không đọc được file.');
+  reader.onerror = () => kidAlert({ emoji: '😕', title: 'Ôi!', text: 'Không đọc được file.' });
   reader.onload = () => {
     let data;
-    try { data = JSON.parse(reader.result); } catch (e) { alert('File không hợp lệ (không phải JSON).'); return; }
+    try { data = JSON.parse(reader.result); } catch (e) { kidAlert({ emoji: '😕', title: 'File không hợp lệ', text: 'Đây không phải file sao lưu (JSON).' }); return; }
     const list = data && Array.isArray(data.profiles) ? data.profiles : null;
-    if (!list || !list.length) { alert('File không có dữ liệu bé nào.'); return; }
+    if (!list || !list.length) { kidAlert({ emoji: '😕', title: 'File trống', text: 'File không có dữ liệu bé nào.' }); return; }
     const incoming = list.filter(p => p && typeof p.name === 'string').map(p => {
       const c = Object.assign({ history: [], wrongWords: {}, best: {} }, p);
       if (typeof c.id !== 'string' || !c.id || STATE.deleted[c.id]) {
@@ -1862,7 +1907,7 @@ function importData(file) {
       if (!c.updatedAt) c.updatedAt = Date.now();
       return c;
     });
-    if (!incoming.length) { alert('File không có dữ liệu hợp lệ.'); return; }
+    if (!incoming.length) { kidAlert({ emoji: '😕', title: 'File không hợp lệ', text: 'File không có dữ liệu hợp lệ.' }); return; }
     const before = STATE.profiles.length;
     const [merged] = mergeProfiles(STATE.profiles, incoming, STATE.deleted);
     STATE.profiles = merged;
@@ -1871,6 +1916,101 @@ function importData(file) {
     showBigToast('✅ Đã nhập ' + incoming.length + ' bé');
   };
   reader.readAsText(file);
+}
+
+/* ============================================================
+   POPUP THÂN THIỆN VỚI TRẺ EM
+   Thay cho confirm() / alert() / prompt() của trình duyệt.
+   - kidConfirm({emoji,title,text,yes,no,danger}) -> Promise<true|false>
+   - kidAlert({emoji,title,text,ok})              -> Promise<void>
+   - kidPrompt({emoji,title,text,value,maxlength,inputmode,pin,validate,ok,cancel}) -> Promise<string|null>
+   Dùng: if (await kidConfirm({...})) { ... }
+   ============================================================ */
+let kdCurrent = null;
+function kidDialog(o) {
+  if (kdCurrent) kdCurrent.finish(kdCurrent.cancelValue);      // chỉ giữ 1 popup tại một thời điểm
+  return new Promise(resolve => {
+    const ov = document.createElement('div');
+    ov.className = 'kd-overlay';
+    const inp = o.input;
+    ov.innerHTML = `
+      <div class="kd-card" role="dialog" aria-modal="true">
+        <div class="kd-emoji">${o.emoji || '🍇'}</div>
+        ${o.title ? `<div class="kd-title">${esc(o.title)}</div>` : ''}
+        ${o.text ? `<div class="kd-text">${esc(o.text).replace(/\n/g, '<br>')}</div>` : ''}
+        ${inp ? `<input class="kd-input ${inp.pin ? 'pin-input' : ''}" type="${inp.pin ? 'tel' : 'text'}"
+                  inputmode="${inp.inputmode || (inp.pin ? 'numeric' : 'text')}" maxlength="${inp.maxlength || 30}"
+                  autocomplete="off" value="${esc(inp.value || '')}" placeholder="${esc(inp.placeholder || '')}">
+                <p class="form-msg kd-msg"></p>` : ''}
+        <div class="kd-btns">
+          ${o.buttons.map((b, i) => `<button class="btn ${b.cls || 'btn-primary'}" data-i="${i}">${esc(b.label)}</button>`).join('')}
+        </div>
+      </div>`;
+    document.body.appendChild(ov);
+    const inputEl = ov.querySelector('.kd-input');
+    const msgEl = ov.querySelector('.kd-msg');
+    const onKey = e => {
+      if (e.key === 'Escape') finish(o.cancelValue);
+      else if (e.key === 'Enter' && inputEl) {
+        const sb = o.buttons.findIndex(b => b.submit);
+        if (sb >= 0) ov.querySelector('[data-i="' + sb + '"]').click();
+      }
+    };
+    function finish(val) {
+      document.removeEventListener('keydown', onKey);
+      ov.remove();
+      if (kdCurrent && kdCurrent.ov === ov) kdCurrent = null;
+      resolve(val);
+    }
+    kdCurrent = { ov, finish, cancelValue: o.cancelValue };
+    document.addEventListener('keydown', onKey);
+    if (inputEl && inp.pin) inputEl.addEventListener('input', () => { inputEl.value = inputEl.value.replace(/\D/g, '').slice(0, 4); });
+    ov.addEventListener('click', e => { if (e.target === ov) finish(o.cancelValue); });   // bấm ra ngoài = hủy
+    ov.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        try { playSfx('tap'); } catch (e) {}
+        const b = o.buttons[+btn.dataset.i];
+        if (b.submit && inputEl) {
+          const v = inputEl.value;
+          const err = inp.validate ? inp.validate(v) : '';
+          if (err) {
+            msgEl.textContent = err;
+            inputEl.classList.remove('shake'); void inputEl.offsetWidth; inputEl.classList.add('shake');
+            inputEl.focus();
+            return;
+          }
+          finish(v);
+        } else finish(b.value);
+      });
+    });
+    if (inputEl) setTimeout(() => { inputEl.focus(); inputEl.select(); }, 80);
+  });
+}
+function kidConfirm(o) {
+  return kidDialog({
+    emoji: o.emoji, title: o.title, text: o.text, cancelValue: false,
+    buttons: [
+      { label: o.no || 'Không', value: false, cls: 'btn-primary' },
+      { label: o.yes || 'Có', value: true, cls: o.danger ? 'btn-danger' : 'btn-secondary' }
+    ]
+  });
+}
+function kidAlert(o) {
+  if (typeof o === 'string') o = { text: o };
+  return kidDialog({
+    emoji: o.emoji, title: o.title, text: o.text, cancelValue: undefined,
+    buttons: [{ label: o.ok || 'OK', value: undefined, cls: 'btn-primary' }]
+  });
+}
+function kidPrompt(o) {
+  return kidDialog({
+    emoji: o.emoji, title: o.title, text: o.text, cancelValue: null,
+    input: { value: o.value, placeholder: o.placeholder, maxlength: o.maxlength, inputmode: o.inputmode, pin: o.pin, validate: o.validate },
+    buttons: [
+      { label: o.ok || 'Lưu', submit: true, cls: 'btn-primary' },
+      { label: o.cancel || 'Hủy', value: null, cls: 'btn-ghost' }
+    ]
+  });
 }
 
 /* ============================================================
@@ -2177,7 +2317,7 @@ function showNewCodePopup() {
     btn.disabled = true; btn.textContent = 'Đang kiểm tra…';
     const err = await codeIsFree(code);
     btn.disabled = false; btn.textContent = 'Tạo mã mới';
-    if (err) { alert(err); return; }
+    if (err) { await kidAlert({ emoji: '😕', title: 'Chưa được rồi', text: err }); return; }
     ov.classList.remove('show');                       // chỉ đóng popup này
     const main = document.getElementById('famCode');   // điền mã vào ô của popup "Mã gia đình"
     if (main) main.value = code;
@@ -2217,8 +2357,12 @@ function showFamilyModal() {
   $('btnParent').addEventListener('click', () => { playSfx('tap'); showParentLogin(); });
   if (connected) {
     $('btnFamSync').addEventListener('click', () => { playSfx('tap'); syncNow(); });
-    $('btnFamOff').addEventListener('click', () => {
-      if (confirm('Ngắt kết nối? Dữ liệu vẫn còn trên máy này.')) { disconnectFamily(); modal.classList.remove('show'); render(); }
+    $('btnFamOff').addEventListener('click', async () => {
+      const yes = await kidConfirm({
+        emoji: '☁️', title: 'Ngắt kết nối?', text: 'Dữ liệu vẫn còn trên máy này.',
+        yes: 'Ngắt kết nối', no: 'Không, giữ lại'
+      });
+      if (yes) { disconnectFamily(); modal.classList.remove('show'); render(); }
     });
   } else {
     $('btnFamNew').addEventListener('click', () => { playSfx('tap'); showNewCodePopup(); });
